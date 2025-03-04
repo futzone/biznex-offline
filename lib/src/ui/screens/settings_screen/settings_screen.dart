@@ -1,0 +1,154 @@
+import 'dart:io';
+import 'package:biznex/main.dart';
+import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/config/theme.dart';
+import 'package:biznex/src/core/constants/app_locales.dart';
+import 'package:biznex/src/core/database/app_database/app_state_database.dart';
+import 'package:biznex/src/core/extensions/for_double.dart';
+import 'package:biznex/src/core/model/app_model.dart';
+import 'package:biznex/src/providers/app_state_provider.dart';
+import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
+import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:ionicons/ionicons.dart';
+
+class SettingsScreenButton extends HookWidget {
+  final AppColors theme;
+
+  const SettingsScreenButton(this.theme, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final overlayEntry = useState<OverlayEntry?>(null);
+    return SimpleButton(
+      onPressed: () {
+        overlayEntry.value = OverlayEntry(
+          builder: (context) => SettingsScreen(
+            theme: theme,
+            onClose: () {
+              overlayEntry.value?.remove();
+              overlayEntry.value = null;
+            },
+          ),
+        );
+
+        Overlay.of(context).insert(overlayEntry.value!);
+      },
+      child: SvgPicture.asset("assets/icons/settings.svg", color: Colors.white),
+    );
+  }
+}
+
+class SettingsScreen extends ConsumerWidget {
+  final AppColors theme;
+  final void Function() onClose;
+
+  const SettingsScreen({super.key, required this.theme, required this.onClose});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    return Center(
+      child: Material(
+        elevation: 8,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+            maxWidth: MediaQuery.of(context).size.height * 0.5,
+          ),
+          padding: 16.all,
+          decoration: BoxDecoration(
+            color: theme.scaffoldBgColor,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocales.settings.tr(),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SimpleButton(
+                    onPressed: onClose,
+                    child: const Icon(Ionicons.close_circle_outline, size: 30),
+                  ),
+                ],
+              ),
+              Container(
+                margin: 12.tb,
+                height: 1,
+                color: theme.accentColor,
+              ),
+              AppListTile(
+                title: AppLocales.changeLanguage.tr(),
+                theme: theme,
+                leadingIcon: Ionicons.language_outline,
+                onPressed: () {
+                  if (context.locale.languageCode == 'uz') {
+                    context.setLocale(const Locale('ru', 'RU'));
+                  } else {
+                    context.setLocale(const Locale('uz', 'UZ'));
+                  }
+                   if (!kIsWeb) {
+                    // AppRouter.open(context, const MaterialHomePage());
+                  }
+                },
+              ),
+              AppListTile(
+                title: AppLocales.changeThemeMode.tr(),
+                theme: theme,
+                leadingIcon: theme.isDark ? Ionicons.sunny_outline : Ionicons.moon_outline,
+                onPressed: () async {
+                  showAppLoadingDialog(context);
+                  AppStateDatabase stateDatabase = AppStateDatabase();
+                  AppModel app = await stateDatabase.getApp();
+                  app.isDark = !theme.isDark;
+                  stateDatabase.updateApp(app).then((_) {
+                    ref.invalidate(appStateProvider);
+                    onClose();
+                    AppRouter.close(context);
+                  });
+                },
+              ),
+              AppListTile(
+                leadingIcon: Ionicons.call_outline,
+                title: AppLocales.contact.tr(),
+                theme: theme,
+                onPressed: () async {},
+              ),
+              AppListTile(
+                leadingIcon: Ionicons.log_out_outline,
+                title: AppLocales.logout.tr(),
+                theme: theme,
+                onPressed: () async {
+                  showAppLoadingDialog(context);
+                  AppStateDatabase stateDatabase = AppStateDatabase();
+                  await stateDatabase.deleteApp().then((_) {
+                    ref.invalidate(appStateProvider);
+                    onClose();
+
+                  });
+
+                  AppRouter.close(context);
+                },
+              ),
+              const Spacer(),
+              const Center(child: Text(appVersion)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

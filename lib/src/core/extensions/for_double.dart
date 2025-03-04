@@ -1,0 +1,43 @@
+import 'package:flutter/cupertino.dart';
+
+extension DoubleFormatter on num {
+  String get price {
+    return toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ');
+  }
+
+  Widget get w {
+    return SizedBox(width: toDouble());
+  }
+
+  Widget get h {
+    return SizedBox(height: toDouble());
+  }
+
+  EdgeInsets get lr {
+    return EdgeInsets.only(left: toDouble(), right: toDouble());
+  }
+
+  EdgeInsets get tb {
+    return EdgeInsets.only(top: toDouble(), bottom: toDouble());
+  }
+
+  EdgeInsets get all {
+    return EdgeInsets.all(toDouble());
+  }
+
+  EdgeInsets get left {
+    return EdgeInsets.only(left: toDouble());
+  }
+
+  EdgeInsets get right {
+    return EdgeInsets.only(right: toDouble());
+  }
+
+  EdgeInsets get bottom {
+    return EdgeInsets.only(bottom: toDouble());
+  }
+
+  EdgeInsets get top {
+    return EdgeInsets.only(top: toDouble());
+  }
+}
