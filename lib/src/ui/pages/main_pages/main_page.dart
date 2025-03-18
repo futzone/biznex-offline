@@ -1,9 +1,10 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/ui/pages/product_pages/product_params_page.dart';
 import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import '../product_pages/product_params_page.dart';
+import '../product_pages/product_information_page.dart';
 import '../product_pages/products_page.dart';
 
 class MainPage extends HookConsumerWidget {
@@ -30,7 +31,8 @@ class MainPage extends HookConsumerWidget {
             sidebar: AppSidebar(pageValue),
             child: HookBuilder(
               builder: (context) {
-                if (pageValue.value == 5) return ProductParamsPage(appbar: appbar, fab);
+                if (pageValue.value == 5) return ProductInformationsPage(appbar: appbar, fab);
+                if (pageValue.value == 6) return ProductParamsPage(appbar: appbar, fab);
                 return ProductsPage(fab, appbar: appbar);
               },
             ),

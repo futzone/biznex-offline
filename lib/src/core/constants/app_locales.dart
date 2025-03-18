@@ -387,4 +387,10 @@ abstract class AppLocales {
   static var productInfoValueError = "productInfoValueError";
   static var sorryErrorText = "sorryErrorText";
   static var tryAgain = "tryAgain";
+  static var productParams = "productParams";
+  static var chooseColor = "chooseColor";
+  static var productColorNameInputError = "productColorNameInputError";
+  static var deleteProductColorQueastion = "deleteProductColorQueastion";
+  static var productMeasureInputError = "productMeasureInputError";
+  static var productMeasureLabel = "productMeasureLabel";
 }
