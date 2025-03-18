@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/ui/pages/category_pages/category_page.dart';
 import 'package:biznex/src/ui/pages/product_pages/product_params_page.dart';
 import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -25,12 +26,13 @@ class MainPage extends HookConsumerWidget {
         return Scaffold(
           appBar: !state.isDesktop ? appbar.value : null,
           drawer: state.isDesktop ? null : AppSidebar(pageValue),
-          floatingActionButton: fab.value,
+          floatingActionButton: !state.isDesktop ? fab.value : null,
           body: buildBody(
             state: state,
             sidebar: AppSidebar(pageValue),
             child: HookBuilder(
               builder: (context) {
+                if (pageValue.value == 2) return CategoryPage(appbar: appbar, fab);
                 if (pageValue.value == 5) return ProductInformationsPage(appbar: appbar, fab);
                 if (pageValue.value == 6) return ProductParamsPage(appbar: appbar, fab);
                 return ProductsPage(fab, appbar: appbar);

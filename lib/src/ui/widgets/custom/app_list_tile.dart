@@ -48,11 +48,11 @@ class AppListTile extends StatelessWidget {
           color: theme.accentColor,
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           // crossAxisAlignment: CrossAxisAlignment.start,
           // mainAxisAlignment: MainAxisAlignment.start,
           children: [
-
-              if (leadingIcon != null)
+            if (leadingIcon != null)
               Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: Icon(

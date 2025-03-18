@@ -30,7 +30,7 @@ class AppScaffold extends HookWidget {
       if (state.isDesktop) return;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         appbar.value = AppBar(
-          title: Text(AppLocales.products.tr()),
+          title: Text(title),
           actions: [...actions, 8.w],
         );
 

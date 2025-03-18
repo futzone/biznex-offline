@@ -393,4 +393,5 @@ abstract class AppLocales {
   static var deleteProductColorQueastion = "deleteProductColorQueastion";
   static var productMeasureInputError = "productMeasureInputError";
   static var productMeasureLabel = "productMeasureLabel";
+  static var addProduct = "addProduct";
 }

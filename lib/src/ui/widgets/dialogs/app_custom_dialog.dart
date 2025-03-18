@@ -45,12 +45,14 @@ class AppCustomDialog extends StatelessWidget {
         elevation: 2,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          width: width ??
-              (app.isDesktop
-                  ? MediaQuery.of(context).size.width * 0.3
-                  : app.isTablet
-                      ? MediaQuery.of(context).size.width * 0.6
-                      : MediaQuery.of(context).size.width),
+          width: app.isMobile
+              ? MediaQuery.of(context).size.width
+              : width ??
+                  (app.isDesktop
+                      ? MediaQuery.of(context).size.width * 0.3
+                      : app.isTablet
+                          ? MediaQuery.of(context).size.width * 0.6
+                          : MediaQuery.of(context).size.width),
           height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
