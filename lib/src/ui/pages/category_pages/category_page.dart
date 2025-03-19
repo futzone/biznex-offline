@@ -5,20 +5,17 @@ import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/ui/screens/category_screens/add_category_screen.dart';
 import 'package:biznex/src/ui/screens/category_screens/category_card.dart';
+import '../../widgets/helpers/app_simple_button.dart';
 import 'package:biznex/src/ui/screens/category_screens/category_subcategories.dart';
-import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
-import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_custom_padding.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:ionicons/ionicons.dart';
-import '../../widgets/helpers/app_simple_button.dart';
 
 class CategoryPage extends HookConsumerWidget {
   final ValueNotifier<AppBar> appbar;

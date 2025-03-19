@@ -5,6 +5,7 @@ import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../employee_pages/employee_page.dart';
 import '../product_pages/product_information_page.dart';
 import '../product_pages/products_page.dart';
 
@@ -35,6 +36,7 @@ class MainPage extends HookConsumerWidget {
                 if (pageValue.value == 2) return CategoryPage(appbar: appbar, fab);
                 if (pageValue.value == 5) return ProductInformationsPage(appbar: appbar, fab);
                 if (pageValue.value == 6) return ProductParamsPage(appbar: appbar, fab);
+                if (pageValue.value == 8) return EmployeePage(appbar: appbar, fab);
                 return ProductsPage(fab, appbar: appbar);
               },
             ),
