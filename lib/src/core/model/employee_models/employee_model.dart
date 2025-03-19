@@ -4,6 +4,8 @@ class Employee {
   String createdDate;
   String? phone;
   String? description;
+  String roleId;
+  String roleName;
 
   Employee({
     this.id = '',
@@ -11,6 +13,8 @@ class Employee {
     this.description,
     this.createdDate = '',
     required this.fullname,
+    required this.roleId,
+    required this.roleName,
   });
 
   factory Employee.fromJson(json) {
@@ -20,6 +24,8 @@ class Employee {
       description: json['description'],
       phone: json['phone'],
       id: json['id'],
+      roleId: json['roleId'],
+      roleName: json['roleName'],
     );
   }
 
@@ -29,5 +35,7 @@ class Employee {
         "description": description,
         "phone": phone,
         "id": id,
+        "roleName": roleName,
+        "roleId": roleId,
       };
 }

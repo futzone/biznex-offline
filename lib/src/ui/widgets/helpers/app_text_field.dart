@@ -48,6 +48,7 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+
       textInputAction: textInputAction,
       onSubmitted: (String text) {
         if (onSubmitted != null) onSubmitted!(text);

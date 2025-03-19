@@ -3,8 +3,8 @@ import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
+import 'package:biznex/src/ui/screens/employee_screens/add_employee.dart';
 import 'package:biznex/src/ui/screens/other_screens/header_screen.dart';
-import 'package:biznex/src/ui/screens/product_info_screen/add_product_color.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
@@ -34,7 +34,7 @@ class EmployeeReponsive extends AppStatelessWidget {
                 title: AppLocales.employees.tr(),
                 onAddPressed: () => showDesktopModal(
                   context: context,
-                  body: AddProductColor(),
+                  body: AddEmployee(),
                 ),
               ),
             ),

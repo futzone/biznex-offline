@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/employee_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
@@ -57,7 +58,10 @@ class RoleResponsive extends AppStatelessWidget {
                         title: info.name,
                         theme: theme,
                         leadingIcon: Icons.person,
-                        onDelete: () {},
+                        onDelete: () {
+                          EmployeeController controller = EmployeeController(context: context, state: state);
+                          controller.deleteRole(info.id);
+                        },
                         onEdit: () {
                           showDesktopModal(context: context, body: AddRole(role: info));
                         },

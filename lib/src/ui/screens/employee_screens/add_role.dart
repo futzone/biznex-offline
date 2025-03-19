@@ -41,7 +41,7 @@ class AddRole extends HookConsumerWidget {
 
                 Role newRole = role!;
                 newRole.name = nameController.text.trim();
-                employeeController.createRole(newRole);
+                employeeController.updateRole(newRole, role?.id);
               },
             ),
           ],
