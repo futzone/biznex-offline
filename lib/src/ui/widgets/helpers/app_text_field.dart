@@ -97,13 +97,13 @@ class AppTextField extends StatelessWidget {
             : OutlineInputBorder(
                 borderRadius: BorderRadius.circular(radius),
                 borderSide: BorderSide(
-                  color: !useBorder ? Colors.transparent : theme.accentColor,
+                  color: !useBorder ? Colors.transparent : theme.secondaryTextColor,
                 ),
               ),
 
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
-          borderSide: BorderSide(color: !useBorder ? Colors.transparent : (enabledColor ?? theme.accentColor)),
+          borderSide: BorderSide(color: !useBorder ? Colors.transparent : (enabledColor ?? theme.secondaryTextColor)),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16.0,

@@ -5,6 +5,8 @@ extension DoubleFormatter on num {
     return toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]} ');
   }
 
+  String get priceUZS => "$price UZS";
+
   Widget get w {
     return SizedBox(width: toDouble());
   }
