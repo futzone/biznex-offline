@@ -1,5 +1,7 @@
 import 'dart:core';
+import 'dart:developer';
 import 'package:biznex/src/core/extensions/for_dynamic.dart';
+import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/product_params_models/product_info.dart';
 import 'package:biznex/src/core/utils/product_utils.dart';
 
@@ -11,7 +13,7 @@ class Product {
   String? updatedDate;
   List<ProductInfo>? informations;
   String? description;
-  String? imagePath;
+  List<String>? images;
   String? measure;
   String? color;
   String? colorCode;
@@ -22,6 +24,7 @@ class Product {
   String id;
   String? productId;
   List<Product>? variants;
+  Category? category;
 
   Product({
     required this.name,
@@ -32,7 +35,7 @@ class Product {
     this.updatedDate,
     this.informations,
     this.description,
-    this.imagePath,
+    this.images,
     this.measure,
     this.size,
     this.id = '',
@@ -42,6 +45,7 @@ class Product {
     this.amount = 1,
     this.colorCode,
     this.variants,
+    this.category,
   });
 
   Map<String, dynamic> toJson() {
@@ -53,7 +57,7 @@ class Product {
       'updatedDate': updatedDate ?? DateTime.now().toIso8601String(),
       'informations': informations?.map((e) => e.toJson()).toList(),
       'description': description,
-      'imagePath': imagePath,
+      'images': images,
       'measure': measure,
       'color': color,
       'colorCode': colorCode,
@@ -64,10 +68,12 @@ class Product {
       'id': id.notNullOrEmpty(ProductUtils.generateID),
       'productId': productId,
       'variants': variants?.map((e) => e.toJson()).toList(),
+      'category': category?.toJson(),
     };
   }
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  factory Product.fromJson(json) {
+    if (json['name'].toString().contains("Kos")) log(json.toString());
     return Product(
       name: json['name'],
       barcode: json['barcode'] ?? '',
@@ -76,7 +82,7 @@ class Product {
       updatedDate: json['updatedDate'] ?? '',
       informations: (json['informations'] as List<dynamic>?)?.map((e) => ProductInfo.fromJson(e)).toList(),
       description: json['description'],
-      imagePath: json['imagePath'],
+      images: json['images'],
       measure: json['measure'],
       color: json['color'],
       colorCode: json['colorCode'],
@@ -86,6 +92,7 @@ class Product {
       percent: (json['percent'] as num).toDouble(),
       id: json['id'] ?? '',
       productId: json['productId'],
+      category: json['category'] == null ? null : Category.fromJson(json['category']),
       variants: (json['variants'] as List<dynamic>?)?.map((e) => Product.fromJson(e)).toList(),
     );
   }

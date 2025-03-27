@@ -7,7 +7,9 @@ import 'package:biznex/src/ui/widgets/custom/app_confirm_dialog.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 
 class ProductController extends AppController {
-  ProductController({required super.context, required super.state});
+  final void Function()? onClose;
+
+  ProductController({this.onClose, required super.context, required super.state});
 
   @override
   Future<void> create(data) async {
@@ -18,7 +20,7 @@ class ProductController extends AppController {
     await sizeDatabase.set(data: data).then((_) {
       state.ref!.invalidate(productsProvider);
       closeLoading();
-      closeLoading();
+      if (onClose != null) onClose!();
     });
   }
 
@@ -47,7 +49,12 @@ class ProductController extends AppController {
     await sizeDatabase.update(data: data, key: data.id).then((_) {
       state.ref!.invalidate(productsProvider);
       closeLoading();
-      closeLoading();
+      if (onClose != null) onClose!();
     });
+  }
+
+  static Future<void> onDeleteProduct({required BuildContext context, required AppModel state, required dynamic id}) async {
+    ProductController controller = ProductController(context: context, state: state);
+    await controller.delete(id);
   }
 }

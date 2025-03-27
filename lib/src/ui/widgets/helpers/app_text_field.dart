@@ -77,6 +77,7 @@ class AppTextField extends StatelessWidget {
           fontWeight: FontWeight.w400,
           fontSize: 13,
         ),
+        hintMaxLines: 1,
         filled: true,
         fillColor: fillColor,
         disabledBorder: OutlineInputBorder(

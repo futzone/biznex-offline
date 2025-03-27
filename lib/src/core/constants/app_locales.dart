@@ -395,4 +395,6 @@ abstract class AppLocales {
   static var productMeasureLabel = "productMeasureLabel";
   static var addProduct = "addProduct";
   static var pricePercentHint = "pricePercentHint";
+  static var sizeAndColorLabel = "sizeAndColorLabel";
+  static var proTagnumberHint = "proTagnumberHint";
 }
