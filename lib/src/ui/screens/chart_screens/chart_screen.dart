@@ -64,9 +64,7 @@ class _ChartScreen2State extends State<ChartScreen2> {
   SfCartesianChart _buildCartesianChart() {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
-      title: ChartTitle(
-        text: "Eng ko'p sotilayotgan mahsulotlar",
-      ),
+      title: ChartTitle(text: "Eng ko'p sotilayotgan mahsulotlar"),
       primaryXAxis: const CategoryAxis(
         majorGridLines: MajorGridLines(width: 0),
       ),

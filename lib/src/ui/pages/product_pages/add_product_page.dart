@@ -26,12 +26,14 @@ class AddProductPage extends StatefulWidget {
   final AppModel state;
   final AppColors theme;
   final void Function() onBackPressed;
+  final Product? product;
 
   const AddProductPage({
     super.key,
     required this.state,
     required this.theme,
     required this.onBackPressed,
+    this.product,
   });
 
   @override
@@ -67,6 +69,9 @@ class _AddProductPageState extends State<AddProductPage> {
       return;
     }
     Product product = Product(
+      cratedDate: widget.product?.cratedDate,
+      updatedDate: DateTime.now().toIso8601String(),
+      id: widget.product == null ? '' : widget.product!.id,
       name: nameController.text.trim(),
       price: double.tryParse(resultPriceController.text.trim())!,
       description: _descriptionController.text.trim(),
@@ -87,7 +92,38 @@ class _AddProductPageState extends State<AddProductPage> {
       state: state,
       onClose: widget.onBackPressed,
     );
-    await productController.create(product);
+
+    if (widget.product == null) {
+      await productController.create(product);
+    } else {
+      await productController.update(product, widget.product?.id);
+    }
+  }
+
+  void _initializeProductParams() {
+    final Product? product = widget.product;
+    if (product != null) {
+      nameController.text = product.name;
+      amountController.text = product.amount.toStringAsFixed(1);
+      resultPriceController.text = product.price.toStringAsFixed(1);
+      percentController.text = product.percent.toStringAsFixed(1);
+      priceController.text = ((100 * product.price) / (100 + product.percent)).toStringAsFixed(1);
+      productTagnumberController.text = product.tagnumber ?? '';
+      productBarcodeController.text = product.barcode ?? '';
+      _productSize = product.size == null ? null : ProductSize(name: product.size ?? '');
+      _productColor = product.color == null ? null : ProductColor(name: product.color ?? '');
+      _productMeasure = product.measure == null ? null : ProductMeasure(name: product.measure ?? '');
+      _descriptionController.text = product.description ?? '';
+      if (product.images != null) _imagesList.addAll(product.images ?? []);
+      if (product.informations != null) _productInformations.addAll(product.informations ?? []);
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeProductParams();
   }
 
   @override

@@ -58,7 +58,6 @@ class ProductDatabase extends AppDatabase {
 
     final box = await openBox(boxName);
     await box.put(productInfo.id, productInfo.toJson());
-    log("${productInfo.toJson()}");
   }
 
   @override
