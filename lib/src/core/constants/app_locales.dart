@@ -397,4 +397,8 @@ abstract class AppLocales {
   static var pricePercentHint = "pricePercentHint";
   static var sizeAndColorLabel = "sizeAndColorLabel";
   static var proTagnumberHint = "proTagnumberHint";
+  static var set = "set";
+  static var toSet = "toSet";
+  static var updatedDate = "updatedDate";
+  static var createOrder = "createOrder";
 }

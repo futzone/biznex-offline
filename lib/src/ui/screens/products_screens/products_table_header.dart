@@ -1,7 +1,9 @@
 import 'package:biznex/biznex.dart';
 
 class ProductsTableHeader extends AppStatelessWidget {
-  const ProductsTableHeader({super.key});
+  final bool miniMode;
+
+  const ProductsTableHeader({super.key, this.miniMode = false});
 
   @override
   Widget builder(context, theme, ref, state) {
@@ -62,6 +64,7 @@ class ProductsTableHeader extends AppStatelessWidget {
               ),
             ),
           ),
+          if(!miniMode)
           Expanded(
             flex: 1,
             child: Center(
@@ -72,6 +75,7 @@ class ProductsTableHeader extends AppStatelessWidget {
               ),
             ),
           ),
+          if(!miniMode)
           Expanded(
             flex: 1,
             child: Center(
@@ -82,6 +86,7 @@ class ProductsTableHeader extends AppStatelessWidget {
               ),
             ),
           ),
+          if(!miniMode)
           Expanded(
             flex: 1,
             child: Align(

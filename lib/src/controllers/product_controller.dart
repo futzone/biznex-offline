@@ -17,9 +17,9 @@ class ProductController extends AppController {
     if (data.name.isEmpty) return error(AppLocales.productNameInputError.tr());
     showAppLoadingDialog(context);
     ProductDatabase sizeDatabase = ProductDatabase();
-    for (int i = 0; i < 5000; i++) {
-      await sizeDatabase.set(data: data);
-    }
+    // for (int i = 0; i < 5000; i++) {
+    //   await sizeDatabase.set(data: data);
+    // }
 
     await sizeDatabase.set(data: data).then((_) {
       state.ref!.invalidate(productsProvider);

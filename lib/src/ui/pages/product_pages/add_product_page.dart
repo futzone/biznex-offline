@@ -2,11 +2,13 @@ import 'dart:io';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/product_controller.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
+import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/core/model/product_params_models/product_color.dart';
 import 'package:biznex/src/core/model/product_params_models/product_info.dart';
 import 'package:biznex/src/core/model/product_params_models/product_measure.dart';
 import 'package:biznex/src/core/model/product_params_models/product_size.dart';
+import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/product_color_provider.dart';
 import 'package:biznex/src/providers/product_information_provider.dart';
 import 'package:biznex/src/providers/product_measure_provider.dart';
@@ -44,6 +46,7 @@ class _AddProductPageState extends State<AddProductPage> {
   AppModel get state => widget.state;
 
   AppColors get theme => widget.theme;
+  Category? _category;
   ProductMeasure? _productMeasure;
   ProductSize? _productSize;
   ProductColor? _productColor;
@@ -69,23 +72,23 @@ class _AddProductPageState extends State<AddProductPage> {
       return;
     }
     Product product = Product(
-      cratedDate: widget.product?.cratedDate,
-      updatedDate: DateTime.now().toIso8601String(),
-      id: widget.product == null ? '' : widget.product!.id,
-      name: nameController.text.trim(),
-      price: double.tryParse(resultPriceController.text.trim())!,
-      description: _descriptionController.text.trim(),
-      barcode: productBarcodeController.text.trim(),
-      tagnumber: productTagnumberController.text.trim(),
-      informations: _productInformations,
-      images: _imagesList,
-      measure: _productMeasure?.name,
-      color: _productColor?.name,
-      colorCode: _productColor?.code,
-      size: _productSize?.name,
-      amount: double.tryParse(amountController.text.trim()) ?? 1.0,
-      percent: double.tryParse(percentController.text.trim()) ?? 0.0,
-    );
+        cratedDate: widget.product?.cratedDate,
+        updatedDate: DateTime.now().toIso8601String(),
+        id: widget.product == null ? '' : widget.product!.id,
+        name: nameController.text.trim(),
+        price: double.tryParse(resultPriceController.text.trim())!,
+        description: _descriptionController.text.trim(),
+        barcode: productBarcodeController.text.trim(),
+        tagnumber: productTagnumberController.text.trim(),
+        informations: _productInformations,
+        images: _imagesList,
+        measure: _productMeasure?.name,
+        color: _productColor?.name,
+        colorCode: _productColor?.code,
+        size: _productSize?.name,
+        amount: double.tryParse(amountController.text.trim()) ?? 1.0,
+        percent: double.tryParse(percentController.text.trim()) ?? 0.0,
+        category: _category);
 
     ProductController productController = ProductController(
       context: context,
@@ -113,6 +116,7 @@ class _AddProductPageState extends State<AddProductPage> {
       _productSize = product.size == null ? null : ProductSize(name: product.size ?? '');
       _productColor = product.color == null ? null : ProductColor(name: product.color ?? '');
       _productMeasure = product.measure == null ? null : ProductMeasure(name: product.measure ?? '');
+      _category = product.category;
       _descriptionController.text = product.description ?? '';
       if (product.images != null) _imagesList.addAll(product.images ?? []);
       if (product.informations != null) _productInformations.addAll(product.informations ?? []);
@@ -314,6 +318,35 @@ class _AddProductPageState extends State<AddProductPage> {
             ),
           ),
         ],
+      ),
+      24.h,
+      AppText.$18Bold("${AppLocales.addProductCategoryHint.tr()} *"),
+      8.h,
+      state.whenProviderData(
+        provider: categoryProvider,
+        builder: (measures) {
+          measures as List<Category>;
+          return CustomPopupMenu(
+            theme: theme,
+            children: [
+              for (final item in measures)
+                CustomPopupItem(
+                  title: item.name,
+                  onPressed: () => setState(() => _category = item),
+                ),
+            ],
+            child: IgnorePointer(
+              ignoring: true,
+              child: AppTextField(
+                onlyRead: true,
+                title: AppLocales.categories.tr(),
+                controller: TextEditingController(text: _category?.name),
+                theme: theme,
+                prefixIcon: Icon(Icons.category_outlined),
+              ),
+            ),
+          );
+        },
       ),
       32.h,
     ];
