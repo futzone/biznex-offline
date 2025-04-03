@@ -401,4 +401,7 @@ abstract class AppLocales {
   static var toSet = "toSet";
   static var updatedDate = "updatedDate";
   static var createOrder = "createOrder";
+  static var seller = "seller";
+  static var scheduleOrder = "scheduleOrder";
+  static var totalOrderSumm = "totalOrderSumm";
 }

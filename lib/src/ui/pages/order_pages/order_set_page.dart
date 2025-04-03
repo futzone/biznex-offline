@@ -1,6 +1,7 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/providers/products_provider.dart';
+import 'package:biznex/src/ui/screens/order_screens/order_complete_screen.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_item_card.dart';
 import 'package:biznex/src/ui/screens/products_screens/products_table_header.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
@@ -107,12 +108,14 @@ class OrderSetPage extends HookConsumerWidget {
                       itemCount: setItems.length + 1,
                       itemBuilder: (context, index) {
                         if (setItems.isEmpty) return Padding(padding: 24.top, child: AppEmptyWidget());
-                        if (setItems.isNotEmpty && index == 0) return 0.w;
-                        return OrderItemCardNew(item: setItems[index - 1], theme: theme);
+                        // if (setItems.isNotEmpty && index == 0) return 0.w;
+                        if (index == setItems.length) {
+                          return OrderCompleteScreen();
+                        }
+                        return OrderItemCardNew(item: setItems[index], theme: theme);
                       },
                     ),
                   ),
-                  8.h,
                 ],
               ),
             ),

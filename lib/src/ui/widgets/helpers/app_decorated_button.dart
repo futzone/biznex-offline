@@ -68,8 +68,18 @@ class ConfirmCancelButton extends AppStatelessWidget {
   final void Function()? onCancel;
   final String? confirmText;
   final String? cancelText;
+  final IconData? confirmIcon;
+  final IconData? cancelIcon;
 
-  const ConfirmCancelButton({super.key, this.onConfirm, this.onCancel, this.confirmText, this.cancelText});
+  const ConfirmCancelButton({
+    super.key,
+    this.onConfirm,
+    this.onCancel,
+    this.confirmText,
+    this.cancelText,
+    this.confirmIcon,
+    this.cancelIcon,
+  });
 
   @override
   Widget builder(context, theme, ref, state) {
@@ -89,6 +99,20 @@ class ConfirmCancelButton extends AppStatelessWidget {
             title: cancelText ?? AppLocales.close.tr(),
             textColor: theme.textColor,
             color: theme.accentColor,
+            child: Row(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (cancelIcon != null)
+                  Icon(
+                    cancelIcon,
+                    size: 20,
+                    color: theme.textColor,
+                  ),
+                Text(cancelText ?? AppLocales.close.tr())
+              ],
+            ),
           ),
         ),
         state.getSpacing.w,
@@ -104,6 +128,25 @@ class ConfirmCancelButton extends AppStatelessWidget {
               onConfirm!();
             },
             title: confirmText ?? AppLocales.add.tr(),
+            child: Row(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (confirmIcon != null)
+                  Icon(
+                    confirmIcon,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                Text(
+                  confirmText ?? AppLocales.add.tr(),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ],
