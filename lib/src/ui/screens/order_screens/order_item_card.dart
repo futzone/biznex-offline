@@ -114,7 +114,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                         builder: (focused) {
                           return Icon(
                             Ionicons.add_circle_outline,
-                            size: 24,
+                            size: 40,
                             color: focused ? theme.mainColor : theme.secondaryTextColor,
                           );
                         },
@@ -136,7 +136,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                           cursorHeight: 16,
                           decoration: InputDecoration(
                             isDense: true,
-                            contentPadding: Dis.only(),
+                            contentPadding: Dis.only(tb: 4),
                             constraints: const BoxConstraints(maxWidth: 64),
                             border: OutlineInputBorder(
                               borderRadius: const BorderRadius.all(
@@ -157,7 +157,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                         builder: (focused) {
                           return Icon(
                             Ionicons.remove_circle_outline,
-                            size: 24,
+                            size: 40,
                             color: focused ? theme.mainColor : theme.secondaryTextColor,
                           );
                         },

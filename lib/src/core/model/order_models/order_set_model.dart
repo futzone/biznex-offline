@@ -22,4 +22,20 @@ class OrderItem {
       customPrice: customPrice ?? this.customPrice,
     );
   }
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) {
+    return OrderItem(
+      product: Product.fromJson(json['product']),
+      amount: (json['amount'] as num).toDouble(),
+      customPrice: json['customPrice'] != null ? (json['customPrice'] as num).toDouble() : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'product': product.toJson(),
+      'amount': amount,
+      'customPrice': customPrice,
+    };
+  }
 }

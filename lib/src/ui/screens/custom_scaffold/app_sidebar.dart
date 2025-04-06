@@ -31,7 +31,7 @@ class AppSidebar extends AppStatelessWidget {
       builder: (focused) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          padding: 12.all,
+          padding: 20.all,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: selected
