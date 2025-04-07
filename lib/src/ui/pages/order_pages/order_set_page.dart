@@ -112,7 +112,7 @@ class OrderSetPage extends HookConsumerWidget {
                         if (index == setItems.length) {
                           return OrderCompleteScreen();
                         }
-                        return OrderItemCardNew(item: setItems[index], theme: theme);
+                        return SizedBox();
                       },
                     ),
                   ),

@@ -125,7 +125,7 @@ class ProductsPage extends HookConsumerWidget {
 
                         return WebButton(
                           onPressed: () {
-                            addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1));
+                            addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: ''));
                             ShowToast.success(context, AppLocales.productAddedToSet.tr());
                           },
                           builder: (focused) => AnimatedContainer(

@@ -158,7 +158,6 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
                                 ),
                               ),
                             ),
-
                             Center(
                               child: IconButton(
                                 onPressed: () {
@@ -231,10 +230,10 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
               ),
             if ((_place != null && _place?.children != null && _placeChild != null) ||
                 (_place != null && (_place?.children == null || _place!.children!.isEmpty)))
-              OrderItemsPage(state: state, theme: theme),
+              OrderItemsPage(state: state, theme: theme, place: _placeChild ?? _place!),
             if ((_place != null && _place?.children != null && _placeChild != null) ||
                 (_place != null && (_place?.children == null || _place!.children!.isEmpty)))
-              OrderHalfPage(),
+              OrderHalfPage(_placeChild ?? _place!),
           ],
         );
       }),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
+import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
@@ -10,7 +11,9 @@ import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 
 class OrderHalfPage extends ConsumerStatefulWidget {
-  const OrderHalfPage({super.key});
+  final Place place;
+
+  const OrderHalfPage(this.place, {super.key});
 
   @override
   ConsumerState<OrderHalfPage> createState() => _OrderHalfPageState();
@@ -159,7 +162,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                 : products)[index];
                             return SimpleButton(
                               onPressed: () {
-                                addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1));
+                                addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: widget.place.id));
                               },
                               child: Container(
                                 padding: Dis.all(12),

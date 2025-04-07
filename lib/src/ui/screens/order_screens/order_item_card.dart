@@ -1,35 +1,20 @@
 import 'dart:io';
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/order_controller.dart';
 import 'package:biznex/src/ui/screens/products_screens/product_screen.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 
 class OrderItemCardNew extends HookConsumerWidget {
   final OrderItem item;
   final AppColors theme;
+  final ValueNotifier<OrderController> controllerNotifier;
 
-  const OrderItemCardNew({super.key, required this.item, required this.theme});
+  const OrderItemCardNew({super.key, required this.item, required this.theme, required this.controllerNotifier});
 
   @override
   Widget build(BuildContext context, ref) {
     final product = item.product;
-    final orders = ref.watch(orderSetProvider);
-    final first = orders.firstWhere((v) => v.product.id == item.product.id);
-    final controller = useTextEditingController(text: first.amount.toString());
-
-    useEffect(() {
-      final newValue = orders.firstWhere((v) => v.product.id == item.product.id).amount.price;
-
-      if (controller.text != newValue) {
-        final cursorPosition = controller.selection.baseOffset;
-        controller.text = newValue;
-
-        controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: cursorPosition.clamp(0, newValue.length)),
-        );
-      }
-
-      return null;
-    }, [orders]);
+    final controller = useTextEditingController(text: item.amount.price);
 
     return WebButton(
       onPressed: () {
@@ -103,10 +88,10 @@ class OrderItemCardNew extends HookConsumerWidget {
               child: Row(
                 children: [
                   WebButton(
-                    onPressed: () {
+                    onPressed: () async {
                       OrderItem orderItem = item;
                       orderItem.amount++;
-                      updateOrderItem(ref, orderItem);
+                      await controllerNotifier.value.updateItems(orderItem);
                     },
                     builder: (focused) {
                       return Icon(
@@ -118,19 +103,17 @@ class OrderItemCardNew extends HookConsumerWidget {
                   ),
                   8.w,
                   TextField(
-                    onChanged: (char) {
+                    onChanged: (char) async {
                       final value = num.tryParse(char);
                       if (value == null) {
-                        ref.read(orderSetProvider.notifier).update((state) {
-                          final newState = [...state];
-                          newState.remove(item);
-                          return newState;
-                        });
+                        OrderItem orderItem = item;
+                        orderItem.amount = 0;
+                        await controllerNotifier.value.updateItems(orderItem);
                         return;
                       }
                       OrderItem orderItem = item;
                       orderItem.amount = value.toDouble();
-                      updateOrderItem(ref, orderItem);
+                      await controllerNotifier.value.updateItems(orderItem);
                     },
                     controller: controller,
                     textAlign: TextAlign.center,
@@ -151,10 +134,20 @@ class OrderItemCardNew extends HookConsumerWidget {
                   ),
                   8.w,
                   WebButton(
-                    onPressed: () {
+                    onPressed: () async {
                       OrderItem orderItem = item;
                       orderItem.amount--;
-                      updateOrderItem(ref, orderItem);
+
+                      if (orderItem.amount == 0) {
+                        ref.read(orderSetProvider.notifier).update((state) {
+                          final newState = [...state];
+                          newState.remove(orderItem);
+                          return [...newState];
+                        });
+                      } else {
+                        addOrUpdateOrderItem(ref, orderItem);
+                      }
+                      await controllerNotifier.value.updateItems(orderItem);
                     },
                     builder: (focused) {
                       return Icon(
@@ -176,9 +169,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                 });
               },
               color: Colors.red,
-              style: IconButton.styleFrom(
-                side: BorderSide(color: Colors.red)
-              ),
+              style: IconButton.styleFrom(side: BorderSide(color: Colors.red)),
               icon: Icon(Icons.delete_outline),
             ),
           ],

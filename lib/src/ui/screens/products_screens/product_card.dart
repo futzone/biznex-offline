@@ -5,7 +5,7 @@ import 'package:biznex/src/controllers/product_controller.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/ui/screens/products_screens/product_screen.dart';
- import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 
@@ -20,7 +20,7 @@ class ProductCard extends HookConsumerWidget {
     return AppStateWrapper(builder: (theme, state) {
       return WebButton(
         onPressed: () {
-          addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1));
+          addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: ''));
           ShowToast.success(context, AppLocales.productAddedToSet.tr());
         },
         builder: (focused) => AnimatedContainer(

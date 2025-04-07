@@ -1,51 +1,110 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
-import 'package:biznex/src/controllers/app_controller.dart';
+import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
+import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
+import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
-import 'package:biznex/src/ui/widgets/custom/app_confirm_dialog.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
+import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 
-class OrderController extends AppController {
-  OrderController({required super.context, required super.state});
+class OrderController {
+  final Employee employee;
+  final Place place;
+  final BuildContext context;
+  final AppModel model;
 
-  @override
-  Future<void> create(data) async {
-    data as Order;
+  OrderController({
+    required this.model,
+    required this.context,
+    required this.place,
+    required this.employee,
+  });
+
+  final OrderDatabase _database = OrderDatabase();
+
+  Future<void> openOrder(List<OrderItem> products) async {
     showAppLoadingDialog(context);
-    OrderDatabase sizeDatabase = OrderDatabase();
-    await sizeDatabase.set(data: data).then((_) {
-      state.ref!.invalidate(ordersProvider);
-      closeLoading();
-      closeLoading();
-    });
-  }
 
-  @override
-  Future<void> delete(key) async {
-    showConfirmDialog(
-      context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
-      onConfirm: () async {
-        showAppLoadingDialog(context);
-        OrderDatabase sizeDatabase = OrderDatabase();
-        await sizeDatabase.delete(key: key).then((_) {
-          state.ref!.invalidate(ordersProvider);
-          closeLoading();
-        });
-      },
+    double totalPrice = products.fold(0, (oldValue, element) {
+      return oldValue += (element.customPrice ?? (element.amount * element.product.price));
+    });
+    Order order = Order(
+      place: place,
+      employee: employee,
+      price: totalPrice,
+      products: products,
+      createdDate: DateTime.now().toIso8601String(),
+      updatedDate: DateTime.now().toIso8601String(),
     );
+    await _database.setPlaceOrder(data: order, placeId: place.id).then((_) {
+      AppRouter.close(context);
+      model.ref!.invalidate(ordersProvider(place.id));
+      model.ref!.invalidate(ordersProvider);
+      ShowToast.success(context, AppLocales.orderCreatedSuccessfully.tr());
+    });
   }
 
-  @override
-  Future<void> update(data, key) async {
-    data as Order;
+  Future<void> addItems(List<OrderItem> items) async {
     showAppLoadingDialog(context);
-    OrderDatabase sizeDatabase = OrderDatabase();
-    await sizeDatabase.update(data: data, key: data.id).then((_) {
-      state.ref!.invalidate(ordersProvider);
-      closeLoading();
-      closeLoading();
-    });
+    Order? currentState = await _database.getPlaceOrder(place.id);
+    if (currentState == null) return;
+    currentState.products = items;
+    await _database.updatePlaceOrder(data: currentState, placeId: place.id);
+    model.ref!.invalidate(ordersProvider(place.id));
+    model.ref!.invalidate(ordersProvider);
+    AppRouter.close(context);
+  }
+
+  Future<void> updateItems(OrderItem item) async {
+    showAppLoadingDialog(context);
+    Order? currentState = await _database.getPlaceOrder(place.id);
+    if (currentState == null) return addOrUpdateOrderItem(model.ref!, item);
+    final oldItem = currentState.products.where((element) => element.product.id == item.product.id).toList().firstOrNull;
+    if (item.amount > 0) {
+      if (oldItem == null) {
+        currentState.products.add(item);
+      } else {
+        List<OrderItem> updatedList = currentState.products.map((i) {
+          if (item.product.id == i.product.id) {
+            return i.copyWith(amount: item.amount);
+          }
+          return i;
+        }).toList();
+        currentState.products = updatedList;
+      }
+    } else {
+      List<OrderItem> updatedList = currentState.products.where((el) => el.product.id != item.product.id).toList();
+      currentState.products = updatedList;
+    }
+
+    await _database.updatePlaceOrder(data: currentState, placeId: place.id);
+
+    model.ref!.invalidate(ordersProvider(place.id));
+    model.ref!.invalidate(ordersProvider);
+    AppRouter.close(context);
+  }
+
+  static Future<Order?> getCurrentOrder(String placeId) async {
+    OrderDatabase database = OrderDatabase();
+    final state = await database.getPlaceOrder(placeId);
+
+    return state;
+  }
+
+  Future<void> closeOrder() async {
+    showAppLoadingDialog(context);
+    Order? currentState = await _database.getPlaceOrder(place.id);
+    if (currentState == null) return;
+
+    currentState.status = Order.completed;
+    await _database.set(data: currentState, placeId: place.id);
+
+    await _database.closeOrder(placeId: place.id);
+    model.ref!.invalidate(ordersProvider(place.id));
+    model.ref!.invalidate(ordersProvider);
+    AppRouter.close(context);
   }
 }
