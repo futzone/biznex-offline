@@ -412,4 +412,11 @@ abstract class AppLocales {
   static var placeNameHint = "placeNameHint";
   static var addPlace = "addPlace";
   static var choosePlace = "choosePlace";
+  static var orderClosedSuccessfully = "orderClosedSuccessfully";
+  static var myOrders = "myOrders";
+  static var closedDate = "closedDate";
+  static var place = "place";
+  static var oldPincodeLabel = "oldPincodeLabel";
+  static var oldPincodeHint = "oldPincodeHint";
+  static var newPincodeLabel = "newPincodeLabel";
 }

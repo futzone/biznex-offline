@@ -17,10 +17,11 @@ class ProductCard extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final orderNotifier = ref.read(orderSetProvider.notifier);
     return AppStateWrapper(builder: (theme, state) {
       return WebButton(
         onPressed: () {
-          addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: ''));
+          // orderNotifier.addItem(OrderItem(product: product, amount: amount, placeId: placeId))
           ShowToast.success(context, AppLocales.productAddedToSet.tr());
         },
         builder: (focused) => AnimatedContainer(

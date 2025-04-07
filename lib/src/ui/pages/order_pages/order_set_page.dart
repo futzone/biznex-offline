@@ -87,9 +87,9 @@ class OrderSetPage extends HookConsumerWidget {
                       Spacer(),
                       SimpleButton(
                         onPressed: () {
-                          ref.read(orderSetProvider.notifier).update((state) {
-                            return [];
-                          });
+                          // ref.read(orderSetProvider.notifier).update((state) {
+                          //   return [];
+                          // });
                         },
                         child: Container(
                           padding: Dis.only(lr: 12, tb: 6),

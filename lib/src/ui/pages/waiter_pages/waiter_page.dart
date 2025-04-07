@@ -1,12 +1,20 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
+import 'package:biznex/src/core/model/employee_models/employee_model.dart';
+import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
+import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
+import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
+import 'package:biznex/src/ui/pages/order_pages/employee_orders_page.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_items_page.dart';
+import 'package:biznex/src/ui/screens/settings_screen/employee_settings_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
+import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +42,32 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
         leading: Icon(Ionicons.person_outline, size: 28),
         title: Text(employee.fullname),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Ionicons.bar_chart_outline, size: 28)),
-          IconButton(onPressed: () {}, icon: Icon(Ionicons.settings_outline, size: 28)),
-          IconButton(onPressed: () {}, icon: Icon(Ionicons.log_out_outline, size: 28)),
+          IconButton(
+            onPressed: () {
+              showDesktopModal(
+                context: context,
+                body: EmployeeOrdersPage(),
+                width: MediaQuery.of(context).size.width * 0.5,
+              );
+            },
+            icon: Icon(Ionicons.bar_chart_outline, size: 28),
+          ),
+          8.w,
+          IconButton(
+            onPressed: () {
+              showDesktopModal(context: context, body: EmployeeSettingsScreen());
+            },
+            icon: Icon(Ionicons.settings_outline, size: 28),
+          ),
+          8.w,
+          IconButton(
+            onPressed: () {
+              ref.read(currentEmployeeProvider.notifier).update((state)=> Employee(fullname: 'Super Admin', roleId: '', roleName: 'Admin'));
+              ref.read(orderSetProvider.notifier).clear();
+              AppRouter.open(context, OnboardPage());
+            },
+            icon: Icon(Ionicons.log_out_outline, size: 28),
+          ),
           8.w,
         ],
       ),
@@ -230,7 +261,22 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
               ),
             if ((_place != null && _place?.children != null && _placeChild != null) ||
                 (_place != null && (_place?.children == null || _place!.children!.isEmpty)))
-              OrderItemsPage(state: state, theme: theme, place: _placeChild ?? _place!),
+              state.whenProviderData(
+                provider: ordersProvider((_placeChild ?? _place!).id),
+                builder: (order) {
+                  order as Order?;
+                  Place? kPlace;
+
+                  if (_placeChild != null) {
+                    kPlace = _placeChild!;
+                    kPlace.father = _place;
+                  } else {
+                    kPlace = _place;
+                  }
+
+                  return OrderItemsPage(state: state, theme: theme, place: kPlace!, order: order);
+                },
+              ),
             if ((_place != null && _place?.children != null && _placeChild != null) ||
                 (_place != null && (_place?.children == null || _place!.children!.isEmpty)))
               OrderHalfPage(_placeChild ?? _place!),

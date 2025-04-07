@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
+import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
@@ -61,7 +60,7 @@ class OrderController {
   Future<void> updateItems(OrderItem item) async {
     showAppLoadingDialog(context);
     Order? currentState = await _database.getPlaceOrder(place.id);
-    if (currentState == null) return addOrUpdateOrderItem(model.ref!, item);
+    if (currentState == null) return;
     final oldItem = currentState.products.where((element) => element.product.id == item.product.id).toList().firstOrNull;
     if (item.amount > 0) {
       if (oldItem == null) {
@@ -97,14 +96,34 @@ class OrderController {
   Future<void> closeOrder() async {
     showAppLoadingDialog(context);
     Order? currentState = await _database.getPlaceOrder(place.id);
-    if (currentState == null) return;
+    if (currentState == null) {
+      final orderItems = model.ref!.watch(orderSetProvider);
+      final products = orderItems.where((e) => e.placeId == place.id).toList();
+
+      double totalPrice = products.fold(0, (oldValue, element) {
+        return oldValue += (element.customPrice ?? (element.amount * element.product.price));
+      });
+      currentState = Order(
+        place: place,
+        employee: employee,
+        price: totalPrice,
+        products: products,
+        createdDate: DateTime.now().toIso8601String(),
+        updatedDate: DateTime.now().toIso8601String(),
+      );
+    }
 
     currentState.status = Order.completed;
-    await _database.set(data: currentState, placeId: place.id);
+    await _database.saveOrder(currentState);
 
     await _database.closeOrder(placeId: place.id);
     model.ref!.invalidate(ordersProvider(place.id));
     model.ref!.invalidate(ordersProvider);
+    model.ref!.invalidate(employeeOrdersProvider);
+    final notifier = model.ref!.watch(orderSetProvider.notifier);
+    notifier.clearPlaceItems(place.id);
     AppRouter.close(context);
+
+    ShowToast.success(context, AppLocales.orderClosedSuccessfully.tr());
   }
 }

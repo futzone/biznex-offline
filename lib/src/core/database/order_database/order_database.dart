@@ -17,34 +17,26 @@ class OrderDatabase {
     return uuid.v1();
   }
 
-  Future delete({required String key, required String placeId}) async {
-    final box = await openBox(getBoxName(placeId));
-    await box.delete(key);
-  }
-
-  Future<List<Order>> get(String placeId) async {
-    final box = await openBox(getBoxName(placeId));
+  Future<List<Order>> getOrders() async {
+    final box = await openBox(getBoxName("all"));
     final boxData = box.values;
-    final List<Order> productInfoList = [];
+    List<Order> ordersList = [];
     for (final item in boxData) {
-      log(item.toString());
-      productInfoList.add(Order.fromJson(item));
+      ordersList.add(Order.fromJson(item));
     }
-    return productInfoList;
+
+    return ordersList;
   }
 
-  Future<void> set({required data, required String placeId}) async {
-    if (data is! Order) return;
-    Order productInfo = data;
-    productInfo.id = generateID;
-    final box = await openBox(getBoxName(placeId));
-    await box.put(productInfo.id, productInfo.toJson());
+  Future<void> deleteOrder(String id) async {
+    final box = await openBox(getBoxName("all"));
+    await box.delete(id);
   }
 
-  Future<void> update({required data, required String placeId}) async {
-    if (data is! Order) return;
-    final box = await openBox(getBoxName(placeId));
-    box.put(data.id, data.toJson());
+  Future<void> saveOrder(Order order) async {
+    order.id = generateID;
+    final box = await openBox(getBoxName("all"));
+    box.put(order.id, order.toJson());
   }
 
   Future<Order?> getPlaceOrder(String placeId) async {
@@ -64,8 +56,15 @@ class OrderDatabase {
 
   Future<void> updatePlaceOrder({required data, required String placeId}) async {
     if (data is! Order) return;
+
     final box = await openBox(getBoxName("${placeId}_open"));
-    box.put(data.id, data.toJson());
+    final orderJson = data.toJson();
+
+    log("fucked list state: ${data.products.length}");
+
+    if (orderJson.isNotEmpty) {
+      await box.put(data.id, orderJson);
+    }
   }
 
   Future<void> closeOrder({required String placeId}) async {

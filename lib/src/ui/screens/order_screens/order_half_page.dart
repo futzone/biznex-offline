@@ -8,6 +8,7 @@ import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 
 class OrderHalfPage extends ConsumerStatefulWidget {
@@ -60,6 +61,8 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
 
   @override
   Widget build(BuildContext context) {
+    final orderNotifier = ref.read(orderSetProvider.notifier);
+
     return AppStateWrapper(
       builder: (theme, state) {
         return Expanded(
@@ -162,7 +165,8 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                 : products)[index];
                             return SimpleButton(
                               onPressed: () {
-                                addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: widget.place.id));
+                                orderNotifier.addItem(OrderItem(product: product, amount: 1, placeId: widget.place.id));
+                                ShowToast.success(context, AppLocales.productAddedToSet.tr());
                               },
                               child: Container(
                                 padding: Dis.all(12),
