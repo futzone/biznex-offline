@@ -1,0 +1,53 @@
+import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/app_controller.dart';
+import 'package:biznex/src/core/database/place_database/place_database.dart';
+import 'package:biznex/src/core/model/place_models/place_model.dart';
+import 'package:biznex/src/providers/places_provider.dart';
+import 'package:biznex/src/ui/widgets/custom/app_confirm_dialog.dart';
+import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
+
+class PlaceController extends AppController {
+  PlaceController({required super.context, required super.state});
+
+  @override
+  Future<void> create(data) async {
+    data as Place;
+    if (data.name.isEmpty) return error(AppLocales.placeNameInputError.tr());
+    showAppLoadingDialog(context);
+    PlaceDatabase sizeDatabase = PlaceDatabase();
+    await sizeDatabase.set(data: data).then((_) {
+      state.ref!.invalidate(placesProvider);
+      closeLoading();
+      closeLoading();
+    });
+  }
+
+  @override
+  Future<void> delete(key) async {
+    showConfirmDialog(
+      context: context,
+      title: AppLocales.deleteProductVariantQuestion.tr(),
+      onConfirm: () async {
+        showAppLoadingDialog(context);
+        PlaceDatabase sizeDatabase = PlaceDatabase();
+        await sizeDatabase.delete(key: key).then((_) {
+          state.ref!.invalidate(placesProvider);
+          closeLoading();
+        });
+      },
+    );
+  }
+
+  @override
+  Future<void> update(data, key) async {
+    data as Place;
+    if (data.name.isEmpty) return error(AppLocales.placeNameInputError.tr());
+    showAppLoadingDialog(context);
+    PlaceDatabase sizeDatabase = PlaceDatabase();
+    await sizeDatabase.update(data: data, key: data.id).then((_) {
+      state.ref!.invalidate(placesProvider);
+      closeLoading();
+      closeLoading();
+    });
+  }
+}

@@ -23,6 +23,7 @@ class AddEmployee extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final nameController = useTextEditingController(text: employee?.fullname);
     final phoneController = useTextEditingController(text: employee?.fullname);
+    final pincode = useTextEditingController(text: employee?.pincode);
     final selectedRole = useState<Role?>(null);
     return AppStateWrapper(builder: (theme, state) {
       return SingleChildScrollView(
@@ -42,6 +43,15 @@ class AddEmployee extends HookConsumerWidget {
               title: AppLocales.employeePhoneHint.tr(),
               controller: phoneController,
               theme: theme,
+            ),
+            20.h,
+            AppText.$18Bold(AppLocales.enterNewPincode.tr(), padding: 8.bottom),
+            AppTextField(
+              maxLength: 4,
+              title: AppLocales.enterNewPincode.tr(),
+              controller: pincode,
+              theme: theme,
+              textInputType: TextInputType.number,
             ),
             20.h,
             AppText.$18Bold(AppLocales.employeeRoleLabel.tr(), padding: 8.bottom),
@@ -90,6 +100,7 @@ class AddEmployee extends HookConsumerWidget {
                     roleId: selectedRole.value?.id ?? '',
                     roleName: selectedRole.value?.name ?? '',
                     phone: phoneController.text,
+                    pincode: pincode.text.trim(),
                   );
 
                   employeeController.create(kEmployee);
@@ -105,6 +116,7 @@ class AddEmployee extends HookConsumerWidget {
                 kEmployee.roleName = selectedRole.value!.name;
                 kEmployee.phone = phoneController.text;
                 kEmployee.fullname = nameController.text;
+                kEmployee.pincode = pincode.text;
                 employeeController.update(kEmployee, employee?.id);
               },
             ),

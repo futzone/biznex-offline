@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:biznex/src/core/model/app_screen_model.dart';
+import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ const mediumFamily = "Medium";
 const bool appRoleState = false;
 
 class AppModel {
+  Employee? currentEmployee;
   String? shopName;
   String? orderHeight;
   String? orderWidth;
@@ -28,6 +30,7 @@ class AppModel {
   String boldFamily = "Extra-Bold";
   String regularFamily = "Regular";
   String mediumFamily = "Medium";
+  String pincode;
 
   bool get isAdmin => role == "admin";
 
@@ -45,6 +48,7 @@ class AppModel {
   }
 
   AppModel({
+    this.currentEmployee,
     this.currentWarehouse,
     required this.isDark,
     required this.role,
@@ -52,6 +56,7 @@ class AppModel {
     required this.data,
     required this.notificationCount,
     required this.orderCount,
+    required this.pincode,
     this.isMobile = true,
     this.screen = AppScreen.appScreen,
     this.isDesktop = false,
@@ -84,6 +89,7 @@ class AppModel {
       orderHeight: json['orderHeight'],
       orderWidth: json['orderWidth'],
       shopName: json['shopName'],
+      pincode: json['pincode'] ?? '',
     );
   }
 
@@ -144,6 +150,7 @@ class AppModel {
       "checkWidth": checkWidth,
       "orderWidth": orderWidth,
       "orderHeight": orderHeight,
+      "pincode": pincode
     };
   }
 }

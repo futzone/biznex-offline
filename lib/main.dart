@@ -1,3 +1,5 @@
+import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
+import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/pages/main_pages/main_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,7 +45,7 @@ class MyApp extends ConsumerWidget {
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,
-            home: MainPage(),
+            home: app.pincode.isEmpty ? LoginPage(model: app, theme: theme, byAdmin: true) : OnboardPage(),
           ),
         );
       },

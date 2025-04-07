@@ -101,7 +101,7 @@ class AppSidebar extends AppStatelessWidget {
                   sidebarItemBuilder("assets/icons/shopping-bag.svg", AppLocales.orders.tr(), 2),
                   sidebarItemBuilder("assets/icons/category.svg", AppLocales.categories.tr(), 3),
                   // sidebarItemBuilder("assets/icons/verified.svg", AppLocales.promos.tr(), 3),
-                  // sidebarItemBuilder("assets/icons/cash.svg", AppLocales.transactions.tr(), 4),
+                  sidebarItemBuilder("assets/icons/dining-table.svg", AppLocales.places.tr(), 10),
                   _buildSectionTitle(AppLocales.inventory.tr()),
                   sidebarItemBuilder("assets/icons/product.svg", AppLocales.products.tr(), 4),
                   sidebarItemBuilder("assets/icons/icons8-info.svg", AppLocales.productInformation.tr(), 5),

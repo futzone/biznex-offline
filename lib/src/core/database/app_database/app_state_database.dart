@@ -17,6 +17,7 @@ class AppStateDatabase {
         notificationCount: 0,
         orderCount: 0,
         isMe: false,
+        pincode: '',
       );
     }
     return AppModel.fromJson(jsonDecode(app));

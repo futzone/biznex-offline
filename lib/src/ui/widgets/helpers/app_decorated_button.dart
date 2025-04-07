@@ -11,6 +11,7 @@ class AppPrimaryButton extends StatelessWidget {
   final String? title;
   final void Function() onPressed;
   final Color? color;
+  final Color? cancelColor;
   final Color? textColor;
   final double radius;
   final EdgeInsets? padding;
@@ -20,6 +21,7 @@ class AppPrimaryButton extends StatelessWidget {
 
   const AppPrimaryButton({
     super.key,
+    this.cancelColor,
     this.padding,
     this.child,
     this.radius = 14,
@@ -70,15 +72,21 @@ class ConfirmCancelButton extends AppStatelessWidget {
   final String? cancelText;
   final IconData? confirmIcon;
   final IconData? cancelIcon;
+  final double? spacing;
+  final EdgeInsets? padding;
+  final Color? cancelColor;
 
   const ConfirmCancelButton({
     super.key,
+    this.spacing,
     this.onConfirm,
     this.onCancel,
     this.confirmText,
     this.cancelText,
     this.confirmIcon,
     this.cancelIcon,
+    this.padding,
+    this.cancelColor,
   });
 
   @override
@@ -87,6 +95,8 @@ class ConfirmCancelButton extends AppStatelessWidget {
       children: [
         Expanded(
           child: AppPrimaryButton(
+            cancelColor: cancelColor,
+            padding: padding,
             theme: theme,
             onPressed: () {
               if (onCancel == null) {
@@ -98,7 +108,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
             },
             title: cancelText ?? AppLocales.close.tr(),
             textColor: theme.textColor,
-            color: theme.accentColor,
+            color: cancelColor ?? theme.accentColor,
             child: Row(
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -115,9 +125,10 @@ class ConfirmCancelButton extends AppStatelessWidget {
             ),
           ),
         ),
-        state.getSpacing.w,
+        if (spacing == null) state.getSpacing.w else spacing!.w,
         Expanded(
           child: AppPrimaryButton(
+            padding: padding,
             theme: theme,
             onPressed: () {
               if (onConfirm == null) {

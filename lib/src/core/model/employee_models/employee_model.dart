@@ -6,8 +6,10 @@ class Employee {
   String? description;
   String roleId;
   String roleName;
+  String pincode;
 
   Employee({
+    this.pincode = '',
     this.id = '',
     this.phone,
     this.description,
@@ -26,6 +28,7 @@ class Employee {
       id: json['id'],
       roleId: json['roleId'],
       roleName: json['roleName'],
+      pincode: json['pincode'] ?? '',
     );
   }
 
@@ -37,5 +40,6 @@ class Employee {
         "id": id,
         "roleName": roleName,
         "roleId": roleId,
+        "pincode": pincode,
       };
 }

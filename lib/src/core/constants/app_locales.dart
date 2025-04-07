@@ -404,4 +404,12 @@ abstract class AppLocales {
   static var seller = "seller";
   static var scheduleOrder = "scheduleOrder";
   static var totalOrderSumm = "totalOrderSumm";
+  static var enterNewPincode = "enterNewPincode";
+  static var incorrectPincode = "incorrectPincode";
+  static var placeNameInputError = "placeNameInputError";
+  static var places = "places";
+  static var placeNameLabel = "placeNameLabel";
+  static var placeNameHint = "placeNameHint";
+  static var addPlace = "addPlace";
+  static var choosePlace = "choosePlace";
 }

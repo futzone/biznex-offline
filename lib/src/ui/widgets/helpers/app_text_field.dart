@@ -21,10 +21,12 @@ class AppTextField extends StatelessWidget {
   final Color fillColor;
   final Color? enabledColor;
   final bool useBorder;
+  final int? maxLength;
 
   const AppTextField({
     this.hideBorder = false,
     super.key,
+    this.maxLength,
     this.fillColor = Colors.transparent,
     this.radius = 14,
     required this.title,
@@ -48,7 +50,7 @@ class AppTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-
+      maxLength: maxLength,
       textInputAction: textInputAction,
       onSubmitted: (String text) {
         if (onSubmitted != null) onSubmitted!(text);

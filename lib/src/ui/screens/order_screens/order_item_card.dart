@@ -14,11 +14,10 @@ class OrderItemCardNew extends HookConsumerWidget {
     final product = item.product;
     final orders = ref.watch(orderSetProvider);
     final first = orders.firstWhere((v) => v.product.id == item.product.id);
-    final priceController = useTextEditingController(text: "${(first.amount * first.product.price).toStringAsFixed(1)} UZS");
     final controller = useTextEditingController(text: first.amount.toString());
 
     useEffect(() {
-      final newValue = orders.firstWhere((v) => v.product.id == item.product.id).amount.toString();
+      final newValue = orders.firstWhere((v) => v.product.id == item.product.id).amount.price;
 
       if (controller.text != newValue) {
         final cursorPosition = controller.selection.baseOffset;
@@ -29,16 +28,6 @@ class OrderItemCardNew extends HookConsumerWidget {
         );
       }
 
-      final newValuePrice = orders.firstWhere((v) => v.product.id == item.product.id);
-
-      if (priceController.text != (newValuePrice.amount * newValuePrice.product.price).toStringAsFixed(1)) {
-        final cursorPosition = priceController.selection.baseOffset;
-        priceController.text = "${(newValuePrice.amount * newValuePrice.product.price).toStringAsFixed(1)} UZS";
-
-        priceController.selection = TextSelection.fromPosition(
-          TextPosition(offset: cursorPosition.clamp(0, priceController.text.length)),
-        );
-      }
       return null;
     }, [orders]);
 
@@ -52,12 +41,12 @@ class OrderItemCardNew extends HookConsumerWidget {
       },
       builder: (focused) => AnimatedContainer(
         duration: theme.animationDuration,
-        margin: 8.tb,
+        margin: Dis.only(bottom: 8),
         padding: Dis.only(lr: 16, tb: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: focused ? theme.mainColor : theme.accentColor),
-          color: focused ? theme.mainColor.withOpacity(0.1) : theme.accentColor,
+          color: focused ? theme.mainColor.withOpacity(0.1) : theme.scaffoldBgColor,
         ),
         child: Row(
           spacing: 16,
@@ -95,77 +84,55 @@ class OrderItemCardNew extends HookConsumerWidget {
               flex: 2,
               child: Column(
                 spacing: 4,
-                children: [Text(product.name, maxLines: 1, overflow: TextOverflow.ellipsis), Text(product.price.priceUZS)],
+                children: [
+                  Text(product.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Row(
+                    spacing: 24,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(product.size ?? ''),
+                      Text(product.price.priceUZS, style: TextStyle(fontFamily: boldFamily, fontSize: 16)),
+                    ],
+                  ),
+                ],
               ),
             ),
             Expanded(
               flex: 2,
-              child: Column(
-                spacing: 8,
+              child: Row(
                 children: [
-                  Row(
-                    children: [
-                      WebButton(
-                        onPressed: () {
-                          OrderItem orderItem = item;
-                          orderItem.amount++;
-                          updateOrderItem(ref, orderItem);
-                        },
-                        builder: (focused) {
-                          return Icon(
-                            Ionicons.add_circle_outline,
-                            size: 40,
-                            color: focused ? theme.mainColor : theme.secondaryTextColor,
-                          );
-                        },
-                      ),
-                      8.w,
-                      Expanded(
-                        child: TextField(
-                          onChanged: (char) {
-                            final value = num.tryParse(char);
-                            if (value == null) return;
-                            OrderItem orderItem = item;
-                            orderItem.amount = value.toDouble();
-                            updateOrderItem(ref, orderItem);
-                          },
-                          controller: controller,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          style: TextStyle(color: theme.textColor),
-                          cursorHeight: 16,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: Dis.only(tb: 4),
-                            constraints: const BoxConstraints(maxWidth: 64),
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(4),
-                              ),
-                              borderSide: BorderSide(color: theme.mainColor),
-                            ),
-                          ),
-                        ),
-                      ),
-                      8.w,
-                      WebButton(
-                        onPressed: () {
-                          OrderItem orderItem = item;
-                          orderItem.amount--;
-                          updateOrderItem(ref, orderItem);
-                        },
-                        builder: (focused) {
-                          return Icon(
-                            Ionicons.remove_circle_outline,
-                            size: 40,
-                            color: focused ? theme.mainColor : theme.secondaryTextColor,
-                          );
-                        },
-                      ),
-                    ],
+                  WebButton(
+                    onPressed: () {
+                      OrderItem orderItem = item;
+                      orderItem.amount++;
+                      updateOrderItem(ref, orderItem);
+                    },
+                    builder: (focused) {
+                      return Icon(
+                        Ionicons.add_circle_outline,
+                        size: 40,
+                        color: focused ? theme.mainColor : theme.secondaryTextColor,
+                      );
+                    },
                   ),
+                  8.w,
                   TextField(
-                    controller: priceController,
+                    onChanged: (char) {
+                      final value = num.tryParse(char);
+                      if (value == null) {
+                        ref.read(orderSetProvider.notifier).update((state) {
+                          final newState = [...state];
+                          newState.remove(item);
+                          return newState;
+                        });
+                        return;
+                      }
+                      OrderItem orderItem = item;
+                      orderItem.amount = value.toDouble();
+                      updateOrderItem(ref, orderItem);
+                    },
+                    controller: controller,
                     textAlign: TextAlign.center,
                     keyboardType: TextInputType.number,
                     style: TextStyle(color: theme.textColor),
@@ -173,14 +140,29 @@ class OrderItemCardNew extends HookConsumerWidget {
                     decoration: InputDecoration(
                       isDense: true,
                       contentPadding: Dis.only(tb: 8),
-                      // constraints: const BoxConstraints(maxWidth: 64),
+                      constraints: const BoxConstraints(maxWidth: 64),
                       border: OutlineInputBorder(
                         borderRadius: const BorderRadius.all(
-                          Radius.circular(4),
+                          Radius.circular(24),
                         ),
                         borderSide: BorderSide(color: theme.mainColor),
                       ),
                     ),
+                  ),
+                  8.w,
+                  WebButton(
+                    onPressed: () {
+                      OrderItem orderItem = item;
+                      orderItem.amount--;
+                      updateOrderItem(ref, orderItem);
+                    },
+                    builder: (focused) {
+                      return Icon(
+                        Ionicons.remove_circle_outline,
+                        size: 40,
+                        color: focused ? theme.mainColor : theme.secondaryTextColor,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -193,6 +175,10 @@ class OrderItemCardNew extends HookConsumerWidget {
                   return newState;
                 });
               },
+              color: Colors.red,
+              style: IconButton.styleFrom(
+                side: BorderSide(color: Colors.red)
+              ),
               icon: Icon(Icons.delete_outline),
             ),
           ],
