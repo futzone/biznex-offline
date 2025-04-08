@@ -1,6 +1,5 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/employee_controller.dart';
-import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/employee_models/role_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';

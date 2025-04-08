@@ -15,10 +15,12 @@ class Order {
   String? status;
   double? realPrice;
   double price;
+  String? note;
   Place place;
   List<OrderItem> products;
 
   Order({
+    this.note,
     required this.place,
     this.id = '',
     this.createdDate = '',
@@ -43,12 +45,13 @@ class Order {
       price: (json['price'] as num).toDouble(),
       products: (json['products'] as List<dynamic>).map((item) => OrderItem.fromJson(item)).toList(),
       place: Place.fromJson(json['place']),
+      note: json['note'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'place':place.toJson(),
+      'place': place.toJson(),
       'id': id,
       'createdDate': createdDate,
       'updatedDate': updatedDate,
@@ -57,6 +60,7 @@ class Order {
       'status': status,
       'realPrice': realPrice,
       'price': price,
+      'note': note,
       'products': products.map((e) => e.toJson()).toList(),
     };
   }

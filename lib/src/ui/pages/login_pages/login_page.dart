@@ -52,13 +52,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           setState(() {});
         } else {
           final roles = await RoleDatabase().get();
-          final role = roles.firstWhere((element) => element.id == employee.roleId);
+          final role = roles.firstWhere((element) => element.id == employee.roleId, orElse: () => Role(name: 'Demo', permissions: []));
           log(role.permissions.toString());
 
           if (role.permissions.contains(Role.permissionList.first) && role.permissions.length == 1) {
             AppRouter.open(context, WaiterPage());
           }
         }
+        return;
+      } else if (widget.byAdmin && model.pincode.isNotEmpty && model.pincode == enteredPin) {
+        AppRouter.open(context, MainPage());
         return;
       }
 
@@ -85,6 +88,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final currentEmployee = ref.watch(currentEmployeeProvider);
+    print(model.pincode);
     return Scaffold(
       appBar: AppBar(),
       body: Center(

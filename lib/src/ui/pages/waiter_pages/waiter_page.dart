@@ -1,10 +1,8 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
-import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
-import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
@@ -15,10 +13,6 @@ import 'package:biznex/src/ui/screens/settings_screen/employee_settings_screen.d
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
-import 'package:flutter/material.dart';
-
 import '../../screens/order_screens/order_half_page.dart';
 
 class WaiterPage extends ConsumerStatefulWidget {

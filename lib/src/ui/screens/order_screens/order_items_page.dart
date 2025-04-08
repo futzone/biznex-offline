@@ -1,11 +1,15 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/order_controller.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
+import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_item_card.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
+
+import 'order_details_screen.dart';
 
 class OrderItemsPage extends HookConsumerWidget {
   final Place place;
@@ -19,6 +23,8 @@ class OrderItemsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final orderItems = ref.watch(orderSetProvider);
     final orderNotifier = ref.read(orderSetProvider.notifier);
+    final noteController = useTextEditingController();
+    final customerNotifier = useState<Customer?>(null);
 
     final placeOrderItems = useMemoized(
       () => orderItems.where((e) => e.placeId == place.id).toList(),
@@ -64,10 +70,17 @@ class OrderItemsPage extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(16),
                         child: ListView.builder(
                           padding: 8.tb,
-                          itemCount: placeOrderItems.length,
+                          itemCount: placeOrderItems.length + 1,
                           itemBuilder: (context, index) {
-                            final item = placeOrderItems[index];
+                            if (index == placeOrderItems.length) {
+                              return OrderDetailsScreen(
+                                theme: theme,
+                                noteController: noteController,
+                                customerNotifier: customerNotifier,
+                              );
+                            }
 
+                            final item = placeOrderItems[index];
                             return OrderItemCardNew(item: item, theme: theme);
                           },
                         ),

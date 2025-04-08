@@ -5,6 +5,7 @@ class AppTextField extends StatelessWidget {
   final bool hideBorder;
   final AppColors theme;
   final String title;
+  final Widget? suffix;
   final bool onlyRead;
   final TextEditingController controller;
   final int? minLines;
@@ -24,6 +25,7 @@ class AppTextField extends StatelessWidget {
   final int? maxLength;
 
   const AppTextField({
+    this.suffix,
     this.hideBorder = false,
     super.key,
     this.maxLength,
@@ -124,7 +126,7 @@ class AppTextField extends StatelessWidget {
                     color: theme.mainColor,
                     size: 20,
                   ),
-        prefixIcon: prefixIcon,
+        suffix: suffix,
       ),
     );
   }

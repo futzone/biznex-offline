@@ -419,4 +419,12 @@ abstract class AppLocales {
   static var oldPincodeLabel = "oldPincodeLabel";
   static var oldPincodeHint = "oldPincodeHint";
   static var newPincodeLabel = "newPincodeLabel";
+  static var orderNote = "orderNote";
+  static var addNote = "addNote";
+  static var addClient = "addClient";
+  static var enterNoteForOrder = "enterNoteForOrder";
+  static var customerNameInputError = "customerNameInputError";
+  static var customers = "customers";
+  static var enterCustomerName = "enterCustomerName";
+  static var enterCustomerPhone = "enterCustomerPhone";
 }
