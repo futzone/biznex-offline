@@ -6,10 +6,11 @@ import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_item_card.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
+import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
-
+import '../settings_screen/order_settings_screen.dart';
 import 'order_details_screen.dart';
+import 'order_param_buttons.dart';
 
 class OrderItemsPage extends HookConsumerWidget {
   final Place place;
@@ -17,14 +18,21 @@ class OrderItemsPage extends HookConsumerWidget {
   final AppModel state;
   final Order? order;
 
-  const OrderItemsPage({this.order, super.key, required this.place, required this.theme, required this.state});
+  const OrderItemsPage({
+    this.order,
+    super.key,
+    required this.place,
+    required this.theme,
+    required this.state,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final orderItems = ref.watch(orderSetProvider);
     final orderNotifier = ref.read(orderSetProvider.notifier);
-    final noteController = useTextEditingController();
-    final customerNotifier = useState<Customer?>(null);
+    final noteController = useTextEditingController(text: order?.note);
+    final customerNotifier = useState<Customer?>(order?.customer);
+    final scheduledTime = useState<DateTime?>(null);
 
     final placeOrderItems = useMemoized(
       () => orderItems.where((e) => e.placeId == place.id).toList(),
@@ -40,7 +48,9 @@ class OrderItemsPage extends HookConsumerWidget {
       if (order != null) {
         Future.microtask(() {
           final existingIds = orderItems.map((e) => e.product.id).toSet();
-          final newOnes = order!.products.where((e) => !existingIds.contains(e.product.id)).toList();
+          final newOnes = order!.products.where((e) {
+            return !existingIds.contains(e.product.id);
+          }).toList();
           if (newOnes.isNotEmpty) {
             orderNotifier.addMultiple(newOnes);
           }
@@ -49,6 +59,18 @@ class OrderItemsPage extends HookConsumerWidget {
 
       return null;
     }, [order]);
+
+    void onSchedule() {
+      showDatePicker(context: context, firstDate: DateTime.now(), lastDate: DateTime(2100)).then((date) {
+        if (date != null) {
+          showTimePicker(context: context, initialTime: TimeOfDay(hour: 13, minute: 0)).then((time) {
+            if (time != null) {
+              scheduledTime.value = date.copyWith(hour: time.hour, minute: time.minute);
+            }
+          });
+        }
+      });
+    }
 
     return Expanded(
       child: placeOrderItems.isEmpty
@@ -70,13 +92,26 @@ class OrderItemsPage extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(16),
                         child: ListView.builder(
                           padding: 8.tb,
-                          itemCount: placeOrderItems.length + 1,
+                          itemCount: placeOrderItems.length + 2,
                           itemBuilder: (context, index) {
                             if (index == placeOrderItems.length) {
                               return OrderDetailsScreen(
                                 theme: theme,
                                 noteController: noteController,
                                 customerNotifier: customerNotifier,
+                              );
+                            }
+
+                            if (index == placeOrderItems.length + 1) {
+                              return OrderParamButtons(
+                                scheduleNotifier: scheduledTime,
+                                theme: theme,
+                                state: state,
+                                onScheduleOrder: onSchedule,
+                                onOpenSettings: () {
+                                  showDesktopModal(context: context, body: OrderSettingsScreen(state));
+                                },
+                                onClearAll: order != null ? null : () => orderNotifier.clear(),
                               );
                             }
 
@@ -125,11 +160,21 @@ class OrderItemsPage extends HookConsumerWidget {
                             );
 
                             if (order == null) {
-                              orderController.openOrder(placeOrderItems);
+                              orderController.openOrder(
+                                placeOrderItems,
+                                note: noteController.text.trim(),
+                                customer: customerNotifier.value,
+                                scheduledDate: scheduledTime.value,
+                              );
                               return;
                             }
 
-                            orderController.addItems(placeOrderItems);
+                            orderController.addItems(
+                              placeOrderItems,
+                              note: noteController.text.trim(),
+                              customer: customerNotifier.value,
+                              scheduledDate: scheduledTime.value,
+                            );
                           },
                           onCancel: () async {
                             OrderController orderController = OrderController(
@@ -139,13 +184,20 @@ class OrderItemsPage extends HookConsumerWidget {
                               employee: ref.watch(currentEmployeeProvider),
                             );
 
-                            orderController.closeOrder();
+                            orderController.closeOrder(
+                              note: noteController.text.trim(),
+                              customer: customerNotifier.value,
+                              scheduledDate: scheduledTime.value,
+                            );
+
+                            noteController.clear();
+                            customerNotifier.value = null;
                           },
                         ),
                       ),
                       16.w,
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

@@ -61,6 +61,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           ),
         if (showNoteInput.value) 16.h,
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           spacing: 16,
           children: [
             if (!showNoteInput.value)
@@ -81,11 +83,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       if (widget.noteController.text.trim().isEmpty)
                         AppText.$14Bold(AppLocales.addNote.tr())
                       else
-                        Text(
-                          widget.noteController.text.trim(),
-                          style: TextStyle(fontSize: 14, fontFamily: boldFamily),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        Expanded(
+                          child: Text(
+                            widget.noteController.text.trim(),
+                            style: TextStyle(fontSize: 14, fontFamily: boldFamily),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       if (widget.noteController.text.trim().isNotEmpty) Spacer(),
                       if (widget.noteController.text.trim().isNotEmpty)

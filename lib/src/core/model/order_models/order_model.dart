@@ -10,6 +10,7 @@ class Order {
   String id;
   String createdDate;
   String updatedDate;
+  String? scheduledDate;
   Customer? customer;
   Employee employee;
   String? status;
@@ -29,6 +30,7 @@ class Order {
     required this.employee,
     this.status = 'opened',
     this.realPrice,
+    this.scheduledDate,
     required this.price,
     required this.products,
   });
@@ -46,6 +48,7 @@ class Order {
       products: (json['products'] as List<dynamic>).map((item) => OrderItem.fromJson(item)).toList(),
       place: Place.fromJson(json['place']),
       note: json['note'],
+      scheduledDate: json['scheduledDate'],
     );
   }
 
@@ -61,6 +64,7 @@ class Order {
       'realPrice': realPrice,
       'price': price,
       'note': note,
+      'scheduledDate': scheduledDate,
       'products': products.map((e) => e.toJson()).toList(),
     };
   }

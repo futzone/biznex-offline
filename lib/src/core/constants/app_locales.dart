@@ -427,4 +427,15 @@ abstract class AppLocales {
   static var customers = "customers";
   static var enterCustomerName = "enterCustomerName";
   static var enterCustomerPhone = "enterCustomerPhone";
+  static var percentNameInputError = "percentNameInputError";
+  static var percentInputError = "percentInputError";
+  static var percentsForOrder = "percentsForOrder";
+  static var enterPercentName = "enterPercentName";
+  static var shopAddressHint = "shopAddressHint";
+  static var orderCheckByeText = "orderCheckByeText";
+  static var shopAddressLabel = "shopAddressLabel";
+  static var orderCheckByeTextHint = "orderCheckByeTextHint";
+  static var shopLogoLabel = "shopLogoLabel";
+  static var phoneForPrintLabel = "phoneForPrintLabel";
+  static var enterPhoneNumber = "enterPhoneNumber";
 }

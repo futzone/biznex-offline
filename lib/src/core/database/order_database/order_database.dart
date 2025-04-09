@@ -60,8 +60,6 @@ class OrderDatabase {
     final box = await openBox(getBoxName("${placeId}_open"));
     final orderJson = data.toJson();
 
-    log("fucked list state: ${data.products.length}");
-
     if (orderJson.isNotEmpty) {
       await box.put(data.id, orderJson);
     }

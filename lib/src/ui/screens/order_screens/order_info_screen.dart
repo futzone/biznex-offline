@@ -55,19 +55,27 @@ class OrderInfoScreen extends HookConsumerWidget {
                     color: theme.accentColor,
                     padding: Dis.only(lr: 20, tb: 8),
                     theme: theme,
-                     child: Row(
-                       spacing: 8,
-                       children: [
-                         Icon(Ionicons.print_outline),
-                         Text(AppLocales.print.tr()),
-                       ],
-                     ),
-                     onPressed: () {
-
-                    },
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(Ionicons.print_outline),
+                        Text(AppLocales.print.tr()),
+                      ],
+                    ),
+                    onPressed: () {},
                   ),
                 ],
               ),
+              0.h,
+              if (order.note != null)
+                Column(
+                  spacing: 4,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("${AppLocales.orderNote.tr()}: ", style: TextStyle(fontSize: 16)),
+                    Text(order.note ?? '', style: TextStyle(fontSize: 16, fontFamily: boldFamily)),
+                  ],
+                ),
               16.h,
             ],
           ),

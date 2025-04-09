@@ -32,6 +32,11 @@ class AppModel {
   String mediumFamily = "Medium";
   String pincode;
 
+  String? imagePath;
+  String? shopAddress;
+  String? byeText;
+  String? printPhone;
+
   bool get isAdmin => role == "admin";
 
   bool isMe = appRoleState;
@@ -69,7 +74,11 @@ class AppModel {
     this.checkWidth,
     this.shopName,
     this.orderWidth,
+    this.printPhone,
     this.orderHeight,
+    this.imagePath,
+    this.shopAddress,
+    this.byeText,
   });
 
   factory AppModel.fromJson(dynamic json) {
@@ -90,6 +99,10 @@ class AppModel {
       orderWidth: json['orderWidth'],
       shopName: json['shopName'],
       pincode: json['pincode'] ?? '',
+      byeText: json['byeText'] ?? "",
+      imagePath: json['imagePath'] ?? '',
+      shopAddress: json['shopAddress'] ?? '',
+      printPhone: json['printPhone'] ?? '',
     );
   }
 
@@ -150,7 +163,11 @@ class AppModel {
       "checkWidth": checkWidth,
       "orderWidth": orderWidth,
       "orderHeight": orderHeight,
-      "pincode": pincode
+      "pincode": pincode,
+      "shopAddress": shopAddress,
+      "imagePath": imagePath,
+      "byeText": byeText,
+      "printPhone": printPhone,
     };
   }
 }

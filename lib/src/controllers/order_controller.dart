@@ -3,6 +3,7 @@ import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
+import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
@@ -24,7 +25,7 @@ class OrderController {
 
   final OrderDatabase _database = OrderDatabase();
 
-  Future<void> openOrder(List<OrderItem> products) async {
+  Future<void> openOrder(List<OrderItem> products, {String? note, Customer? customer, DateTime? scheduledDate}) async {
     showAppLoadingDialog(context);
 
     double totalPrice = products.fold(0, (oldValue, element) {
@@ -37,6 +38,9 @@ class OrderController {
       products: products,
       createdDate: DateTime.now().toIso8601String(),
       updatedDate: DateTime.now().toIso8601String(),
+      customer: customer,
+      note: note,
+      scheduledDate: scheduledDate?.toIso8601String(),
     );
     await _database.setPlaceOrder(data: order, placeId: place.id).then((_) {
       AppRouter.close(context);
@@ -46,11 +50,14 @@ class OrderController {
     });
   }
 
-  Future<void> addItems(List<OrderItem> items) async {
+  Future<void> addItems(List<OrderItem> items, {String? note, Customer? customer, DateTime? scheduledDate}) async {
     showAppLoadingDialog(context);
     Order? currentState = await _database.getPlaceOrder(place.id);
     if (currentState == null) return;
     currentState.products = items;
+    if (customer != null) currentState.customer = customer;
+    if (note != null) currentState.note = note;
+    if (scheduledDate != null) currentState.scheduledDate = scheduledDate.toIso8601String();
     await _database.updatePlaceOrder(data: currentState, placeId: place.id);
     model.ref!.invalidate(ordersProvider(place.id));
     model.ref!.invalidate(ordersProvider);
@@ -93,7 +100,7 @@ class OrderController {
     return state;
   }
 
-  Future<void> closeOrder() async {
+  Future<void> closeOrder({String? note, Customer? customer, DateTime? scheduledDate}) async {
     showAppLoadingDialog(context);
     Order? currentState = await _database.getPlaceOrder(place.id);
     if (currentState == null) {
@@ -108,11 +115,14 @@ class OrderController {
         employee: employee,
         price: totalPrice,
         products: products,
+        scheduledDate: scheduledDate?.toIso8601String(),
         createdDate: DateTime.now().toIso8601String(),
         updatedDate: DateTime.now().toIso8601String(),
       );
     }
 
+    if (customer != null) currentState.customer = customer;
+    if (note != null) currentState.note = note;
     currentState.status = Order.completed;
     await _database.saveOrder(currentState);
 

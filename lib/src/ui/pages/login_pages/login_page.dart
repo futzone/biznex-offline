@@ -17,8 +17,9 @@ class LoginPage extends ConsumerStatefulWidget {
   final AppModel model;
   final AppColors theme;
   final bool byAdmin;
+  final void Function()? onSuccessEnter;
 
-  const LoginPage({super.key, this.byAdmin = false, required this.model, required this.theme});
+  const LoginPage({super.key, this.onSuccessEnter, this.byAdmin = false, required this.model, required this.theme});
 
   @override
   ConsumerState<LoginPage> createState() => _LoginPageState();
@@ -44,6 +45,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void onNextPressed(String pincode, Employee employee) async {
     if (!pincodeChars.contains('')) {
       final enteredPin = pincodeChars.join('');
+
+      if (widget.onSuccessEnter != null) {
+        if (model.pincode == enteredPin) {
+          widget.onSuccessEnter!();
+          AppRouter.close(context);
+          return;
+        }
+
+        ShowToast.error(context, AppLocales.incorrectPincode.tr());
+        pincodeChars = ['', '', '', ''];
+        setState(() {});
+        return;
+      }
 
       if (!widget.byAdmin) {
         if (pincode != enteredPin) {
