@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
+import 'package:biznex/src/core/model/order_models/percent_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 
@@ -7,6 +8,7 @@ class Order {
   static const String completed = "completed";
   static const String cancelled = "cancelled";
   static const String opened = "opened";
+  static const String confirmed = "confirmed";
   String id;
   String createdDate;
   String updatedDate;
@@ -18,7 +20,9 @@ class Order {
   double price;
   String? note;
   Place place;
+  String? orderNumber;
   List<OrderItem> products;
+  List<Percent>? payments;
 
   Order({
     this.note,
@@ -33,6 +37,8 @@ class Order {
     this.scheduledDate,
     required this.price,
     required this.products,
+    this.orderNumber,
+    this.payments,
   });
 
   factory Order.fromJson(json) {
@@ -49,6 +55,8 @@ class Order {
       place: Place.fromJson(json['place']),
       note: json['note'],
       scheduledDate: json['scheduledDate'],
+      orderNumber: json['orderNumber'] ?? '${DateTime.now().millisecondsSinceEpoch}',
+      payments: json['payments']?.map((e) => Percent.fromJson(e)).toList(),
     );
   }
 
@@ -66,6 +74,8 @@ class Order {
       'note': note,
       'scheduledDate': scheduledDate,
       'products': products.map((e) => e.toJson()).toList(),
+      'orderNumber': orderNumber,
+      'payments': [...payments?.map((e) => e.toJson()) ?? []]
     };
   }
 }

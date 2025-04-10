@@ -439,4 +439,7 @@ abstract class AppLocales {
   static var phoneForPrintLabel = "phoneForPrintLabel";
   static var enterPhoneNumber = "enterPhoneNumber";
   static var thanksForOrder = "thanksForOrder";
+  static var date = "date";
+  static var stol = "stol";
+  static var selectedFilterResultSummLabel = "selectedFilterResultSummLabel";
 }

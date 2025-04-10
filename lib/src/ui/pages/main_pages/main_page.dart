@@ -5,9 +5,8 @@ import 'package:biznex/src/ui/pages/order_pages/order_set_page.dart';
 import 'package:biznex/src/ui/pages/places_pages/places_page.dart';
 import 'package:biznex/src/ui/pages/product_pages/product_params_page.dart';
 import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
+import 'package:biznex/src/ui/screens/order_screens/orders_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../employee_pages/employee_page.dart';
 import '../product_pages/product_information_page.dart';
 import '../product_pages/products_page.dart';
@@ -38,6 +37,7 @@ class MainPage extends HookConsumerWidget {
               builder: (context) {
                 if (pageValue.value == 0) return OverviewPage(appbar: appbar, floatingActionButton: fab);
                 if (pageValue.value == 1) return OrderSetPage();
+                if (pageValue.value == 2) return OrdersPage();
                 if (pageValue.value == 3) return CategoryPage(appbar: appbar, fab);
                 if (pageValue.value == 10) return PlacesPage(appbar: appbar, fab);
                 if (pageValue.value == 5) return ProductInformationsPage(appbar: appbar, fab);

@@ -19,6 +19,11 @@ class EmployeeOrdersPage extends HookConsumerWidget {
     return time == null;
   }
 
+  bool isTodayOrder(dateFilter, order) {
+    final orderDate = DateTime.parse(order.createdDate);
+    return (orderDate.year == dateFilter.value?.year) && (orderDate.month == dateFilter.value?.month) && (orderDate.day == dateFilter.value?.day);
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final dateFilter = useState<DateTime?>(null);
@@ -54,6 +59,24 @@ class EmployeeOrdersPage extends HookConsumerWidget {
                       ),
                     ),
                     Spacer(),
+                    if (!isToday(dateFilter.value))
+                      Center(
+                        child: RichText(
+                          text: TextSpan(text: "${AppLocales.total.tr()}: ", style: TextStyle(fontSize: 18, color: theme.textColor), children: [
+                            TextSpan(
+                              text: orders.fold<double>(0, (value, element) {
+                                if (isTodayOrder(dateFilter, element)) {
+                                  return value += element.price;
+                                }
+
+                                return value += 0;
+                              }).priceUZS,
+                              style: TextStyle(fontSize: 18, color: theme.textColor, fontFamily: boldFamily),
+                            ),
+                          ]),
+                        ),
+                      ),
+                    24.w,
                     SimpleButton(
                       onPressed: () {
                         showDatePicker(

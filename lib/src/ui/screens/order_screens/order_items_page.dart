@@ -3,7 +3,6 @@ import 'package:biznex/src/controllers/order_controller.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
-import 'package:biznex/src/core/services/printer_services.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_item_card.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
@@ -117,7 +116,7 @@ class OrderItemsPage extends HookConsumerWidget {
                             }
 
                             final item = placeOrderItems[index];
-                            return OrderItemCardNew(item: item, theme: theme);
+                            return OrderItemCardNew(item: item, theme: theme, order: order);
                           },
                         ),
                       ),
@@ -190,7 +189,6 @@ class OrderItemsPage extends HookConsumerWidget {
                               customer: customerNotifier.value,
                               scheduledDate: scheduledTime.value,
                             );
-
 
                             noteController.clear();
                             customerNotifier.value = null;

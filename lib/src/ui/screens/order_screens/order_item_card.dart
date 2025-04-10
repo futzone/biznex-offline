@@ -4,26 +4,40 @@ import 'package:biznex/src/ui/screens/products_screens/product_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 
+import '../../../core/model/order_models/order_model.dart';
+
 class OrderItemCardNew extends HookConsumerWidget {
   final OrderItem item;
   final AppColors theme;
   final bool infoView;
+  final Order? order;
 
-  const OrderItemCardNew({super.key, this.infoView = false, required this.item, required this.theme});
+  const OrderItemCardNew({
+    super.key,
+    this.order,
+    this.infoView = false,
+    required this.item,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
     final product = item.product;
     final controller = useTextEditingController(text: item.amount.price);
     final orderNotifier = ref.read(orderSetProvider.notifier);
+    final itemIsSaved = useState(false);
 
     useEffect(() {
       controller.text = item.amount.price;
+      itemIsSaved.value = (item.amount !=
+          order?.products.firstWhere((e) {
+            return e.product.id == item.product.id;
+          }, orElse: () => item.copyWith(amount: -1)).amount);
       return null;
-    }, [item.amount]);
+    }, [item.amount, order]);
 
     return AppStateWrapper(builder: (theme, model) {
-      return WebButton(
+      return SimpleButton(
         onPressed: () {
           showDesktopModal(
             context: context,
@@ -31,15 +45,14 @@ class OrderItemCardNew extends HookConsumerWidget {
             body: ProductScreen(product),
           );
         },
-        builder: (focused) => AnimatedContainer(
+        child: AnimatedContainer(
           duration: theme.animationDuration,
           margin: Dis.only(bottom: 8),
           padding: Dis.only(lr: 16, tb: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: focused ? theme.mainColor : theme.accentColor),
-            color: focused
-                ? theme.mainColor.withOpacity(0.1)
+            color: itemIsSaved.value
+                ? theme.mainColor.withOpacity(0.2)
                 : infoView
                     ? theme.accentColor
                     : theme.scaffoldBgColor,

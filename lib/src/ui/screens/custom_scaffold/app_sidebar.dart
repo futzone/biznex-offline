@@ -10,21 +10,6 @@ class AppSidebar extends AppStatelessWidget {
 
   const AppSidebar(this.pageNotifier, {super.key});
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 24, bottom: 16),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white54,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Regular',
-        ),
-      ),
-    );
-  }
-
   Widget _buildSidebarItem(String name, String icon, bool selected, onPressed) {
     return WebButton(
       onPressed: onPressed,
@@ -95,21 +80,17 @@ class AppSidebar extends AppStatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(AppLocales.mainMenu.tr()),
-                  sidebarItemBuilder("assets/icons/pie.svg", AppLocales.overview.tr(), 0),
-                  sidebarItemBuilder("assets/icons/shopping.svg", AppLocales.set.tr(), 1),
+                  // sidebarItemBuilder("assets/icons/pie.svg", AppLocales.overview.tr(), 0),
+                  // sidebarItemBuilder("assets/icons/shopping.svg", AppLocales.set.tr(), 1),
                   sidebarItemBuilder("assets/icons/shopping-bag.svg", AppLocales.orders.tr(), 2),
                   sidebarItemBuilder("assets/icons/category.svg", AppLocales.categories.tr(), 3),
                   // sidebarItemBuilder("assets/icons/verified.svg", AppLocales.promos.tr(), 3),
                   sidebarItemBuilder("assets/icons/dining-table.svg", AppLocales.places.tr(), 10),
-                  _buildSectionTitle(AppLocales.inventory.tr()),
                   sidebarItemBuilder("assets/icons/product.svg", AppLocales.products.tr(), 4),
                   sidebarItemBuilder("assets/icons/icons8-info.svg", AppLocales.productInformation.tr(), 5),
                   sidebarItemBuilder("assets/icons/filter.svg", AppLocales.productParams.tr(), 6),
                   // sidebarItemBuilder("assets/icons/hanger.svg", AppLocales.productSizes.tr(), 6),
-                  _buildSectionTitle(AppLocales.reports.tr()),
                   sidebarItemBuilder("assets/icons/reprots.svg", AppLocales.reports.tr(), 7),
-                  _buildSectionTitle(AppLocales.settings.tr()),
                   sidebarItemBuilder("assets/icons/users.svg", AppLocales.employees.tr(), 8),
                   sidebarItemBuilder("assets/icons/printer-svgrepo-com.svg", AppLocales.printing.tr(), 9),
                   // sidebarItemBuilder("assets/icons/bank.svg", AppLocales.bankAccount.tr(), 9),
@@ -119,7 +100,7 @@ class AppSidebar extends AppStatelessWidget {
             ),
           ),
           // 24.w,
-          SettingsButtonScreen(theme: theme),
+          SettingsButtonScreen(theme: theme, model: state),
         ],
       ),
     );
