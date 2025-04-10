@@ -5,6 +5,7 @@ import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
+import 'package:biznex/src/core/services/printer_services.dart';
 import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
@@ -135,5 +136,8 @@ class OrderController {
     AppRouter.close(context);
 
     ShowToast.success(context, AppLocales.orderClosedSuccessfully.tr());
+
+    PrinterServices printerServices = PrinterServices(order: currentState, model: model, ref: model.ref!);
+    printerServices.printOrderCheck();
   }
 }

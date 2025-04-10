@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
+import 'package:biznex/src/core/services/printer_services.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_item_card.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
@@ -62,12 +63,15 @@ class OrderInfoScreen extends HookConsumerWidget {
                         Text(AppLocales.print.tr()),
                       ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      PrinterServices printerServices = PrinterServices(order: order, model: state, ref: ref);
+                      printerServices.printOrderCheck();
+                    },
                   ),
                 ],
               ),
               0.h,
-              if (order.note != null)
+              if (order.note != null && order.note!.isNotEmpty)
                 Column(
                   spacing: 4,
                   crossAxisAlignment: CrossAxisAlignment.start,

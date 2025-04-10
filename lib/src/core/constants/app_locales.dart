@@ -438,4 +438,5 @@ abstract class AppLocales {
   static var shopLogoLabel = "shopLogoLabel";
   static var phoneForPrintLabel = "phoneForPrintLabel";
   static var enterPhoneNumber = "enterPhoneNumber";
+  static var thanksForOrder = "thanksForOrder";
 }

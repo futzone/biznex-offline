@@ -56,7 +56,7 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
           8.w,
           IconButton(
             onPressed: () {
-              ref.read(currentEmployeeProvider.notifier).update((state)=> Employee(fullname: 'Super Admin', roleId: '', roleName: 'Admin'));
+              ref.read(currentEmployeeProvider.notifier).update((state) => Employee(fullname: 'Super Admin', roleId: '', roleName: 'Admin'));
               ref.read(orderSetProvider.notifier).clear();
               AppRouter.open(context, OnboardPage());
             },
@@ -90,15 +90,31 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
                       spacing: 16,
                       children: [
                         if ((_place == null || _expandPlaces))
-                          Center(
-                            child: AppText.$18Bold(
-                              AppLocales.choosePlace.tr(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            children: [
+                              16.w,
+                              Expanded(
+                                child: AppText.$18Bold(
+                                  AppLocales.choosePlace.tr(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxlines: 1,
+                                ),
                               ),
-                            ),
+                              Center(
+                                child: IconButton(
+                                  onPressed: () {
+                                    _expandPlaces = false;
+                                    setState(() {});
+                                  },
+                                  icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                                ),
+                              ),
+                              8.w,
+                            ],
                           )
                         else
                           Center(
