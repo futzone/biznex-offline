@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/database/order_database/order_percent_database.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:printing/printing.dart';
@@ -28,7 +29,7 @@ class PrinterServices {
 
   void printOrderCheck() async {
     final font = await PdfGoogleFonts.robotoRegular();
-
+    final percents = await OrderPercentDatabase().get();
     final doc = pw.Document();
 
     final pdfTheme = pw.TextStyle(fontSize: 8, font: font);
@@ -73,6 +74,34 @@ class PrinterServices {
               ],
             ),
           ),
+
+        if (percents.isNotEmpty) ...[
+          pw.SizedBox(height: 4),
+          pw.Container(color: PdfColor.fromHex("#000000"), height: 1),
+          pw.SizedBox(height: 4),
+          for (final item in percents)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 2, bottom: 2),
+              child: pw.Row(
+                children: [
+                  pw.Expanded(
+                    child: pw.Text(
+                      "${item.name}: ",
+                      style: pdfTheme,
+                      overflow: pw.TextOverflow.clip,
+                      maxLines: 2,
+                    ),
+                  ),
+                  pw.SizedBox(width: 8),
+                  pw.Text(
+                    "${item.percent} %",
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+                  ),
+                ],
+              ),
+            ),
+        ],
+
         pw.SizedBox(height: 4),
         pw.Container(color: PdfColor.fromHex("#000000"), height: 1),
         pw.SizedBox(height: 4),
