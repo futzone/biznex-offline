@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/place_controller.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/places_provider.dart';
 import 'package:biznex/src/ui/pages/places_pages/add_place.dart';
@@ -157,10 +158,15 @@ class PlacesPage extends HookConsumerWidget {
                         return AppListTile(
                           title: category.name,
                           theme: theme,
-                          onEdit: () {},
+                          onEdit: () {
+                            showDesktopModal(context: context, body: AddPlace(editCategory: category));
+                          },
                           trailingIcon: Ionicons.add_circle_outline,
-                          onDelete: () {},
-                          onPressed: (){
+                          onDelete: () {
+                            PlaceController placeController = PlaceController(context: context, state: state);
+                            placeController.delete(category.id);
+                          },
+                          onPressed: () {
                             showDesktopModal(context: context, body: PlaceChildrenPage(category));
                           },
                         );

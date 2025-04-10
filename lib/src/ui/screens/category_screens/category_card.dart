@@ -39,17 +39,17 @@ class CategoryCard extends AppStatelessWidget {
                 child: Icon(Icons.list, size: 20, color: theme.textColor),
               ),
             ),
-            SimpleButton(
-              onPressed: () => CategoryPage.onAddSubcategory(context, category),
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.add, size: 20, color: theme.textColor),
-              ),
-            ),
+            // SimpleButton(
+            //   onPressed: () => CategoryPage.onAddSubcategory(context, category),
+            //   child: Container(
+            //     padding: 8.all,
+            //     decoration: BoxDecoration(
+            //       border: Border.all(color: theme.secondaryTextColor),
+            //       borderRadius: BorderRadius.circular(32),
+            //     ),
+            //     child: Icon(Icons.add, size: 20, color: theme.textColor),
+            //   ),
+            // ),
             SimpleButton(
               onPressed: () => CategoryPage.onEditCategory(context, category),
               child: Container(
@@ -72,28 +72,28 @@ class CategoryCard extends AppStatelessWidget {
                 child: Icon(Icons.delete_outline, size: 20, color: theme.textColor),
               ),
             ),
-            SimpleButton(
-              onPressed: () => CategoryPage.onShowProducts(context, category),
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.shopping_bag_outlined, size: 20, color: theme.textColor),
-              ),
-            ),
-            SimpleButton(
-              onPressed: () => CategoryPage.onAddProduct(context, category),
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.add_shopping_cart, size: 20, color: theme.textColor),
-              ),
-            ),
+            // SimpleButton(
+            //   onPressed: () => CategoryPage.onShowProducts(context, category),
+            //   child: Container(
+            //     padding: 8.all,
+            //     decoration: BoxDecoration(
+            //       border: Border.all(color: theme.secondaryTextColor),
+            //       borderRadius: BorderRadius.circular(32),
+            //     ),
+            //     child: Icon(Icons.shopping_bag_outlined, size: 20, color: theme.textColor),
+            //   ),
+            // ),
+            // SimpleButton(
+            //   onPressed: () => CategoryPage.onAddProduct(context, category),
+            //   child: Container(
+            //     padding: 8.all,
+            //     decoration: BoxDecoration(
+            //       border: Border.all(color: theme.secondaryTextColor),
+            //       borderRadius: BorderRadius.circular(32),
+            //     ),
+            //     child: Icon(Icons.add_shopping_cart, size: 20, color: theme.textColor),
+            //   ),
+            // ),
           ],
           if (state.isMobile)
             CustomPopupMenu(
@@ -104,11 +104,7 @@ class CategoryCard extends AppStatelessWidget {
                   icon: Icons.list,
                   onPressed: () => CategoryPage.onShowSubcategories(context, category),
                 ),
-                CustomPopupItem(
-                  title: AppLocales.addSubcategory.tr(),
-                  icon: Icons.add,
-                  onPressed: () => CategoryPage.onAddSubcategory(context, category),
-                ),
+
                 CustomPopupItem(
                   title: AppLocales.edit.tr(),
                   icon: Icons.edit,
@@ -119,16 +115,16 @@ class CategoryCard extends AppStatelessWidget {
                   icon: Icons.delete_outline,
                   onPressed: () => CategoryPage.onDeleteCategory(context, category, state),
                 ),
-                CustomPopupItem(
-                  title: AppLocales.showProducts.tr(),
-                  icon: Icons.shopping_bag_outlined,
-                  onPressed: () => CategoryPage.onShowProducts(context, category),
-                ),
-                CustomPopupItem(
-                  title: AppLocales.addProduct.tr(),
-                  icon: Icons.add_shopping_cart,
-                  onPressed: () => CategoryPage.onAddProduct(context, category),
-                ),
+                // CustomPopupItem(
+                //   title: AppLocales.showProducts.tr(),
+                //   icon: Icons.shopping_bag_outlined,
+                //   onPressed: () => CategoryPage.onShowProducts(context, category),
+                // ),
+                // CustomPopupItem(
+                //   title: AppLocales.addProduct.tr(),
+                //   icon: Icons.add_shopping_cart,
+                //   onPressed: () => CategoryPage.onAddProduct(context, category),
+                // ),
               ],
               child: Container(
                 padding: 8.all,

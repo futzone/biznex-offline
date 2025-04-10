@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/screens/products_screens/product_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
@@ -51,11 +53,13 @@ class OrderItemCardNew extends HookConsumerWidget {
           padding: Dis.only(lr: 16, tb: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: itemIsSaved.value
-                ? theme.mainColor.withOpacity(0.2)
-                : infoView
-                    ? theme.accentColor
-                    : theme.scaffoldBgColor,
+            color: infoView
+                ? theme.accentColor
+                : itemIsSaved.value
+                    ? theme.mainColor.withOpacity(0.2)
+                    : infoView
+                        ? theme.accentColor
+                        : theme.scaffoldBgColor,
           ),
           child: Row(
             spacing: 16,

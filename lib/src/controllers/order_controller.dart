@@ -1,6 +1,7 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
+import 'package:biznex/src/core/database/order_database/order_percent_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
@@ -32,6 +33,7 @@ class OrderController {
     double totalPrice = products.fold(0, (oldValue, element) {
       return oldValue += (element.customPrice ?? (element.amount * element.product.price));
     });
+
     Order order = Order(
       place: place,
       employee: employee,
@@ -111,6 +113,7 @@ class OrderController {
       double totalPrice = products.fold(0, (oldValue, element) {
         return oldValue += (element.customPrice ?? (element.amount * element.product.price));
       });
+
       currentState = Order(
         place: place,
         employee: employee,
@@ -120,6 +123,12 @@ class OrderController {
         createdDate: DateTime.now().toIso8601String(),
         updatedDate: DateTime.now().toIso8601String(),
       );
+    }
+
+    final percents = await OrderPercentDatabase().get();
+
+    for (final per in percents) {
+      currentState.price += (currentState.price * (0.01 * per.percent));
     }
 
     if (customer != null) currentState.customer = customer;

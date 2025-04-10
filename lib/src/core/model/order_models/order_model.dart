@@ -22,7 +22,6 @@ class Order {
   Place place;
   String? orderNumber;
   List<OrderItem> products;
-  List<Percent>? payments;
 
   Order({
     this.note,
@@ -38,7 +37,6 @@ class Order {
     required this.price,
     required this.products,
     this.orderNumber,
-    this.payments,
   });
 
   factory Order.fromJson(json) {
@@ -56,7 +54,6 @@ class Order {
       note: json['note'],
       scheduledDate: json['scheduledDate'],
       orderNumber: json['orderNumber'] ?? '${DateTime.now().millisecondsSinceEpoch}',
-      payments: json['payments']?.map((e) => Percent.fromJson(e)).toList(),
     );
   }
 
@@ -75,7 +72,6 @@ class Order {
       'scheduledDate': scheduledDate,
       'products': products.map((e) => e.toJson()).toList(),
       'orderNumber': orderNumber,
-      'payments': [...payments?.map((e) => e.toJson()) ?? []]
     };
   }
 }

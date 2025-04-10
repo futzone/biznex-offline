@@ -58,7 +58,7 @@ class AppSidebar extends AppStatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.only(left: 16, top: 16),
+            padding: EdgeInsets.only(left: 24, top: 16),
             child: Text(
               "BIZNEX",
               style: TextStyle(
@@ -83,17 +83,17 @@ class AppSidebar extends AppStatelessWidget {
                   // sidebarItemBuilder("assets/icons/pie.svg", AppLocales.overview.tr(), 0),
                   // sidebarItemBuilder("assets/icons/shopping.svg", AppLocales.set.tr(), 1),
                   sidebarItemBuilder("assets/icons/shopping-bag.svg", AppLocales.orders.tr(), 2),
+                  sidebarItemBuilder("assets/icons/bank.svg", AppLocales.transactions.tr(), 9),
+                  sidebarItemBuilder("assets/icons/product.svg", AppLocales.products.tr(), 4),
                   sidebarItemBuilder("assets/icons/category.svg", AppLocales.categories.tr(), 3),
                   // sidebarItemBuilder("assets/icons/verified.svg", AppLocales.promos.tr(), 3),
                   sidebarItemBuilder("assets/icons/dining-table.svg", AppLocales.places.tr(), 10),
-                  sidebarItemBuilder("assets/icons/product.svg", AppLocales.products.tr(), 4),
                   sidebarItemBuilder("assets/icons/icons8-info.svg", AppLocales.productInformation.tr(), 5),
                   sidebarItemBuilder("assets/icons/filter.svg", AppLocales.productParams.tr(), 6),
                   // sidebarItemBuilder("assets/icons/hanger.svg", AppLocales.productSizes.tr(), 6),
                   sidebarItemBuilder("assets/icons/reprots.svg", AppLocales.reports.tr(), 7),
                   sidebarItemBuilder("assets/icons/users.svg", AppLocales.employees.tr(), 8),
-                  sidebarItemBuilder("assets/icons/printer-svgrepo-com.svg", AppLocales.printing.tr(), 9),
-                  // sidebarItemBuilder("assets/icons/bank.svg", AppLocales.bankAccount.tr(), 9),
+                  // sidebarItemBuilder("assets/icons/printer-svgrepo-com.svg", AppLocales.printing.tr(), 9),
                   // sidebarItemBuilder("assets/icons/delivery.svg", AppLocales.delivery.tr(), 10),
                 ],
               ),

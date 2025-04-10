@@ -14,8 +14,5 @@ class Role {
   static List<String> permissionList = [
     "ofitsant",
     "admin",
-    "kassir",
-    "oshpaz",
-    "manager",
   ];
 }

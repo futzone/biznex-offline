@@ -34,7 +34,7 @@ class RoleResponsive extends AppStatelessWidget {
             if (useBack) 24.w,
             Expanded(
               child: HeaderScreen(
-                title: AppLocales.employees.tr(),
+                title: AppLocales.roles.tr(),
                 onAddPressed: () => showDesktopModal(
                   context: context,
                   body: AddRole(),

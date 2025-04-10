@@ -46,7 +46,9 @@ class PrinterServices {
           style: headerStyle,
         ),
         pw.SizedBox(height: 2),
-        pw.Text('${AppLocales.orderNumber.tr()}: ${order.id}', style: pdfTheme),
+        if (model.shopAddress != null) pw.Text(model.shopAddress ?? '', style: pdfTheme),
+        if (model.shopAddress != null) pw.SizedBox(height: 3),
+        pw.Text('${AppLocales.orderNumber.tr()}: ${order.orderNumber ?? DateTime.now().millisecondsSinceEpoch}', style: pdfTheme),
         pw.SizedBox(height: 4),
         pw.Container(color: PdfColor.fromHex("#000000"), height: 1),
         pw.SizedBox(height: 4),
@@ -57,7 +59,7 @@ class PrinterServices {
               children: [
                 pw.Expanded(
                   child: pw.Text(
-                    "${item.product.name} (${item.product.measure}):",
+                    "${item.product.name}: ",
                     style: pdfTheme,
                     overflow: pw.TextOverflow.clip,
                     maxLines: 2,
@@ -65,7 +67,7 @@ class PrinterServices {
                 ),
                 pw.SizedBox(width: 8),
                 pw.Text(
-                  "${item.amount.price} * ${item.product.price.price} UZS",
+                  "${item.amount.price} ${item.product.measure} * ${item.product.price.price} UZS",
                   style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
                 ),
               ],
@@ -93,6 +95,29 @@ class PrinterServices {
           ],
         ),
         pw.SizedBox(height: 4),
+
+        ///
+        if (model.printPhone != null)
+          pw.Row(
+            children: [
+              pw.Expanded(
+                child: pw.Text(
+                  "${AppLocales.contact.tr()}:",
+                  style: pdfTheme,
+                  overflow: pw.TextOverflow.clip,
+                  maxLines: 2,
+                ),
+              ),
+              pw.SizedBox(width: 8),
+              pw.Text(
+                model.printPhone ?? '',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+              ),
+            ],
+          ),
+        if (model.printPhone != null) pw.SizedBox(height: 4),
+
+        ///
         pw.Row(
           children: [
             pw.Expanded(
@@ -110,7 +135,7 @@ class PrinterServices {
             ),
           ],
         ),
-        pw.SizedBox(height: 4),
+        pw.SizedBox(height: 6),
         pw.Text("${order.price.price} UZS", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
         pw.SizedBox(height: 6),
         if (model.byeText == null || model.byeText!.isEmpty)

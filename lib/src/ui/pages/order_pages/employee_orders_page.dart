@@ -176,7 +176,7 @@ class EmployeeOrdersPage extends HookConsumerWidget {
                                                   children: [
                                                     Icon(Ionicons.time_outline),
                                                     Text(
-                                                      "${order.status == Order.completed ? AppLocales.closedDate : AppLocales.updatedDate.tr()}: ",
+                                                      "${order.status == Order.completed ? AppLocales.closedDate.tr() : AppLocales.updatedDate.tr()}: ",
                                                       style: TextStyle(),
                                                     ),
                                                     Text(

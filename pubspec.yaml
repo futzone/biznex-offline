@@ -40,7 +40,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   easy_localization: ^3.0.7
-  file_picker: ^8.1.7
+  file_picker: ^10.1.0
   flex_color_picker: ^3.7.0
   sliver_tools: ^0.2.12
   iconly: ^1.0.1
@@ -58,6 +58,7 @@ dependencies:
   pdf: ^3.11.3
   printing: ^5.14.2
   shelf_router: ^1.1.4
+  excel: ^4.0.6
 
 dev_dependencies:
   flutter_test:

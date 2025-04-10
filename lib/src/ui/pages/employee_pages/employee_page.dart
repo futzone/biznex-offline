@@ -23,33 +23,7 @@ class EmployeePage extends AppStatelessWidget {
       floatingActionButton: null,
       floatingActionButtonNotifier: floatingActionButton,
       actions: [
-        if (state.isDesktop) 160.w,
-        if (state.isDesktop)
-          Expanded(
-            child: AppTextField(
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Icon(Ionicons.search_outline),
-              ),
-              suffixIcon: Padding(
-                padding: 8.lr,
-                child: IconButton(
-                  icon: Icon(Ionicons.filter_outline),
-                  onPressed: () {},
-                ),
-              ),
-              title: AppLocales.searchBarHint.tr(),
-              controller: TextEditingController(),
-              theme: theme,
-              enabledColor: theme.secondaryTextColor,
-            ),
-          ),
-        if (!state.isDesktop)
-          AppSimpleButton(
-            text: AppLocales.search.tr(),
-            icon: Icons.search,
-            onPressed: () {},
-          ),
+
       ],
       body: state.isMobile
           ? Padding(

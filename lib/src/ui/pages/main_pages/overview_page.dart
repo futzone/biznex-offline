@@ -92,7 +92,7 @@ class _OverviewPageState extends State<OverviewPage> {
               Row(
                 spacing: 16,
                 children: [
-                  Expanded( child: ChartScreen1()),
+                  Expanded(child: ChartScreen1()),
                   Expanded(child: ChartScreen2()),
                 ],
               )
@@ -170,7 +170,13 @@ class StatsCard extends StatelessWidget {
   final String stats;
   final AppColors theme;
 
-  const StatsCard({super.key, required this.title, required this.stats, required this.badge, required this.theme});
+  const StatsCard({
+    super.key,
+    required this.title,
+    required this.stats,
+    required this.badge,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {

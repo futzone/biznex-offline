@@ -127,7 +127,7 @@ class AppModel {
           loading: () => const AppLoadingScreen(),
           error: (error, stackTrace) {
             log("$provider error: ", error: error, stackTrace: stackTrace);
-            return const Center(child: Text("An Unknown Error"));
+            return const Center(child: Text("An Unknown Error: "));
           },
           data: (data) => builder(data),
         );

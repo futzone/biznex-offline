@@ -116,12 +116,7 @@ class CategoryPage extends HookConsumerWidget {
                       },
                     ),
                   ),
-                if (!state.isDesktop)
-                  AppSimpleButton(
-                    text: AppLocales.search.tr(),
-                    icon: Icons.search,
-                    onPressed: () {},
-                  ),
+
                 if (state.isDesktop)
                   WebButton(
                     onPressed: () {

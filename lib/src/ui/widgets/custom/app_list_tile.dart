@@ -17,6 +17,7 @@ class AppListTile extends StatelessWidget {
   final EdgeInsets? margin;
   final Color? iconColor;
   final double? height;
+  final String? trailingText;
 
   const AppListTile({
     super.key,
@@ -33,6 +34,7 @@ class AppListTile extends StatelessWidget {
     required this.theme,
     this.iconColor,
     this.onInfoPressed,
+    this.trailingText,
   });
 
   @override
@@ -76,6 +78,11 @@ class AppListTile extends StatelessWidget {
                 ],
               ),
             ),
+            if (trailingText != null) const SizedBox(width: 16),
+            if (trailingText != null)
+              Center(
+                child: Text(trailingText ?? ''),
+              ),
             const SizedBox(width: 16),
             if (onDelete != null)
               Center(
@@ -99,7 +106,7 @@ class AppListTile extends StatelessWidget {
                   onPressed: onInfoPressed,
                   child: Icon(trailingIcon, color: theme.textColor, size: 20),
                 ),
-              )
+              ),
           ],
         ),
       ),

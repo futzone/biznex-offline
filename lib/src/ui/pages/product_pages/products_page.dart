@@ -208,8 +208,8 @@ class ProductsPage extends HookConsumerWidget {
                                               isUpdateProduct.value = true;
                                             },
                                           ),
-                                          CustomPopupItem(title: AppLocales.add.tr(), icon: Icons.add),
-                                          CustomPopupItem(title: AppLocales.monitoring.tr(), icon: Icons.bar_chart),
+                                          // CustomPopupItem(title: AppLocales.add.tr(), icon: Icons.add),
+                                          // CustomPopupItem(title: AppLocales.monitoring.tr(), icon: Icons.bar_chart),
                                           CustomPopupItem(
                                             title: AppLocales.delete.tr(),
                                             icon: Icons.delete_outline,

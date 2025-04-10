@@ -442,4 +442,20 @@ abstract class AppLocales {
   static var date = "date";
   static var stol = "stol";
   static var selectedFilterResultSummLabel = "selectedFilterResultSummLabel";
+  static var more = "more";
+  static var export = "export";
+  static var confirmPayment = "confirmPayment";
+  static var summ = "summ";
+  static var note = "note";
+  static var addTransactionLabel = "addTransactionLabel";
+  static var opened = "opened";
+  static var other = "other";
+  static var click = "click";
+  static var payme = "payme";
+  static var pcl = "productColorLabel";
+  static var ofitsant = "ofitsant";
+  static var admin = "admin";
+  static var kassir = "kassir";
+  static var oshpaz = "oshpaz";
+  static var manager = "manager";
 }
