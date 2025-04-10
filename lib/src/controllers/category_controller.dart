@@ -50,4 +50,15 @@ class CategoryController extends AppController {
       closeLoading();
     });
   }
+
+  Future<void> forceUpdate(data, key) async {
+    data as Category;
+    if (data.name.isEmpty) return error(AppLocales.categoryNameInputError.tr());
+    showAppLoadingDialog(context);
+    CategoryDatabase sizeDatabase = CategoryDatabase();
+    await sizeDatabase.update(data: data, key: data.id).then((_) {
+      closeLoading();
+      state.ref!.invalidate(categoryProvider);
+    });
+  }
 }

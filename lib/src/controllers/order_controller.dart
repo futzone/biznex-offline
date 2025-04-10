@@ -1,11 +1,16 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/database/order_database/order_percent_database.dart';
+import 'package:biznex/src/core/database/product_database/product_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
+import 'package:biznex/src/core/model/product_models/product_model.dart';
+import 'package:biznex/src/core/services/printer_multiple_services.dart';
 import 'package:biznex/src/core/services/printer_services.dart';
 import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
@@ -51,11 +56,15 @@ class OrderController {
       model.ref!.invalidate(ordersProvider);
       ShowToast.success(context, AppLocales.orderCreatedSuccessfully.tr());
     });
+
+    PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
+    printerMultipleServices.printForBack(order, products);
   }
 
   Future<void> addItems(List<OrderItem> items, {String? note, Customer? customer, DateTime? scheduledDate}) async {
     showAppLoadingDialog(context);
     Order? currentState = await _database.getPlaceOrder(place.id);
+    final oldState = currentState;
     if (currentState == null) return;
     currentState.products = items;
     if (customer != null) currentState.customer = customer;
@@ -65,6 +74,11 @@ class OrderController {
     model.ref!.invalidate(ordersProvider(place.id));
     model.ref!.invalidate(ordersProvider);
     AppRouter.close(context);
+
+    PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
+    final List<OrderItem> products = _onGetChanges(items, oldState!);
+
+    printerMultipleServices.printForBack(currentState, products);
   }
 
   Future<void> updateItems(OrderItem item) async {
@@ -135,7 +149,7 @@ class OrderController {
     if (note != null) currentState.note = note;
     currentState.status = Order.completed;
     await _database.saveOrder(currentState);
-
+    await _onUpdateAmounts(currentState);
     await _database.closeOrder(placeId: place.id);
     model.ref!.invalidate(ordersProvider(place.id));
     model.ref!.invalidate(ordersProvider);
@@ -148,5 +162,30 @@ class OrderController {
 
     PrinterServices printerServices = PrinterServices(order: currentState, model: model, ref: model.ref!);
     printerServices.printOrderCheck();
+  }
+
+  Future<void> _onUpdateAmounts(Order order) async {
+    ProductDatabase productDatabase = ProductDatabase();
+    for (final item in order.products) {
+      Product product = item.product;
+      product.amount = product.amount - item.amount;
+      await productDatabase.update(key: product.id, data: product);
+    }
+  }
+
+  List<OrderItem> _onGetChanges(List<OrderItem> orderItems, Order order) {
+    // Orderdagi barcha mahsulot ID-larini olish
+    final existingIds = orderItems.map((e) => e.product.id).toSet();
+
+    // Yangi mahsulotlarni topish
+    final newOnes = order.products.where((e) {
+      // Agar product ID mavjud bo'lsa, uni chiqarib tashlash
+      return !existingIds.contains(e.product.id);
+    }).toList();
+
+    // Yangi mahsulotlar uzunligini logga chiqarish
+    log("New ones length: ${newOnes.length}");
+
+    return newOnes;
   }
 }

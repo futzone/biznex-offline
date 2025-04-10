@@ -2,7 +2,7 @@ class Category {
   String name;
   String id;
   String? parentId;
-  Map<String, dynamic>? printerParams;
+  Map<dynamic, dynamic>? printerParams;
   List<Category>? subcategories;
 
   Category({required this.name, this.id = '', this.parentId, this.subcategories, this.printerParams});

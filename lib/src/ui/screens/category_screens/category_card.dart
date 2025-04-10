@@ -1,10 +1,13 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/category_controller.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
+import 'package:biznex/src/providers/printer_devices_provider.dart';
 import 'package:biznex/src/ui/pages/category_pages/category_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_custom_padding.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
+import 'package:printing/printing.dart';
 
 class CategoryCard extends AppStatelessWidget {
   final Category category;
@@ -83,17 +86,41 @@ class CategoryCard extends AppStatelessWidget {
             //     child: Icon(Icons.shopping_bag_outlined, size: 20, color: theme.textColor),
             //   ),
             // ),
-            // SimpleButton(
-            //   onPressed: () => CategoryPage.onAddProduct(context, category),
-            //   child: Container(
-            //     padding: 8.all,
-            //     decoration: BoxDecoration(
-            //       border: Border.all(color: theme.secondaryTextColor),
-            //       borderRadius: BorderRadius.circular(32),
-            //     ),
-            //     child: Icon(Icons.add_shopping_cart, size: 20, color: theme.textColor),
-            //   ),
-            // ),
+            state.whenProviderData(
+              provider: printerDevicesProvider,
+              builder: (devices) {
+                devices as List<Printer>;
+                return CustomPopupMenu(
+                  theme: theme,
+                  children: [
+                    for (final item in devices)
+                      CustomPopupItem(
+                        icon: Ionicons.print_outline,
+                        title: item.name,
+                        onPressed: () {
+                          CategoryController cController = CategoryController(context: context, state: state);
+                          Category cCategory = category;
+                          cCategory.printerParams = {
+                            "name": item.name,
+                            "model": item.model,
+                            "url": item.url,
+                          };
+
+                          cController.forceUpdate(cCategory, cCategory.id);
+                        },
+                      ),
+                  ],
+                  child: Container(
+                    padding: 8.all,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: theme.secondaryTextColor),
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    child: Icon(Ionicons.print_outline, size: 20, color: theme.textColor),
+                  ),
+                );
+              },
+            ),
           ],
           if (state.isMobile)
             CustomPopupMenu(
