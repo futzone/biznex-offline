@@ -452,5 +452,6 @@
   "admin": "Админ",
   "kassir": "Кассир",
   "oshpaz": "Повар",
-  "manager": "Менеджер"
+  "manager": "Менеджер",
+  "productStockError": "Товара уже нет в наличии!"
 }

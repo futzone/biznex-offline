@@ -7,12 +7,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toastification/toastification.dart';
+import 'package:window_manager/window_manager.dart';
 
 bool debugMode = true;
 const appVersion = 'v1.0.0';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = WindowOptions(
+    size: Size(1200, 720),
+    minimumSize: Size(1200, 720),
+    center: true,
+    backgroundColor: Colors.transparent,
+    // skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal ,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+
+  });
 
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);

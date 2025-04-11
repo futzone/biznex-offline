@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "biznex.deepspace.uz" "\0"
-            VALUE "FileDescription", "biznex" "\0"
+            VALUE "CompanyName", "Deep Space LLC" "\0"
+            VALUE "FileDescription", "Biznex" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "biznex" "\0"
+            VALUE "InternalName", "Biznex" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 biznex.deepspace.uz. All rights reserved." "\0"
             VALUE "OriginalFilename", "biznex.exe" "\0"
-            VALUE "ProductName", "biznex" "\0"
+            VALUE "ProductName", "Biznex" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

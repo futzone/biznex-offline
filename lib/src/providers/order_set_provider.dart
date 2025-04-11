@@ -6,6 +6,7 @@ import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
+import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 
 final orderSetProvider = StateNotifierProvider<OrderSetNotifier, List<OrderItem>>((ref) {
@@ -20,11 +21,16 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
   void addItem(OrderItem item) {
     final index = state.indexWhere((e) => e.product.id == item.product.id && e.placeId == item.placeId);
     if (index != -1) {
-      final updatedItem = state[index].copyWith(amount: state[index].amount + 1);
-      state = [...state]..[index] = updatedItem;
+      final updatedItemObject = state[index];
+      if (updatedItemObject.product.amount >= updatedItemObject.amount + 1) {
+        final updatedItem = state[index].copyWith(amount: state[index].amount + 1);
+        state = [...state]..[index] = updatedItem;
+      }
     } else {
-      state = [...state, item];
+      if (item.product.amount >= 1) state = [...state, item];
     }
+
+    ref.invalidate(productsProvider);
   }
 
   void removeItem(OrderItem item, AppModel model, context) {

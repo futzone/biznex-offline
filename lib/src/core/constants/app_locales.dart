@@ -458,4 +458,5 @@ abstract class AppLocales {
   static var kassir = "kassir";
   static var oshpaz = "oshpaz";
   static var manager = "manager";
+  static var productStockError = "productStockError";
 }

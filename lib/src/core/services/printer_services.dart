@@ -165,7 +165,7 @@ class PrinterServices {
           ],
         ),
         pw.SizedBox(height: 6),
-        pw.Text("${order.price.price} UZS", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+        pw.Text("${order.price} UZS", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
         pw.SizedBox(height: 6),
         if (model.byeText == null || model.byeText!.isEmpty)
           pw.Text(AppLocales.thanksForOrder.tr(), style: pdfTheme)

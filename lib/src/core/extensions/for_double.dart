@@ -42,4 +42,12 @@ extension DoubleFormatter on num {
   EdgeInsets get top {
     return EdgeInsets.only(top: toDouble());
   }
+
+  String get toMeasure {
+    if (toString().split('.').last == "0") {
+      return "${toInt()}";
+    }
+
+    return toString();
+  }
 }

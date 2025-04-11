@@ -49,6 +49,7 @@ class OrderController {
       customer: customer,
       note: note,
       scheduledDate: scheduledDate?.toIso8601String(),
+      orderNumber: DateTime.now().millisecondsSinceEpoch.toString(),
     );
     await _database.setPlaceOrder(data: order, placeId: place.id).then((_) {
       AppRouter.close(context);
@@ -61,10 +62,9 @@ class OrderController {
     printerMultipleServices.printForBack(order, products);
   }
 
-  Future<void> addItems(List<OrderItem> items, {String? note, Customer? customer, DateTime? scheduledDate}) async {
+  Future<void> addItems(List<OrderItem> items, Order order, {String? note, Customer? customer, DateTime? scheduledDate}) async {
     showAppLoadingDialog(context);
     Order? currentState = await _database.getPlaceOrder(place.id);
-    final oldState = currentState;
     if (currentState == null) return;
     currentState.products = items;
     if (customer != null) currentState.customer = customer;
@@ -76,7 +76,9 @@ class OrderController {
     AppRouter.close(context);
 
     PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
-    final List<OrderItem> products = _onGetChanges(items, oldState!);
+    final List<OrderItem> products = _onGetChanges(items, order);
+
+    log('changes: ${products.length}');
 
     printerMultipleServices.printForBack(currentState, products);
   }
@@ -142,7 +144,7 @@ class OrderController {
     final percents = await OrderPercentDatabase().get();
 
     for (final per in percents) {
-      currentState.price += (currentState.price * (0.01 * per.percent));
+      currentState.price = currentState.price + (currentState.price * (0.01 * per.percent));
     }
 
     if (customer != null) currentState.customer = customer;
@@ -174,18 +176,21 @@ class OrderController {
   }
 
   List<OrderItem> _onGetChanges(List<OrderItem> orderItems, Order order) {
-    // Orderdagi barcha mahsulot ID-larini olish
-    final existingIds = orderItems.map((e) => e.product.id).toSet();
+    final List<OrderItem> changes = [];
 
-    // Yangi mahsulotlarni topish
-    final newOnes = order.products.where((e) {
-      // Agar product ID mavjud bo'lsa, uni chiqarib tashlash
-      return !existingIds.contains(e.product.id);
-    }).toList();
+    // final orderNotifier = model.ref!.read(orderSetProvider.notifier);
+    for (final item in orderItems) {
+      final newProduct = order.products.firstWhere((e) {
+        return e.product.id == item.product.id;
+      }, orElse: () => item.copyWith(amount: -1));
 
-    // Yangi mahsulotlar uzunligini logga chiqarish
-    log("New ones length: ${newOnes.length}");
+      if (newProduct.amount != item.amount && newProduct.amount > 0) {
+        changes.add(newProduct.copyWith(amount: item.amount - newProduct.amount));
+      } else if (newProduct.amount == -1) {
+        changes.add(item);
+      }
+    }
 
-    return newOnes;
+    return changes;
   }
 }

@@ -171,6 +171,7 @@ class OrderItemsPage extends HookConsumerWidget {
 
                             orderController.addItems(
                               placeOrderItems,
+                              order!,
                               note: noteController.text.trim(),
                               customer: customerNotifier.value,
                               scheduledDate: scheduledTime.value,

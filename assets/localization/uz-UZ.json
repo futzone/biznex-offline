@@ -456,5 +456,6 @@
   "admin": "Admin",
   "kassir": "Kassir",
   "oshpaz": "Oshpaz",
-  "manager": "Menejer"
+  "manager": "Menejer",
+  "productStockError": "Mahsulot allaqachon tugagan!"
 }

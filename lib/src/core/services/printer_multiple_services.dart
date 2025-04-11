@@ -69,6 +69,16 @@ class PrinterMultipleServices {
       crossAxisAlignment: pw.CrossAxisAlignment.center,
       children: [
         pw.SizedBox(height: 4),
+        if (products.firstOrNull?.product.category != null)
+          pw.Center(
+            child: pw.Text(
+              "${products.first.product.category?.name}",
+              style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, font: font),
+              overflow: pw.TextOverflow.clip,
+              maxLines: 2,
+            ),
+          ),
+        pw.SizedBox(height: 4),
         for (final item in products)
           pw.Padding(
             padding: const pw.EdgeInsets.only(top: 2, bottom: 2),
@@ -111,6 +121,47 @@ class PrinterMultipleServices {
           ],
         ),
         pw.SizedBox(height: 4),
+        pw.Row(
+          children: [
+            pw.Expanded(
+              child: pw.Text(
+                "${AppLocales.orderNumber.tr()}:",
+                style: pdfTheme,
+                overflow: pw.TextOverflow.clip,
+                maxLines: 2,
+              ),
+            ),
+            pw.SizedBox(width: 8),
+            pw.Text(
+              order.orderNumber ?? order.id,
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+            ),
+          ],
+        ),
+        pw.SizedBox(height: 4),
+
+        ///
+        pw.Row(
+          children: [
+            pw.Expanded(
+              child: pw.Text(
+                "${AppLocales.place.tr()}:",
+                style: pdfTheme,
+                overflow: pw.TextOverflow.clip,
+                maxLines: 2,
+              ),
+            ),
+            pw.SizedBox(width: 8),
+            pw.Text(
+              "${order.place.father != null ? '${order.place.father!.name}, ' : ''}${order.place.name}",
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+            ),
+          ],
+        ),
+        pw.SizedBox(height: 4),
+
+        ///
+
         pw.Row(
           children: [
             pw.Expanded(

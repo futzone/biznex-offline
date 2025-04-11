@@ -5,6 +5,7 @@ import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../screens/onboarding_screens/onboard_card.dart';
 
@@ -30,8 +31,11 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                     title: Text("Biznex", style: TextStyle(fontSize: 28, fontFamily: boldFamily)),
                     actions: [
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(Ionicons.close_circle_outline, size: 32),
+                        onPressed: () async {
+                          final status = await windowManager.isFullScreen();
+                          await windowManager.setFullScreen(!status);
+                        },
+                        icon: Icon(Icons.fullscreen, size: 32),
                       ),
                       8.w,
                     ],

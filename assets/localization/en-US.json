@@ -358,5 +358,6 @@
   "admin": "Admin",
   "kassir": "Cashier",
   "oshpaz": "Chef",
-  "manager": "Manager"
+  "manager": "Manager",
+  "productStockError": "The product is already out of stock!"
 }

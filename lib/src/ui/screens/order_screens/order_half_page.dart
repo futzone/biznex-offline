@@ -165,8 +165,12 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                 : products)[index];
                             return SimpleButton(
                               onPressed: () {
-                                orderNotifier.addItem(OrderItem(product: product, amount: 1, placeId: widget.place.id));
-                                ShowToast.success(context, AppLocales.productAddedToSet.tr());
+                                if (product.amount >= 1) {
+                                  orderNotifier.addItem(OrderItem(product: product, amount: 1, placeId: widget.place.id));
+                                  ShowToast.success(context, AppLocales.productAddedToSet.tr());
+                                } else {
+                                  ShowToast.error(context, AppLocales.productStockError.tr());
+                                }
                               },
                               child: Container(
                                 padding: Dis.all(12),
@@ -193,11 +197,22 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                         ),
                                       ),
                                     ),
-                                    Text(product.name, style: TextStyle(fontSize: 16)),
+                                    Row(
+                                      spacing: 8,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            product.name,
+                                            style: TextStyle(fontSize: 16, fontFamily: boldFamily),
+                                          ),
+                                        ),
+                                        Text(product.size ?? '', style: TextStyle(fontSize: 16)),
+                                      ],
+                                    ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(product.size ?? '', style: TextStyle(fontSize: 16)),
+                                        Expanded(child: Text(product.amount.toMeasure, style: TextStyle(fontSize: 16))),
                                         Text(
                                           product.price.priceUZS,
                                           style: TextStyle(
