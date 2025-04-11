@@ -29,6 +29,7 @@ void main() async {
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
+    await windowManager.setFullScreen(true);
   });
 
   final dir = await getApplicationDocumentsDirectory();
@@ -67,7 +68,7 @@ class MyApp extends ConsumerWidget {
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,
-            home: LicenseStatusWrapper(),
+            home: ActivityWrapper(child: LicenseStatusWrapper()),
           ),
         );
       },

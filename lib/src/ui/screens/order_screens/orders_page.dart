@@ -36,7 +36,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
         floatingActionButton: FloatingActionButton.large(
           backgroundColor: theme.mainColor,
           onPressed: () {
-            AppRouter.go(context, WaiterPage());
+            AppRouter.go(context, WaiterPage(haveBack: true));
           },
 
           child: Icon(Icons.add, size: 60, color: Colors.white),

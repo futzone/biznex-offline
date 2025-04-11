@@ -14,6 +14,7 @@ class ActivityWrapper extends StatefulWidget {
 class _InactivityWrapperState extends State<ActivityWrapper> {
   bool _showLogo = false;
   Timer? _inactivityTimer;
+  late final FocusNode _focusNode;
 
   void _resetTimer() {
     _inactivityTimer?.cancel();
@@ -30,19 +31,24 @@ class _InactivityWrapperState extends State<ActivityWrapper> {
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
     _resetTimer();
   }
 
   @override
   void dispose() {
     _inactivityTimer?.cancel();
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return RawKeyboardListener(
-      focusNode: FocusNode()..requestFocus(),
+      focusNode: _focusNode,
       onKey: (_) => _onUserInteraction(),
       child: Listener(
         onPointerDown: (_) => _onUserInteraction(),

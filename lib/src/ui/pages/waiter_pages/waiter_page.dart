@@ -16,7 +16,9 @@ import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import '../../screens/order_screens/order_half_page.dart';
 
 class WaiterPage extends ConsumerStatefulWidget {
-  const WaiterPage({super.key});
+  final bool haveBack;
+
+  const WaiterPage({super.key, this.haveBack = false});
 
   @override
   ConsumerState<WaiterPage> createState() => _WaiterPageState();
@@ -33,7 +35,7 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
     final employee = ref.watch(currentEmployeeProvider);
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Ionicons.person_outline, size: 28),
+        leading: widget.haveBack ? null : Icon(Ionicons.person_outline, size: 28),
         title: Text(employee.fullname),
         actions: [
           IconButton(

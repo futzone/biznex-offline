@@ -22,10 +22,8 @@ class LicenseStatusWrapper extends ConsumerWidget {
         provider: licenseStatusProvider(state.licenseKey),
         builder: (status) {
           status as bool;
-          if (!status) {
-            return ActivityWrapper(
-              child: state.pincode.isEmpty ? LoginPage(model: state, theme: theme, byAdmin: true) : OnboardPage(),
-            );
+          if (status) {
+            return state.pincode.isEmpty ? LoginPage(model: state, theme: theme, byAdmin: true) : OnboardPage();
           }
 
           return ActivationScreen(state: state, theme: theme);
