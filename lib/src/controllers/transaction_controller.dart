@@ -24,7 +24,7 @@ class TransactionController extends AppController {
   Future<void> delete(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteTransactionQuestionText.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         TransactionsDatabase sizeDatabase = TransactionsDatabase();

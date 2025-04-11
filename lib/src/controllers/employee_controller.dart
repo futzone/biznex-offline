@@ -28,7 +28,7 @@ class EmployeeController extends AppController {
   Future<void> delete(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteEmployeeRequest.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         EmployeeDatabase sizeDatabase = EmployeeDatabase();
@@ -68,7 +68,7 @@ class EmployeeController extends AppController {
   Future<void> deleteRole(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteRoleQuestion.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         RoleDatabase sizeDatabase = RoleDatabase();

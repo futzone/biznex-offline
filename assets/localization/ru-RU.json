@@ -453,5 +453,15 @@
   "kassir": "Кассир",
   "oshpaz": "Повар",
   "manager": "Менеджер",
-  "productStockError": "Товара уже нет в наличии!"
+  "productStockError": "Товара уже нет в наличии!",
+  "daily": "Ежедневно",
+  "monthly": "Ежемесячно",
+  "deleteTransactionQuestionText": "Вы действительно хотите удалить эту транзакцию?",
+  "deleteCustomerControllerText": "Вы действительно хотите удалить этого клиента?",
+  "deleteOrderPercentQuestion": "Вы действительно хотите удалить процент заказа?",
+  "deletePlaceQuestionText": "Вы действительно хотите удалить это место?",
+  "deleteMeasureQuestionText": "Вы действительно хотите удалить единицу измерения?",
+  "licenseKeyError": "Неверный или просроченный лицензионный ключ.",
+  "confirmLicenseKey": "Подтвердите лицензионный ключ",
+  "enterKey": "Введите ключ"
 }

@@ -26,7 +26,7 @@ class ProductSizeController extends AppController {
   Future<void> delete(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteSizeRequest.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         ProductSizeDatabase sizeDatabase = ProductSizeDatabase();

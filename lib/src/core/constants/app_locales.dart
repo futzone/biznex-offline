@@ -459,4 +459,14 @@ abstract class AppLocales {
   static var oshpaz = "oshpaz";
   static var manager = "manager";
   static var productStockError = "productStockError";
+  static var daily = "daily";
+  static var monthly = "monthly";
+  static var deleteTransactionQuestionText = "deleteTransactionQuestionText";
+  static var deleteCustomerController = "deleteCustomerControllerText";
+  static var deleteOrderPercentQuestion = "deleteOrderPercentQuestion";
+  static var deletePlaceQuestionText = "deletePlaceQuestionText";
+  static var deleteMeasureQuestionText = "deleteMeasureQuestionText";
+  static var licenseKeyError = "licenseKeyError";
+  static var confirmLicenseKey ="confirmLicenseKey";
+  static var enterKey = "enterKey";
 }

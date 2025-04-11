@@ -1,5 +1,7 @@
+import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
+import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +24,11 @@ void main() async {
     center: true,
     backgroundColor: Colors.transparent,
     // skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal ,
+    titleBarStyle: TitleBarStyle.normal,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
-
   });
 
   final dir = await getApplicationDocumentsDirectory();
@@ -66,7 +67,7 @@ class MyApp extends ConsumerWidget {
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,
-            home: app.pincode.isEmpty ? LoginPage(model: app, theme: theme, byAdmin: true) : OnboardPage(),
+            home: LicenseStatusWrapper(),
           ),
         );
       },

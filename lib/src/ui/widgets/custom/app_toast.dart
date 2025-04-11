@@ -4,10 +4,11 @@ import 'package:toastification/toastification.dart';
 class ShowToast {
   static const int _closeDuration = 3;
 
-  static void error(BuildContext context, String message) {
+  static void error(BuildContext context, String message, {Alignment? alignment}) {
     toastification.show(
       type: ToastificationType.error,
       context: context,
+      alignment: alignment,
       title: Text(message),
       autoCloseDuration: const Duration(seconds: _closeDuration),
     );

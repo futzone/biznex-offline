@@ -27,7 +27,7 @@ class ProductInfoController extends AppController {
   Future<void> delete(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteProductInformationQuestion.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         ProductInformationDatabase database = ProductInformationDatabase();

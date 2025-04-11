@@ -29,7 +29,7 @@ class OrderPercentController extends AppController {
   Future<void> delete(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteOrderPercentQuestion.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         OrderPercentDatabase sizeDatabase = OrderPercentDatabase();

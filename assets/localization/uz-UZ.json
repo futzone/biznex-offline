@@ -457,5 +457,15 @@
   "kassir": "Kassir",
   "oshpaz": "Oshpaz",
   "manager": "Menejer",
-  "productStockError": "Mahsulot allaqachon tugagan!"
+  "productStockError": "Mahsulot allaqachon tugagan!",
+  "daily": "Kunlik",
+  "monthly": "Oylik",
+  "deleteTransactionQuestionText": "Ushbu tranzaksiyani o‘chirib tashlamoqchimisiz?",
+  "deleteCustomerControllerText": "Ushbu mijozni o‘chirib tashlamoqchimisiz?",
+  "deleteOrderPercentQuestion": "Buyurtma foizini o‘chirib tashlamoqchimisiz?",
+  "deletePlaceQuestionText": "Ushbu joyni o‘chirib tashlamoqchimisiz?",
+  "deleteMeasureQuestionText": "O‘lchov birligini o‘chirib tashlamoqchimisiz?",
+  "licenseKeyError": "Litsenziya kaliti noto‘g‘ri yoki amal qilish muddati tugagan.",
+  "confirmLicenseKey": "Litsenziya kalitini tasdiqlang",
+  "enterKey": "Kalitni kiriting"
 }

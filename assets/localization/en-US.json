@@ -359,5 +359,15 @@
   "kassir": "Cashier",
   "oshpaz": "Chef",
   "manager": "Manager",
-  "productStockError": "The product is already out of stock!"
+  "productStockError": "The product is already out of stock!",
+  "daily": "Daily",
+  "monthly": "Monthly",
+  "deleteTransactionQuestionText": "Are you sure you want to delete this transaction?",
+  "deleteCustomerControllerText": "Are you sure you want to delete this customer?",
+  "deleteOrderPercentQuestion": "Are you sure you want to delete the order percent?",
+  "deletePlaceQuestionText": "Are you sure you want to delete this place?",
+  "deleteMeasureQuestionText": "Are you sure you want to delete the measurement unit?",
+  "licenseKeyError": "Invalid or expired license key.",
+  "confirmLicenseKey": "Confirm license key",
+  "enterKey": "Enter key"
 }

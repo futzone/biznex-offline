@@ -31,6 +31,7 @@ class AppModel {
   String regularFamily = "Regular";
   String mediumFamily = "Medium";
   String pincode;
+  String licenseKey;
 
   String? imagePath;
   String? shopAddress;
@@ -69,6 +70,7 @@ class AppModel {
     this.ref,
     this.refresh = '',
     this.locale = '',
+    this.licenseKey = '',
     required this.isMe,
     this.checkHeight,
     this.checkWidth,
@@ -103,6 +105,7 @@ class AppModel {
       imagePath: json['imagePath'] ?? '',
       shopAddress: json['shopAddress'] ?? '',
       printPhone: json['printPhone'] ?? '',
+      licenseKey: json['licenseKey'] ?? '',
     );
   }
 
@@ -168,6 +171,7 @@ class AppModel {
       "imagePath": imagePath,
       "byeText": byeText,
       "printPhone": printPhone,
+      "licenseKey": licenseKey,
     };
   }
 }

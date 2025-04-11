@@ -26,7 +26,7 @@ class CategoryController extends AppController {
   Future<void> delete(key) async {
     showConfirmDialog(
       context: context,
-      title: AppLocales.deleteProductVariantQuestion.tr(),
+      title: AppLocales.deleteCategoryQuestion.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         CategoryDatabase sizeDatabase = CategoryDatabase();
