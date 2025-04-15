@@ -184,8 +184,9 @@ class PrinterServices {
       ),
     );
 
-    await Printing.layoutPdf(
+    await Printing.directPrintPdf(
       onLayout: (PdfPageFormat format) async => doc.save(),
+      printer: Printer(url: model.token, name: model.refresh),
     );
   }
 }

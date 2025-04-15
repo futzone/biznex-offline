@@ -25,7 +25,7 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
               error: (error, stackTrace) => AppErrorScreen(),
               loading: () => AppLoadingScreen(),
               data: (employees) {
-                if (employees.isEmpty) return LoginPage(model: state, theme: theme);
+                if (employees.isEmpty) return LoginPageHarom(model: state, theme: theme, fromAdmin: true);
                 return Scaffold(
                   appBar: AppBar(
                     title: Text("Biznex", style: TextStyle(fontSize: 28, fontFamily: boldFamily)),
@@ -56,7 +56,7 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                           roleName: "Admin",
                           fullname: "Super Admin",
                           onPressed: () {
-                            AppRouter.go(context, LoginPage(model: state, theme: theme, byAdmin: true));
+                            AppRouter.go(context, LoginPageHarom(model: state, theme: theme, fromAdmin: true));
                           },
                         );
                       }
@@ -67,7 +67,7 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                         fullname: employee.fullname,
                         onPressed: () {
                           ref.read(currentEmployeeProvider.notifier).update((state) => employee);
-                          AppRouter.go(context, LoginPage(model: state, theme: theme));
+                          AppRouter.go(context, LoginPageHarom(model: state, theme: theme));
                         },
                       );
                     },

@@ -52,7 +52,7 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
     if (order != null && order.products.isNotEmpty && order.products.any((element) => element.product.id == item.product.id)) {
       AppRouter.go(
         context,
-        LoginPage(
+        LoginPageHarom(
           model: model,
           theme: AppColors(isDark: model.isDark),
           onSuccessEnter: () {

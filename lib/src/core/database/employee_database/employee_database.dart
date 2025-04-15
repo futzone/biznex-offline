@@ -1,6 +1,6 @@
 import 'package:biznex/src/core/database/app_database/app_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
- 
+
 class EmployeeDatabase extends AppDatabase {
   final String boxName = 'employees';
 
@@ -40,5 +40,19 @@ class EmployeeDatabase extends AppDatabase {
 
     final box = await openBox(boxName);
     box.put(key, data.toJson());
+  }
+
+  Future<Employee?> getEmployee(String pincode) async {
+    final box = await openBox(boxName);
+    final boxData = box.values;
+    Employee? employee;
+    for (final item in boxData) {
+      if (item['pincode'] == pincode) {
+        employee = Employee.fromJson(item);
+        break;
+      }
+    }
+
+    return employee;
   }
 }

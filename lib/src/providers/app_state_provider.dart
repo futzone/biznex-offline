@@ -6,11 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final StateProvider<BuildContext?> mainContextProvider = StateProvider<BuildContext?>((ref) => null);
 
-final appStateProvider = FutureProvider.family((ref, BuildContext context) async {
+final appStateProvider = FutureProvider((ref) async {
   AppStateDatabase stateDatabase = AppStateDatabase();
   AppModel initialState = await stateDatabase.getApp();
-  ref.read(mainContextProvider.notifier).state = context;
-  initialState.locale = context.locale.languageCode;
   await stateDatabase.updateApp(initialState);
   return initialState;
 });

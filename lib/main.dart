@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:biznex/src/providers/license_status_provider.dart';
+import 'package:biznex/src/server/start.dart';
 import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
@@ -29,15 +32,16 @@ void main() async {
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
-    await windowManager.setFullScreen(true);
+
   });
 
   final dir = await getApplicationDocumentsDirectory();
+  log(dir.path);
   Hive.init(dir.path);
 
   Hive.initFlutter();
 
-  // startServer();
+  startServer();
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(

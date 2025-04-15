@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:biznex/src/core/database/app_database/app_database.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/core/utils/product_utils.dart';

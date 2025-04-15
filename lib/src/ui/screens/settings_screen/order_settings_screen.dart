@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/orcer_percent_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
@@ -7,12 +6,15 @@ import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/model/order_models/percent_model.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/providers/price_percent_provider.dart';
+import 'package:biznex/src/providers/printer_devices_provider.dart';
+import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:printing/printing.dart';
 
 class OrderSettingsScreen extends HookConsumerWidget {
   final AppModel state;
@@ -42,9 +44,59 @@ class OrderSettingsScreen extends HookConsumerWidget {
                 AppText.$18Bold(AppLocales.settings.tr()),
               ],
             ),
+
+            24.h,
+            AppText.$18Bold(AppLocales.printing.tr()),
+            8.h,
+
+            ///
+            state.whenProviderData(
+              provider: printerDevicesProvider,
+              builder: (devices) {
+                devices as List<Printer>;
+                return CustomPopupMenu(
+                  theme: theme,
+                  children: [
+                    for (final item in devices)
+                      CustomPopupItem(
+                        icon: Ionicons.print_outline,
+                        title: item.name,
+                        onPressed: () {
+                          AppModel kApp = state;
+                          kApp.token = item.url;
+                          kApp.refresh = item.name;
+                          AppStateDatabase().updateApp(kApp).then((_) {
+                            ref.invalidate(appStateProvider);
+                          });
+                        },
+                      ),
+                  ],
+                  child: Container(
+                    width: double.infinity,
+                    padding: 12.all,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: theme.secondaryTextColor),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      spacing: 16,
+                      children: [
+                        Icon(Ionicons.print_outline, size: 20, color: theme.textColor),
+                        Text(
+                          AppLocales.printing.tr(),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            ///
             24.h,
             AppText.$18Bold(AppLocales.percentsForOrder.tr()),
             8.h,
+
             Row(
               spacing: 16,
               children: [
@@ -165,8 +217,8 @@ class OrderSettingsScreen extends HookConsumerWidget {
 
                 AppStateDatabase().updateApp(newModel).then((_) {
                   ref.invalidate(appStateProvider);
-                  ref.invalidate(appStateProvider(context));
-                  ref.refresh(appStateProvider(context));
+                  ref.invalidate(appStateProvider);
+                  ref.refresh(appStateProvider);
                   AppRouter.close(context);
                 });
               },

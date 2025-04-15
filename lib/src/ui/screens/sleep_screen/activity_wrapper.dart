@@ -19,7 +19,7 @@ class _InactivityWrapperState extends State<ActivityWrapper> {
   void _resetTimer() {
     _inactivityTimer?.cancel();
     setState(() => _showLogo = false);
-    _inactivityTimer = Timer(const Duration(seconds: 15), () {
+    _inactivityTimer = Timer(const Duration(seconds: 30), () {
       setState(() => _showLogo = true);
     });
   }

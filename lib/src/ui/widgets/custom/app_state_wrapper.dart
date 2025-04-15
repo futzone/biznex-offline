@@ -15,7 +15,7 @@ class AppStateWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appStateProviderListener = ref.watch(appStateProvider(mainContext ?? context));
+    final appStateProviderListener = ref.watch(appStateProvider);
 
     return appStateProviderListener.when(
       data: (appStateData) {

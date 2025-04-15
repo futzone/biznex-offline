@@ -13,19 +13,25 @@ import 'package:biznex/src/ui/pages/waiter_pages/waiter_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPageHarom extends ConsumerStatefulWidget {
   final AppModel model;
   final AppColors theme;
-  final bool byAdmin;
   final void Function()? onSuccessEnter;
+  final bool fromAdmin;
 
-  const LoginPage({super.key, this.onSuccessEnter, this.byAdmin = false, required this.model, required this.theme});
+  const LoginPageHarom({
+    super.key,
+    this.onSuccessEnter,
+    required this.model,
+    required this.theme,
+    this.fromAdmin = false,
+  });
 
   @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPageHarom> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends ConsumerState<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPageHarom> {
   AppModel get model => widget.model;
 
   AppColors get theme => widget.theme;
@@ -43,49 +49,52 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   void onNextPressed(String pincode, Employee employee) async {
-    if (!pincodeChars.contains('')) {
+    log("\n\npincode: ${pincode}, Employee:${employee.fullname} fromAdmin: ${widget.fromAdmin}");
+
+
+
+    if (pincodeChars.every((e) => e.isNotEmpty)) {
       final enteredPin = pincodeChars.join('');
 
-      if (widget.onSuccessEnter != null) {
-        if (model.pincode == enteredPin) {
-          widget.onSuccessEnter!();
-          AppRouter.close(context);
-          return;
-        }
-
-        ShowToast.error(context, AppLocales.incorrectPincode.tr());
-        pincodeChars = ['', '', '', ''];
-        setState(() {});
-        return;
-      }
-
-      if (!widget.byAdmin) {
-        if (pincode != enteredPin) {
-          ShowToast.error(context, AppLocales.incorrectPincode.tr());
-          pincodeChars = ['', '', '', ''];
-          setState(() {});
-        } else {
-          final roles = await RoleDatabase().get();
-          final role = roles.firstWhere((element) => element.id == employee.roleId, orElse: () => Role(name: 'Demo', permissions: []));
-          log(role.permissions.toString());
-
-          if (role.permissions.contains(Role.permissionList.first) && role.permissions.length == 1) {
-            AppRouter.open(context, WaiterPage());
-          }
-        }
-        return;
-      } else if (widget.byAdmin && model.pincode.isNotEmpty && model.pincode == enteredPin) {
-        AppRouter.open(context, MainPage());
-        return;
-      }
-
-      AppModel app = model;
-      app.pincode = enteredPin;
-      AppStateDatabase stateDatabase = AppStateDatabase();
-      await stateDatabase.updateApp(app).then((_) {
+      if (model.pincode.isEmpty && employee.roleName.toLowerCase() == 'admin') {
+        final app = model..pincode = enteredPin;
+        await AppStateDatabase().updateApp(app);
         model.ref!.invalidate(appStateProvider);
-        AppRouter.open(context, MainPage());
-      });
+        return AppRouter.open(context, MainPage());
+      }
+
+      if (widget.fromAdmin && model.pincode == enteredPin) {
+        return AppRouter.open(context, MainPage());
+      }
+
+      if (!widget.fromAdmin) {
+        if (pincode != enteredPin) {
+          log("$pincode!= $enteredPin");
+          ShowToast.error(context, AppLocales.incorrectPincode.tr());
+          log('❌ Kiritilgan PIN noto‘g‘ri');
+          pincodeChars = ['', '', '', ''];
+          return setState(() {});
+        }
+
+        final roles = await RoleDatabase().get();
+        final role = roles.firstWhere(
+          (e) => e.id == employee.roleId,
+          orElse: () => Role(name: 'Demo', permissions: []),
+        );
+
+        if (role.permissions.contains(Role.permissionList.first) && role.permissions.length == 1) {
+          return AppRouter.open(context, WaiterPage());
+        }
+      }
+
+      if (model.pincode == enteredPin && widget.onSuccessEnter != null) {
+        widget.onSuccessEnter!();
+        return AppRouter.close(context);
+      }
+
+      ShowToast.error(context, AppLocales.incorrectPincode.tr());
+      pincodeChars = ['', '', '', ''];
+      return setState(() {});
     }
   }
 

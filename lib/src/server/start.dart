@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
+import 'package:biznex/src/server/docs.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -17,10 +17,15 @@ void startServer() async {
     return Response.ok(jsonEncode(value), headers: {"Content-Type": "application/json"});
   });
 
+  app.get('/docs', (Request request) async {
+    return Response.ok(renderApiRequests(), headers: {"Content-Type": "text/html"});
+  });
+
   app.post('/data', (Request request) async {
     final payload = await request.readAsString();
-    box.put('key', payload);
-    return Response.ok('saved');
+    final json = jsonDecode(payload);
+    // box.put('key', payload);
+    return Response.ok(jsonEncode(json), headers: {"Content-Type": "application/json"});
   });
 
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(app);
