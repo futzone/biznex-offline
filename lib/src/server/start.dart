@@ -1,35 +1,43 @@
-import 'dart:convert';
 import 'dart:developer';
+import 'package:biznex/src/server/constants/api_endpoints.dart';
 import 'package:biznex/src/server/docs.dart';
+import 'package:biznex/src/server/routes/categories_router.dart';
+import 'package:biznex/src/server/routes/places_router.dart';
+import 'package:biznex/src/server/routes/products_router.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
-import 'package:hive/hive.dart';
 
 void startServer() async {
   log('Server running...');
   final app = Router();
 
-  var box = await Hive.openBox('products');
-
-  app.get('/data', (Request request) async {
-    final value = box.toMap();
-    return Response.ok(jsonEncode(value), headers: {"Content-Type": "application/json"});
-  });
-
-  app.get('/docs', (Request request) async {
+  app.get(ApiEndpoints.docs, (Request request) async {
     return Response.ok(renderApiRequests(), headers: {"Content-Type": "text/html"});
   });
 
-  app.post('/data', (Request request) async {
-    final payload = await request.readAsString();
-    final json = jsonDecode(payload);
+  app.get(ApiEndpoints.places, (Request request) async {
+    // final payload = await request.readAsString();
+    // final json = jsonDecode(payload);
     // box.put('key', payload);
-    return Response.ok(jsonEncode(json), headers: {"Content-Type": "application/json"});
+    PlacesRouter placesRouter = PlacesRouter(request);
+    final placesResponse = await placesRouter.getPlaces();
+    return placesResponse.toResponse();
   });
 
-  final handler = Pipeline().addMiddleware(logRequests()).addHandler(app);
+  app.get(ApiEndpoints.categories, (Request request) async {
+    CategoriesRouter categoriesRouter = CategoriesRouter(request);
+    final placesResponse = await categoriesRouter.getCategories();
+    return placesResponse.toResponse();
+  });
 
-  final server = await io.serve(handler, '0.0.0.0', 8080);
-  print('Server running on localhost:${server.port}');
+  app.get(ApiEndpoints.products, (Request request) async {
+    ProductsRouter categoriesRouter = ProductsRouter(request);
+    final placesResponse = await categoriesRouter.getProducts();
+    return placesResponse.toResponse();
+  });
+
+  final handler = Pipeline().addMiddleware(logRequests()).addHandler(app.call);
+
+  await io.serve(handler, '0.0.0.0', 8080);
 }

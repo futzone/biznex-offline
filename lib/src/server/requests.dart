@@ -1,24 +1,14 @@
+import 'package:biznex/src/server/constants/api_endpoints.dart';
+import 'package:biznex/src/server/constants/response_messages.dart';
 import 'package:biznex/src/server/docs.dart';
+import 'package:biznex/src/server/routes/categories_router.dart';
+import 'package:biznex/src/server/routes/places_router.dart';
+import 'package:biznex/src/server/routes/products_router.dart';
 
 List<ApiRequest> serverRequestsList() {
   return [
-    ApiRequest(
-      name: 'Login',
-      path: '/auth/login',
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: '{"email": "test@test.com", "password": "123456"}',
-      contentType: 'application/json',
-      errorResponse: {},
-    ),
-    ApiRequest(
-      name: 'Get User',
-      path: '/user/me',
-      method: 'GET',
-      headers: {},
-      body: '',
-      contentType: 'application/json',
-      errorResponse: {},
-    ),
+    PlacesRouter.docs(),
+    CategoriesRouter.docs(),
+    ProductsRouter.docs(),
   ];
 }
