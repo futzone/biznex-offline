@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:biznex/src/server/constants/api_endpoints.dart';
 import 'package:biznex/src/server/docs.dart';
 import 'package:biznex/src/server/routes/categories_router.dart';
+import 'package:biznex/src/server/routes/orders_router.dart';
 import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
 import 'package:shelf/shelf.dart';
@@ -34,6 +35,18 @@ void startServer() async {
   app.get(ApiEndpoints.products, (Request request) async {
     ProductsRouter categoriesRouter = ProductsRouter(request);
     final placesResponse = await categoriesRouter.getProducts();
+    return placesResponse.toResponse();
+  });
+
+  app.get(ApiEndpoints.orders, (Request request) async {
+    OrdersRouter ordersRouter = OrdersRouter(request);
+    final placesResponse = await ordersRouter.getEmployeeOrders();
+    return placesResponse.toResponse();
+  });
+
+  app.get(ApiEndpoints.placeOrders, (Request request, String id) async {
+    OrdersRouter ordersRouter = OrdersRouter(request);
+    final placesResponse = await ordersRouter.getPlaceState(id);
     return placesResponse.toResponse();
   });
 

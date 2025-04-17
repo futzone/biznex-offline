@@ -1,4 +1,7 @@
 import 'package:biznex/src/server/requests.dart';
+import 'dart:convert';
+
+final encoder = const JsonEncoder.withIndent('  ');
 
 class ApiRequest {
   String name;
@@ -57,7 +60,7 @@ String renderApiRequests() {
   <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Biznex Swagger UI</title>
+    <title>Biznex Waiters Docs</title>
     <style>
       body { font-family: sans-serif; padding: 20px; }
       .request-box { border: 1px solid #ccc; padding: 16px; margin-bottom: 20px; border-radius: 8px; }
@@ -72,22 +75,28 @@ String renderApiRequests() {
     </style>
   </head>
   <body>
-    <h1>🧩 Biznex Swagger UI</h1>
+    <h1>🧩 Biznex Waiters Api Docs</h1>
   ''';
 
   for (var request in requests) {
+    final formattedResponse = encoder.convert(request.response ?? {});
+    final formattedError = encoder.convert(request.errorResponse ?? {});
+
     htmlContent += '''
-    <div class="request-box">
-      <h2>${request.name}</h2>
-      <div><span class="method ${request.method}">${request.method}</span> <code> ${request.path}</code></div>
-      <pre id="response-${request.headers.hashCode}">Request headers: ${request.headers}</pre>
-      <pre id="response-${request.params.hashCode}">Request params: ${request.params}</pre>
-      <pre id="response-${request.path}">Request body: ${request.body}</pre>
-      <pre id="response-${request.response.hashCode}">Response example: ${request.response ?? '{}'}</pre>
-      <pre id="response-${request.errorResponse.hashCode}">Error Response Example: ${request.errorResponse ?? '{}'}</pre>
+  <div class="request-box">
+    <h2 onclick="toggleSection('${request.path.hashCode}')">${request.name}</h2>
+    <div id="section-${request.path.hashCode}" style="display:none;">
+      <div><span class="method ${request.method}">${request.method}</span> <code>${request.path}</code></div>
+      <pre>Request headers: ${request.headers}</pre>
+      <pre>Request params: ${request.params}</pre>
+      <pre>Request body: ${request.body}</pre>
+      <pre class="code-block language-json">$formattedResponse</pre>
+      <pre class="code-block language-json">$formattedError</pre>
     </div>
-    ''';
+  </div>
+  ''';
   }
+
 
   htmlContent += '''
   <script>
@@ -102,6 +111,17 @@ String renderApiRequests() {
       .catch(error => document.getElementById('response-' + path).textContent = 'Error: ' + error);
     }
   </script>
+  <script>
+  function toggleSection(id) {
+    const section = document.getElementById('section-' + id);
+    if (section.style.display === 'none') {
+      section.style.display = 'block';
+    } else {
+      section.style.display = 'none';
+    }
+  }
+</script>
+
   </body>
   </html>
   ''';

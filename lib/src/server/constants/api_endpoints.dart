@@ -1,6 +1,9 @@
 class ApiEndpoints {
   static var docs = '/docs';
   static var places = '/api/v1/places';
+  static var orders = '/api/v1/orders';
+  static var placeOrders = '/api/v1/place/orders/<id>';
   static var categories = '/api/v1/categories';
   static var products = '/api/v1/products';
-}
+
+ }
