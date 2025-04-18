@@ -55,7 +55,7 @@ class AppScaffold extends HookWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text(title, style: TextStyle(fontSize: 32, fontFamily: boldFamily)),
+                child: Text(title, style: TextStyle(fontSize: 20, fontFamily: boldFamily)),
               ),
               64.w,
               ...actions,

@@ -53,7 +53,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                       Row(
                         spacing: 16,
                         children: [
-                          Expanded(child: Text(AppLocales.orders.tr(), style: TextStyle(fontSize: 32, fontFamily: boldFamily))),
+                          Expanded(child: Text(AppLocales.orders.tr(), style: TextStyle(fontSize: 20, fontFamily: boldFamily))),
                           state.whenProviderData(
                             provider: placesProvider,
                             builder: (places) {

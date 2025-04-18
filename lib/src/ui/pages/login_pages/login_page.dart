@@ -123,7 +123,7 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
               AppLocales.enterNewPincode.tr(),
               style: TextStyle(
                 fontFamily: boldFamily,
-                fontSize: 32,
+                fontSize: 20,
               ),
             ),
             16.h,

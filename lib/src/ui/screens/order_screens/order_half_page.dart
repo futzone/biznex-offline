@@ -209,18 +209,14 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                         Text(product.size ?? '', style: TextStyle(fontSize: 16)),
                                       ],
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(child: Text(product.amount.toMeasure, style: TextStyle(fontSize: 16))),
-                                        Text(
-                                          product.price.priceUZS,
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
+                                    Text(
+                                      product.price.priceUZS,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),

@@ -34,7 +34,7 @@ class AppText {
   static Widget $32Bold(String text, {EdgeInsets? padding, TextStyle? style}) {
     return Padding(
       padding: padding ?? Dis.only(),
-      child: Text(text, style: style ?? TextStyle(fontSize: 32, fontFamily: boldFamily)),
+      child: Text(text, style: style ?? TextStyle(fontSize: 20, fontFamily: boldFamily)),
     );
   }
 

@@ -33,7 +33,7 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Text(AppLocales.reports.tr(), style: TextStyle(fontSize: 32, fontFamily: boldFamily)),
+                  child: Text(AppLocales.reports.tr(), style: TextStyle(fontSize: 20, fontFamily: boldFamily)),
                 ),
                 64.w,
               ],

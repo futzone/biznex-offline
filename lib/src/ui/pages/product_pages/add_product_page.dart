@@ -153,7 +153,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 Text(
                   AppLocales.addProductAppbarTitle.tr(),
-                  style: TextStyle(fontSize: 32, fontFamily: boldFamily),
+                  style: TextStyle(fontSize: 20, fontFamily: boldFamily),
                 ),
               ],
             ),
