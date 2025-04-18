@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/extensions/device_type.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
@@ -148,6 +149,8 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
 
                       products as List<Product>;
 
+                      final deviceType = getDeviceType(context);
+
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: GridView.builder(
@@ -155,6 +158,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                             crossAxisCount: 3,
                             mainAxisSpacing: 16,
                             crossAxisSpacing: 16,
+                            childAspectRatio: deviceType == DeviceType.desktop ? 1.0 : 0.8,
                           ),
                           itemCount: ((_searchResultList.isNotEmpty && _textEditingController.text.isNotEmpty) || _selectedCategory != null)
                               ? _searchResultList.length

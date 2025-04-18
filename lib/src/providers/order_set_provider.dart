@@ -50,20 +50,10 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
     final order = ref.watch(ordersProvider(item.placeId)).value;
 
     if (order != null && order.products.isNotEmpty && order.products.any((element) => element.product.id == item.product.id)) {
-      AppRouter.go(
-        context,
-        LoginPageHarom(
-          model: model,
-          theme: AppColors(isDark: model.isDark),
-          onSuccessEnter: () {
-            final index = state.indexWhere((e) => e.product.id == item.product.id && e.placeId == item.placeId);
-            if (index != -1) {
-              state = [...state.where((e) => !(e.product.id == item.product.id && e.placeId == item.placeId))];
-            }
-          },
-        ),
-      );
-
+      final index = state.indexWhere((e) => e.product.id == item.product.id && e.placeId == item.placeId);
+      if (index != -1) {
+        state = [...state.where((e) => !(e.product.id == item.product.id && e.placeId == item.placeId))];
+      }
       return;
     }
 

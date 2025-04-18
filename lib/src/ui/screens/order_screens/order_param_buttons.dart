@@ -42,11 +42,19 @@ class OrderParamButtons extends ConsumerWidget {
                   spacing: 8,
                   children: [
                     Icon(Icons.schedule),
-                    AppText.$14Bold(
-                      scheduleNotifier.value == null
-                          ? AppLocales.scheduleOrder.tr()
-                          : DateFormat('d-MMMM, HH:mm', context.locale.languageCode).format(scheduleNotifier.value!),
-                    ),
+                    if (scheduleNotifier.value == null)
+                      Expanded(
+                        child: Text(
+                          AppLocales.scheduleOrder.tr(),
+                          style: TextStyle(fontFamily: boldFamily),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      )
+                    else
+                      AppText.$14Bold(
+                        DateFormat('d-MMMM, HH:mm', context.locale.languageCode).format(scheduleNotifier.value!),
+                      ),
                     if (scheduleNotifier.value != null) Spacer(),
                     if (scheduleNotifier.value != null)
                       IconButton(

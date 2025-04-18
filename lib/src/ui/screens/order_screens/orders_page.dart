@@ -38,7 +38,6 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
           onPressed: () {
             AppRouter.go(context, WaiterPage(haveBack: true));
           },
-
           child: Icon(Icons.add, size: 60, color: Colors.white),
         ),
         body: ref.watch(ordersFilterProvider(orderFilter.value)).when(
@@ -50,16 +49,75 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                   child: Column(
                     spacing: 12,
                     children: [
-                      Row(
-                        spacing: 16,
-                        children: [
-                          Expanded(child: Text(AppLocales.orders.tr(), style: TextStyle(fontSize: 20, fontFamily: boldFamily))),
-                          state.whenProviderData(
-                            provider: placesProvider,
-                            builder: (places) {
-                              places as List<Place>;
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          spacing: 16,
+                          children: [
+                            state.whenProviderData(
+                              provider: placesProvider,
+                              builder: (places) {
+                                places as List<Place>;
 
-                              return CustomPopupMenu(
+                                return CustomPopupMenu(
+                                  theme: theme,
+                                  children: [
+                                    CustomPopupItem(
+                                      title: AppLocales.all.tr(),
+                                      onPressed: () {
+                                        placeFather.value = null;
+                                        OrderFilterModel filterModel = orderFilter.value;
+                                        filterModel.place = null;
+                                        orderFilter.value = filterModel;
+                                        setState(() {});
+                                        ref.invalidate(ordersFilterProvider);
+                                      },
+                                    ),
+                                    for (final pls in places)
+                                      CustomPopupItem(
+                                        title: pls.name,
+                                        onPressed: () {
+                                          if (pls.children != null && pls.children!.isNotEmpty) {
+                                            placeFather.value = pls;
+                                            OrderFilterModel filterModel = orderFilter.value;
+                                            filterModel.place = pls.id;
+                                            orderFilter.value = filterModel;
+                                            setState(() {});
+                                            return;
+                                          }
+
+                                          placeFather.value = null;
+                                          OrderFilterModel filterModel = orderFilter.value;
+                                          filterModel.place = pls.id;
+                                          orderFilter.value = filterModel;
+                                          setState(() {});
+                                          ref.invalidate(ordersFilterProvider);
+                                        },
+                                      )
+                                  ],
+                                  child: Container(
+                                    padding: Dis.only(lr: 24, tb: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: theme.accentColor,
+                                      border: orderFilter.value.place == null ? null : Border.all(color: theme.mainColor),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        orderFilter.value.place == null
+                                            ? AppLocales.places.tr()
+                                            : placeFather.value != null
+                                                ? placeFather.value!.name
+                                                : places.firstWhere((el) => el.id == orderFilter.value.place).name,
+                                        style: TextStyle(fontSize: 16, fontFamily: boldFamily),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            if (placeFather.value != null)
+                              CustomPopupMenu(
                                 theme: theme,
                                 children: [
                                   CustomPopupItem(
@@ -73,27 +131,18 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                                       ref.invalidate(ordersFilterProvider);
                                     },
                                   ),
-                                  for (final pls in places)
+                                  for (final item in placeFather.value!.children!)
                                     CustomPopupItem(
-                                      title: pls.name,
+                                      title: item.name,
                                       onPressed: () {
-                                        if (pls.children != null && pls.children!.isNotEmpty) {
-                                          placeFather.value = pls;
-                                          OrderFilterModel filterModel = orderFilter.value;
-                                          filterModel.place = pls.id;
-                                          orderFilter.value = filterModel;
-                                          setState(() {});
-                                          return;
-                                        }
-
-                                        placeFather.value = null;
                                         OrderFilterModel filterModel = orderFilter.value;
-                                        filterModel.place = pls.id;
+                                        filterModel.place = item.id;
                                         orderFilter.value = filterModel;
                                         setState(() {});
+
                                         ref.invalidate(ordersFilterProvider);
                                       },
-                                    )
+                                    ),
                                 ],
                                 child: Container(
                                   padding: Dis.only(lr: 24, tb: 10),
@@ -105,38 +154,150 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                                   child: Center(
                                     child: Text(
                                       orderFilter.value.place == null
-                                          ? AppLocales.places.tr()
-                                          : placeFather.value != null
-                                              ? placeFather.value!.name
-                                              : places.firstWhere((el) => el.id == orderFilter.value.place).name,
+                                          ? AppLocales.stol.tr()
+                                          : placeFather.value!.children!
+                                              .firstWhere(
+                                                (e) => e.id == orderFilter.value.place,
+                                                orElse: () => Place(name: AppLocales.stol.tr()),
+                                              )
+                                              .name,
                                       style: TextStyle(fontSize: 16, fontFamily: boldFamily),
                                     ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                          if (placeFather.value != null)
+                              ),
+                            state.whenProviderData(
+                              provider: employeeProvider,
+                              builder: (places) {
+                                places as List<Employee>;
+
+                                return CustomPopupMenu(
+                                  theme: theme,
+                                  children: [
+                                    CustomPopupItem(
+                                      title: AppLocales.all.tr(),
+                                      onPressed: () {
+                                        OrderFilterModel filterModel = orderFilter.value;
+                                        filterModel.employee = null;
+                                        orderFilter.value = filterModel;
+                                        setState(() {});
+                                        ref.invalidate(ordersFilterProvider);
+                                      },
+                                    ),
+                                    for (final item in places)
+                                      CustomPopupItem(
+                                          title: item.fullname,
+                                          onPressed: () {
+                                            OrderFilterModel filterModel = orderFilter.value;
+                                            filterModel.employee = item.id;
+                                            orderFilter.value = filterModel;
+                                            setState(() {});
+
+                                            ref.invalidate(ordersFilterProvider);
+                                          }),
+                                  ],
+                                  child: Container(
+                                    padding: Dis.only(lr: 24, tb: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: theme.accentColor,
+                                      border: orderFilter.value.employee == null ? null : Border.all(color: theme.mainColor),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        orderFilter.value.employee == null
+                                            ? AppLocales.employees.tr()
+                                            : places
+                                                .firstWhere(
+                                                  (el) => el.id == orderFilter.value.employee,
+                                                  orElse: () => Employee(
+                                                      fullname: AppLocales.employees.tr(),
+                                                      roleId: '',
+                                                      roleName: ''
+                                                          ''),
+                                                )
+                                                .fullname,
+                                        style: TextStyle(fontSize: 16, fontFamily: boldFamily),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            state.whenProviderData(
+                              provider: productsProvider,
+                              builder: (places) {
+                                places as List<Product>;
+
+                                return CustomPopupMenu(
+                                  theme: theme,
+                                  children: [
+                                    CustomPopupItem(
+                                      title: AppLocales.all.tr(),
+                                      onPressed: () {
+                                        OrderFilterModel filterModel = orderFilter.value;
+                                        filterModel.product = null;
+                                        orderFilter.value = filterModel;
+                                        setState(() {});
+                                        ref.invalidate(ordersFilterProvider);
+                                      },
+                                    ),
+                                    for (int i = 0; i < ((places.length > 100) ? 100 : places.length); i++)
+                                      CustomPopupItem(
+                                        title: places[i].name,
+                                        onPressed: () {
+                                          OrderFilterModel filterModel = orderFilter.value;
+                                          filterModel.product = places[i].id;
+                                          orderFilter.value = filterModel;
+                                          setState(() {});
+
+                                          ref.invalidate(ordersFilterProvider);
+                                        },
+                                      )
+                                  ],
+                                  child: Container(
+                                    padding: Dis.only(lr: 24, tb: 10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: theme.accentColor,
+                                      border: orderFilter.value.product == null ? null : Border.all(color: theme.mainColor),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        orderFilter.value.product == null
+                                            ? AppLocales.products.tr()
+                                            : places
+                                                .firstWhere(
+                                                  (el) => el.id == orderFilter.value.product,
+                                                  orElse: () => Product(name: AppLocales.products.tr(), price: 0),
+                                                )
+                                                .name,
+                                        style: TextStyle(fontSize: 16, fontFamily: boldFamily),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                             CustomPopupMenu(
                               theme: theme,
                               children: [
                                 CustomPopupItem(
                                   title: AppLocales.all.tr(),
                                   onPressed: () {
-                                    placeFather.value = null;
                                     OrderFilterModel filterModel = orderFilter.value;
-                                    filterModel.place = null;
+                                    filterModel.status = null;
                                     orderFilter.value = filterModel;
                                     setState(() {});
                                     ref.invalidate(ordersFilterProvider);
                                   },
                                 ),
-                                for (final item in placeFather.value!.children!)
+                                for (final item in [Order.opened, Order.cancelled, Order.completed])
                                   CustomPopupItem(
-                                    title: item.name,
+                                    title: item.tr(),
                                     onPressed: () {
                                       OrderFilterModel filterModel = orderFilter.value;
-                                      filterModel.place = item.id;
+                                      filterModel.status = item;
                                       orderFilter.value = filterModel;
                                       setState(() {});
 
@@ -149,224 +310,64 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(16),
                                   color: theme.accentColor,
-                                  border: orderFilter.value.place == null ? null : Border.all(color: theme.mainColor),
+                                  border: orderFilter.value.status == null ? null : Border.all(color: theme.mainColor),
                                 ),
                                 child: Center(
                                   child: Text(
-                                    orderFilter.value.place == null
-                                        ? AppLocales.stol.tr()
-                                        : placeFather.value!.children!
-                                            .firstWhere(
-                                              (e) => e.id == orderFilter.value.place,
-                                              orElse: () => Place(name: AppLocales.stol.tr()),
-                                            )
-                                            .name,
+                                    orderFilter.value.status == null ? AppLocales.status.tr() : orderFilter.value.status!.tr(),
                                     style: TextStyle(fontSize: 16, fontFamily: boldFamily),
                                   ),
                                 ),
                               ),
                             ),
-                          state.whenProviderData(
-                            provider: employeeProvider,
-                            builder: (places) {
-                              places as List<Employee>;
-
-                              return CustomPopupMenu(
-                                theme: theme,
-                                children: [
-                                  CustomPopupItem(
-                                    title: AppLocales.all.tr(),
-                                    onPressed: () {
-                                      OrderFilterModel filterModel = orderFilter.value;
-                                      filterModel.employee = null;
-                                      orderFilter.value = filterModel;
-                                      setState(() {});
-                                      ref.invalidate(ordersFilterProvider);
-                                    },
-                                  ),
-                                  for (final item in places)
-                                    CustomPopupItem(
-                                        title: item.fullname,
-                                        onPressed: () {
-                                          OrderFilterModel filterModel = orderFilter.value;
-                                          filterModel.employee = item.id;
-                                          orderFilter.value = filterModel;
-                                          setState(() {});
-
-                                          ref.invalidate(ordersFilterProvider);
-                                        }),
-                                ],
-                                child: Container(
-                                  padding: Dis.only(lr: 24, tb: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: theme.accentColor,
-                                    border: orderFilter.value.employee == null ? null : Border.all(color: theme.mainColor),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      orderFilter.value.employee == null
-                                          ? AppLocales.employees.tr()
-                                          : places
-                                              .firstWhere(
-                                                (el) => el.id == orderFilter.value.employee,
-                                                orElse: () => Employee(
-                                                    fullname: AppLocales.employees.tr(),
-                                                    roleId: '',
-                                                    roleName: ''
-                                                        ''),
-                                              )
-                                              .fullname,
-                                      style: TextStyle(fontSize: 16, fontFamily: boldFamily),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          state.whenProviderData(
-                            provider: productsProvider,
-                            builder: (places) {
-                              places as List<Product>;
-
-                              return CustomPopupMenu(
-                                theme: theme,
-                                children: [
-                                  CustomPopupItem(
-                                    title: AppLocales.all.tr(),
-                                    onPressed: () {
-                                      OrderFilterModel filterModel = orderFilter.value;
-                                      filterModel.product = null;
-                                      orderFilter.value = filterModel;
-                                      setState(() {});
-                                      ref.invalidate(ordersFilterProvider);
-                                    },
-                                  ),
-                                  for (int i = 0; i < ((places.length > 100) ? 100 : places.length); i++)
-                                    CustomPopupItem(
-                                      title: places[i].name,
-                                      onPressed: () {
-                                        OrderFilterModel filterModel = orderFilter.value;
-                                        filterModel.product = places[i].id;
-                                        orderFilter.value = filterModel;
-                                        setState(() {});
-
-                                        ref.invalidate(ordersFilterProvider);
-                                      },
-                                    )
-                                ],
-                                child: Container(
-                                  padding: Dis.only(lr: 24, tb: 10),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: theme.accentColor,
-                                    border: orderFilter.value.product == null ? null : Border.all(color: theme.mainColor),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      orderFilter.value.product == null
-                                          ? AppLocales.products.tr()
-                                          : places
-                                              .firstWhere(
-                                                (el) => el.id == orderFilter.value.product,
-                                                orElse: () => Product(name: AppLocales.products.tr(), price: 0),
-                                              )
-                                              .name,
-                                      style: TextStyle(fontSize: 16, fontFamily: boldFamily),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          CustomPopupMenu(
-                            theme: theme,
-                            children: [
-                              CustomPopupItem(
-                                title: AppLocales.all.tr(),
-                                onPressed: () {
-                                  OrderFilterModel filterModel = orderFilter.value;
-                                  filterModel.status = null;
-                                  orderFilter.value = filterModel;
-                                  setState(() {});
-                                  ref.invalidate(ordersFilterProvider);
-                                },
-                              ),
-                              for (final item in [Order.opened, Order.cancelled, Order.completed])
-                                CustomPopupItem(
-                                  title: item.tr(),
-                                  onPressed: () {
+                            SimpleButton(
+                              onPressed: () {
+                                showDatePicker(context: context, firstDate: DateTime(2025, 1), lastDate: DateTime.now()).then((date) {
+                                  if (date != null) {
                                     OrderFilterModel filterModel = orderFilter.value;
-                                    filterModel.status = item;
+                                    filterModel.dateTime = date;
                                     orderFilter.value = filterModel;
                                     setState(() {});
 
                                     ref.invalidate(ordersFilterProvider);
-                                  },
+                                  }
+                                });
+                              },
+                              child: Container(
+                                padding: Dis.only(lr: 24, tb: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: theme.accentColor,
+                                  border: orderFilter.value.dateTime == null ? null : Border.all(color: theme.mainColor),
                                 ),
-                            ],
-                            child: Container(
-                              padding: Dis.only(lr: 24, tb: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: theme.accentColor,
-                                border: orderFilter.value.status == null ? null : Border.all(color: theme.mainColor),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  orderFilter.value.status == null ? AppLocales.status.tr() : orderFilter.value.status!.tr(),
-                                  style: TextStyle(fontSize: 16, fontFamily: boldFamily),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SimpleButton(
-                            onPressed: () {
-                              showDatePicker(context: context, firstDate: DateTime(2025, 1), lastDate: DateTime.now()).then((date) {
-                                if (date != null) {
-                                  OrderFilterModel filterModel = orderFilter.value;
-                                  filterModel.dateTime = date;
-                                  orderFilter.value = filterModel;
-                                  setState(() {});
-
-                                  ref.invalidate(ordersFilterProvider);
-                                }
-                              });
-                            },
-                            child: Container(
-                              padding: Dis.only(lr: 24, tb: 10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: theme.accentColor,
-                                border: orderFilter.value.dateTime == null ? null : Border.all(color: theme.mainColor),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      orderFilter.value.dateTime == null
-                                          ? AppLocales.date.tr()
-                                          : DateFormat('d-MMMM').format(orderFilter.value.dateTime!),
-                                      style: TextStyle(fontSize: 16, fontFamily: boldFamily),
-                                    ),
-                                    if (orderFilter.value.dateTime != null) 16.w,
-                                    if (orderFilter.value.dateTime != null)
-                                      SimpleButton(
-                                        onPressed: () {
-                                          OrderFilterModel filterModel = orderFilter.value;
-                                          filterModel.dateTime = null;
-                                          orderFilter.value = filterModel;
-                                          setState(() {});
-                                          ref.invalidate(ordersFilterProvider);
-                                        },
-                                        child: Icon(Ionicons.close_circle_outline, color: Colors.red),
-                                      )
-                                  ],
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        orderFilter.value.dateTime == null
+                                            ? AppLocales.date.tr()
+                                            : DateFormat('d-MMMM').format(orderFilter.value.dateTime!),
+                                        style: TextStyle(fontSize: 16, fontFamily: boldFamily),
+                                      ),
+                                      if (orderFilter.value.dateTime != null) 16.w,
+                                      if (orderFilter.value.dateTime != null)
+                                        SimpleButton(
+                                          onPressed: () {
+                                            OrderFilterModel filterModel = orderFilter.value;
+                                            filterModel.dateTime = null;
+                                            orderFilter.value = filterModel;
+                                            setState(() {});
+                                            ref.invalidate(ordersFilterProvider);
+                                          },
+                                          child: Icon(Ionicons.close_circle_outline, color: Colors.red),
+                                        )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       Expanded(
                         child: orders.isEmpty

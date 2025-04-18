@@ -185,17 +185,6 @@ class ProductsPage extends HookConsumerWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      IconButton.outlined(
-                                        onPressed: () {
-                                          showDesktopModal(
-                                            width: MediaQuery.of(context).size.width * 0.4,
-                                            context: context,
-                                            body: ProductScreen(product),
-                                          );
-                                        },
-                                        icon: Icon(Icons.visibility_outlined),
-                                        color: theme.textColor,
-                                      ),
                                       CustomPopupMenu(
                                         theme: theme,
                                         children: [
@@ -206,6 +195,17 @@ class ProductsPage extends HookConsumerWidget {
                                               currentProduct.value = product;
                                               await Future.delayed(Duration(milliseconds: 100));
                                               isUpdateProduct.value = true;
+                                            },
+                                          ),
+                                          CustomPopupItem(
+                                            title: AppLocales.viewAll.tr(),
+                                            icon: Icons.remove_red_eye_outlined,
+                                            onPressed: () async {
+                                              showDesktopModal(
+                                                width: MediaQuery.of(context).size.width * 0.4,
+                                                context: context,
+                                                body: ProductScreen(product),
+                                              );
                                             },
                                           ),
                                           // CustomPopupItem(title: AppLocales.add.tr(), icon: Icons.add),

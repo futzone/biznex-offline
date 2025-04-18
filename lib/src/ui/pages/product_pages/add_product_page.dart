@@ -132,7 +132,10 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!state.isDesktop) return _notDesktopScreen();
+    if (state.isDesktop) return _notDesktopScreen();
+
+    ///
+    ///
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24),
       child: Column(

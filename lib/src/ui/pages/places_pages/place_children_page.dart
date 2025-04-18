@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/place_controller.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/ui/pages/places_pages/add_place.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
@@ -51,9 +52,14 @@ class PlaceChildrenPage extends ConsumerWidget {
                       return AppListTile(
                         title: category.name,
                         theme: theme,
-                        onEdit: () {},
+                        onEdit: () {
+                          showDesktopModal(context: context, body: AddPlace(editCategory: place));
+                        },
                         trailingIcon: Ionicons.add_circle_outline,
-                        onDelete: () {},
+                        onDelete: () {
+                          PlaceController pc = PlaceController(context: context, state: state);
+                          pc.delete(category.id);
+                        },
                         onPressed: () {
                           showDesktopModal(context: context, body: PlaceChildrenPage(category));
                         },
