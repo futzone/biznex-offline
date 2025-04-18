@@ -51,6 +51,7 @@ class OrderController {
       scheduledDate: scheduledDate?.toIso8601String(),
       orderNumber: DateTime.now().millisecondsSinceEpoch.toString(),
     );
+
     await _database.setPlaceOrder(data: order, placeId: place.id).then((_) {
       AppRouter.close(context);
       model.ref!.invalidate(ordersProvider(place.id));

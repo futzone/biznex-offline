@@ -44,10 +44,10 @@ class AppModel {
 
   bool get isSeller => role == "seller";
 
-  bool isMobile;
-  bool isDesktop;
+  final bool isMobile = false;
+  final bool isDesktop = true;
   AppScreen screen;
-  bool isTablet;
+  final bool isTablet = false;
 
   void console(dynamic data, {Object? error, StackTrace? stackTrace}) {
     log("$data", error: error, stackTrace: stackTrace);
@@ -63,10 +63,7 @@ class AppModel {
     required this.notificationCount,
     required this.orderCount,
     required this.pincode,
-    this.isMobile = true,
     this.screen = AppScreen.appScreen,
-    this.isDesktop = false,
-    this.isTablet = false,
     this.ref,
     this.refresh = '',
     this.locale = '',

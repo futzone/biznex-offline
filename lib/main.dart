@@ -1,9 +1,5 @@
-import 'dart:developer';
-
 import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/server/start.dart';
-import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
-import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,7 +11,7 @@ import 'package:toastification/toastification.dart';
 import 'package:window_manager/window_manager.dart';
 
 bool debugMode = true;
-const appVersion = 'v1.0.0';
+const appVersion = 'v1.0.2';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +32,6 @@ void main() async {
   });
 
   final dir = await getApplicationDocumentsDirectory();
-  log(dir.path);
   Hive.init(dir.path);
 
   Hive.initFlutter();

@@ -21,17 +21,13 @@ class AppStateWrapper extends ConsumerWidget {
       data: (appStateData) {
         AppModel initialState = appStateData;
 
-        final deviceType = getDeviceType(context);
-        initialState.isTablet = deviceType == DeviceType.tablet;
-        initialState.isMobile = deviceType == DeviceType.mobile;
-        initialState.isDesktop = deviceType == DeviceType.desktop;
         initialState.ref = ref;
         initialState.screen = AppScreen(
           crossAxisCount: initialState.isDesktop
               ? 5
               : initialState.isTablet
-              ? 3
-              : 2,
+                  ? 3
+                  : 2,
           lrPadding: initialState.isDesktop ? 24 : 16,
         );
 
