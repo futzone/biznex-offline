@@ -1,3 +1,9 @@
 class ResponseMessages{
   static var unauthorized = 'unauthorized';
+  static var productStockError = "productStockError";
+  static var fatherPlaceNotFound = "fatherPlaceNotFound";
+  static var placeNotFound = "placeNotFound";
+  static var orderCreated = "orderCreated";
+  static var orderOpened = "orderOpened";
+  static var orderUpdated = "orderUpdated";
 }

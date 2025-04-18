@@ -17,6 +17,9 @@ class AppResponse {
 
   Response toResponse() {
     if (statusCode >= 200 && statusCode <= 299) {
+      if (message != null && data == null) {
+        return Response(statusCode, body: jsonEncode({"message": message}));
+      }
       return Response.ok(jsonEncode(data));
     }
 

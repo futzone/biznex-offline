@@ -13,5 +13,6 @@ List<ApiRequest> serverRequestsList() {
     ProductsRouter.docs(),
     OrdersRouter.orders(),
     OrdersRouter.placeState(),
+    OrdersRouter.open(),
   ];
 }

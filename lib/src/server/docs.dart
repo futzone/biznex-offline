@@ -84,8 +84,8 @@ String renderApiRequests() {
 
     htmlContent += '''
   <div class="request-box">
-    <h2 onclick="toggleSection('${request.path.hashCode}')">${request.name}</h2>
-    <div id="section-${request.path.hashCode}" style="display:none;">
+    <h2 onclick="toggleSection('${request.path.hashCode}${request.method.toLowerCase()}')">${request.name}</h2>
+    <div id="section-${request.path.hashCode}${request.method.toLowerCase()}" style="display:none;">
       <div><span class="method ${request.method}">${request.method}</span> <code>${request.path}</code></div>
       <pre>Request headers: ${request.headers}</pre>
       <pre>Request params: ${request.params}</pre>

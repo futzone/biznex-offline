@@ -36,7 +36,7 @@ class OrderController {
     showAppLoadingDialog(context);
 
     double totalPrice = products.fold(0, (oldValue, element) {
-      return oldValue += (element.customPrice ?? (element.amount * element.product.price));
+      return oldValue += (element.amount * element.product.price);
     });
 
     Order order = Order(
@@ -67,6 +67,11 @@ class OrderController {
     Order? currentState = await _database.getPlaceOrder(place.id);
     if (currentState == null) return;
     currentState.products = items;
+    double totalPrice = items.fold(0, (oldValue, element) {
+      return oldValue += (element.amount * element.product.price);
+    });
+
+    currentState.price = totalPrice;
     if (customer != null) currentState.customer = customer;
     if (note != null) currentState.note = note;
     if (scheduledDate != null) currentState.scheduledDate = scheduledDate.toIso8601String();
@@ -83,34 +88,34 @@ class OrderController {
     printerMultipleServices.printForBack(currentState, products);
   }
 
-  Future<void> updateItems(OrderItem item) async {
-    showAppLoadingDialog(context);
-    Order? currentState = await _database.getPlaceOrder(place.id);
-    if (currentState == null) return;
-    final oldItem = currentState.products.where((element) => element.product.id == item.product.id).toList().firstOrNull;
-    if (item.amount > 0) {
-      if (oldItem == null) {
-        currentState.products.add(item);
-      } else {
-        List<OrderItem> updatedList = currentState.products.map((i) {
-          if (item.product.id == i.product.id) {
-            return i.copyWith(amount: item.amount);
-          }
-          return i;
-        }).toList();
-        currentState.products = updatedList;
-      }
-    } else {
-      List<OrderItem> updatedList = currentState.products.where((el) => el.product.id != item.product.id).toList();
-      currentState.products = updatedList;
-    }
-
-    await _database.updatePlaceOrder(data: currentState, placeId: place.id);
-
-    model.ref!.invalidate(ordersProvider(place.id));
-    model.ref!.invalidate(ordersProvider);
-    AppRouter.close(context);
-  }
+  // Future<void> updateItems(OrderItem item) async {
+  //   showAppLoadingDialog(context);
+  //   Order? currentState = await _database.getPlaceOrder(place.id);
+  //   if (currentState == null) return;
+  //   final oldItem = currentState.products.where((element) => element.product.id == item.product.id).toList().firstOrNull;
+  //   if (item.amount > 0) {
+  //     if (oldItem == null) {
+  //       currentState.products.add(item);
+  //     } else {
+  //       List<OrderItem> updatedList = currentState.products.map((i) {
+  //         if (item.product.id == i.product.id) {
+  //           return i.copyWith(amount: item.amount);
+  //         }
+  //         return i;
+  //       }).toList();
+  //       currentState.products = updatedList;
+  //     }
+  //   } else {
+  //     List<OrderItem> updatedList = currentState.products.where((el) => el.product.id != item.product.id).toList();
+  //     currentState.products = updatedList;
+  //   }
+  //
+  //   await _database.updatePlaceOrder(data: currentState, placeId: place.id);
+  //
+  //   model.ref!.invalidate(ordersProvider(place.id));
+  //   model.ref!.invalidate(ordersProvider);
+  //   AppRouter.close(context);
+  // }
 
   static Future<Order?> getCurrentOrder(String placeId) async {
     OrderDatabase database = OrderDatabase();
@@ -126,8 +131,8 @@ class OrderController {
       final orderItems = model.ref!.watch(orderSetProvider);
       final products = orderItems.where((e) => e.placeId == place.id).toList();
 
-      double totalPrice = products.fold(0, (oldValue, element) {
-        return oldValue += (element.customPrice ?? (element.amount * element.product.price));
+      double totalPrice = products.fold(0.0, (oldValue, element) {
+        return oldValue += (element.amount * element.product.price);
       });
 
       currentState = Order(
@@ -141,17 +146,17 @@ class OrderController {
       );
     }
 
+    Order newOrder = currentState;
+
     final percents = await OrderPercentDatabase().get();
+    final totalPercent = percents.map((e) => e.percent).fold(0.0, (a, b) => a + b);
+    newOrder.price = currentState.price + (currentState.price * (totalPercent / 100));
 
-    for (final per in percents) {
-      currentState.price = currentState.price + (currentState.price * (0.01 * per.percent));
-    }
-
-    if (customer != null) currentState.customer = customer;
-    if (note != null) currentState.note = note;
-    currentState.status = Order.completed;
-    await _database.saveOrder(currentState);
-    await _onUpdateAmounts(currentState);
+    if (customer != null) newOrder.customer = customer;
+    if (note != null) newOrder.note = note;
+    newOrder.status = Order.completed;
+    await _database.saveOrder(newOrder);
+    await _onUpdateAmounts(newOrder);
     await _database.closeOrder(placeId: place.id);
     model.ref!.invalidate(ordersProvider(place.id));
     model.ref!.invalidate(ordersProvider);
@@ -162,7 +167,7 @@ class OrderController {
 
     ShowToast.success(context, AppLocales.orderClosedSuccessfully.tr());
 
-    PrinterServices printerServices = PrinterServices(order: currentState, model: model, ref: model.ref!);
+    PrinterServices printerServices = PrinterServices(order: newOrder, model: model, ref: model.ref!);
     printerServices.printOrderCheck();
   }
 

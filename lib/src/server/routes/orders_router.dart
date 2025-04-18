@@ -1,7 +1,15 @@
-import 'dart:developer';
+import 'dart:convert';
 
 import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/database/place_database/place_database.dart';
+import 'package:biznex/src/core/database/product_database/product_database.dart';
+import 'package:biznex/src/core/model/employee_models/employee_model.dart';
+import 'package:biznex/src/core/model/order_models/order_model.dart';
+import 'package:biznex/src/core/model/order_models/order_set_model.dart';
+import 'package:biznex/src/core/model/other_models/customer_model.dart';
+import 'package:biznex/src/core/model/place_models/place_model.dart';
+import 'package:biznex/src/core/model/product_models/product_model.dart';
+import 'package:biznex/src/core/utils/product_utils.dart';
 import 'package:biznex/src/server/app_response.dart';
 import 'package:biznex/src/server/constants/api_endpoints.dart';
 import 'package:biznex/src/server/constants/response_messages.dart';
@@ -41,6 +49,112 @@ class OrdersRouter {
     final state = await orderDatabase.getPlaceOrder(id);
 
     return AppResponse(statusCode: 200, data: state?.toJson());
+  }
+
+  Future<AppResponse> openOrder(Request request) async {
+    final employee = await databaseMiddleware(orderDatabase.getBoxName('all')).employeeState();
+    if (employee == null) return AppResponse(statusCode: 403, error: ResponseMessages.unauthorized);
+    final body = await request.readAsString();
+    final bodyJson = jsonDecode(body);
+    OrderModel orderModel = OrderModel.fromJson(bodyJson);
+    final response = await _openOrder(orderModel, employee);
+
+    return response;
+  }
+
+  Future<AppResponse> _openOrder(OrderModel order, Employee employee) async {
+    Place? place;
+    Place? fatherPlace;
+    final places = await PlaceDatabase().get();
+    if (order.placeFatherId != null) {
+      fatherPlace = places.firstWhere((el) => el.id == order.placeFatherId, orElse: () => Place(name: '-', id: '='));
+    }
+
+    if (fatherPlace != null && fatherPlace.id == '=') {
+      return AppResponse(statusCode: 404, data: order.placeFatherId, error: ResponseMessages.fatherPlaceNotFound);
+    }
+
+    if (fatherPlace != null && fatherPlace.children != null && fatherPlace.children!.isNotEmpty) {
+      place = fatherPlace.children?.firstWhere((el) => el.id == order.placeId, orElse: () => Place(name: '-', id: '='));
+    }
+
+    if (place != null && place.id == '=') {
+      return AppResponse(statusCode: 404, data: order.placeId, error: ResponseMessages.placeNotFound);
+    }
+
+    if (order.placeFatherId == null) {
+      place = places.firstWhere((el) => el.id == order.placeId, orElse: () => Place(name: '-', id: '='));
+    }
+
+    if (place != null && place.id == '=') {
+      return AppResponse(statusCode: 404, data: order.placeId, error: ResponseMessages.placeNotFound);
+    }
+
+    final products = await ProductDatabase().get();
+    Product? stockError;
+    Map<String, Product> productsMap = {};
+
+    for (final item in order.items) {
+      final productState = products.firstWhere((el) => el.id == item.productId, orElse: () => Product(name: '', price: 0, amount: 0));
+      if (productState.amount < item.amount) {
+        stockError = productState;
+        break;
+      } else {
+        productsMap[item.productId] = productState;
+      }
+    }
+
+    if (stockError != null) {
+      return AppResponse(statusCode: 404, data: stockError.toJson(), error: ResponseMessages.productStockError);
+    }
+
+    double totalPrice = order.items.fold(0, (oldValue, element) {
+      return oldValue += (products.firstWhere((prd) {
+            return prd.id == element.productId;
+          }, orElse: () => Product(name: '', price: 0)).price *
+          element.amount);
+    });
+
+    place?.father ??= fatherPlace;
+
+    Order? placeState = await orderDatabase.getPlaceOrder(place!.id);
+
+    if (placeState == null) {
+      Order newOrder = Order(
+        place: place,
+        employee: employee,
+        price: totalPrice,
+        products: order.items.map((el) => OrderItem(product: productsMap[el.productId]!, amount: el.amount, placeId: place!.id)).toList(),
+        createdDate: DateTime.now().toIso8601String(),
+        updatedDate: DateTime.now().toIso8601String(),
+        customer: order.customerName != null
+            ? Customer(
+                name: order.customerName!,
+                phone: order.customerPhone ?? '',
+                id: ProductUtils.generateID,
+              )
+            : null,
+        note: order.note,
+        scheduledDate: order.scheduledDate,
+        orderNumber: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+      await orderDatabase.setPlaceOrder(data: newOrder, placeId: place.id);
+      return AppResponse(statusCode: 201, message: ResponseMessages.orderOpened);
+    }
+
+    placeState.updatedDate = DateTime.now().toIso8601String();
+    placeState.products = order.items.map((el) => OrderItem(product: productsMap[el.productId]!, amount: el.amount, placeId: place!.id)).toList();
+    placeState.customer = order.customerName != null
+        ? Customer(
+            name: order.customerName!,
+            phone: order.customerPhone ?? '',
+            id: ProductUtils.generateID,
+          )
+        : placeState.customer;
+    placeState.note = order.note ?? placeState.note;
+    placeState.scheduledDate = order.scheduledDate ?? placeState.scheduledDate;
+    await orderDatabase.updatePlaceOrder(data: placeState, placeId: place.id);
+    return AppResponse(statusCode: 200, message: ResponseMessages.orderUpdated);
   }
 
   static ApiRequest orders() => ApiRequest(
@@ -260,5 +374,35 @@ class OrdersRouter {
           ],
           "orderNumber": "1744875849287"
         },
+      );
+
+  static ApiRequest open() => ApiRequest(
+        name: 'Open order for place',
+        path: ApiEndpoints.orders,
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'pin': 'XXXX'},
+        body: """{
+  "note": "Buyurtma tug'ilgan kun uchun",
+  "id": "order_123",
+  "placeId": "place_456",
+  "placeFatherId": "placeplaceFatherId_456",
+  "customerName": "Sardor Abdullayev",
+  "customerPhone": "+998901234567",
+  "scheduledDate": "2025-04-20T15:30:00",
+  "items": [
+    {
+      "amount": 2.5,
+      "productId": "product_789"
+    },
+    {
+      "amount": 1.0,
+      "productId": "product_321"
+    }
+  ]
+}
+""",
+        contentType: 'application/json',
+        errorResponse: {'error': ResponseMessages.unauthorized},
+        response: {'message': ResponseMessages.orderCreated},
       );
 }
