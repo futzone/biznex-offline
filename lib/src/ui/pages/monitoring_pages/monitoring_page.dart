@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/extensions/device_type.dart';
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_employees_page.dart';
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_orders_page.dart';
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_products_page.dart';
@@ -44,7 +45,7 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
               padding: Dis.only(lr: 24, bottom: 200),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                childAspectRatio: 3.0,
+                childAspectRatio: getDeviceType(context) == DeviceType.tablet ? 2.0 : 3.0,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
               ),
@@ -54,7 +55,7 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
                   title: AppLocales.employees.tr(),
                   onPressed: () {
                     showDesktopModal(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
                       context: context,
                       body: MonitoringEmployeesPage(),
                     );
@@ -65,7 +66,7 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
                   title: AppLocales.products.tr(),
                   onPressed: () {
                     showDesktopModal(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
                       context: context,
                       body: MonitoringProductsPage(),
                     );
@@ -76,7 +77,7 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
                   title: AppLocales.orders.tr(),
                   onPressed: () {
                     showDesktopModal(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
                       context: context,
                       body: MonitoringOrdersPage(),
                     );
@@ -87,7 +88,7 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
                   title: AppLocales.transactions.tr(),
                   onPressed: () {
                     showDesktopModal(
-                      width: MediaQuery.of(context).size.width*0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
                       context: context,
                       body: MonitoringTransactionsPage(),
                     );

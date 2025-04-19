@@ -88,34 +88,7 @@ class CategoryPage extends HookConsumerWidget {
               ),
               floatingActionButtonNotifier: floatingActionButton,
               actions: [
-                if (state.isDesktop) 160.w,
-                if (state.isDesktop)
-                  Expanded(
-                    child: AppTextField(
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Icon(Ionicons.search_outline),
-                      ),
-                      suffixIcon: Padding(
-                        padding: 8.lr,
-                        child: IconButton(
-                          icon: Icon(Ionicons.close),
-                          onPressed: () {
-                            filteredCategories.value.clear();
-                          },
-                        ),
-                      ),
-                      title: AppLocales.searchBarHint.tr(),
-                      controller: searchController,
-                      theme: theme,
-                      enabledColor: theme.secondaryTextColor,
-                      onChanged: (str) {
-                        filteredCategories.value = categories.where((ctg) {
-                          return (ctg.name.toLowerCase().contains(str.toLowerCase()));
-                        }).toList();
-                      },
-                    ),
-                  ),
+                Spacer(),
 
                 if (state.isDesktop)
                   WebButton(

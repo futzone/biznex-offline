@@ -19,15 +19,20 @@ class HeaderScreen extends AppStatelessWidget {
     return Padding(
       padding: Dis.only(tb: state.isDesktop ? 0 : 16),
       child: Row(
+        spacing: 8,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: state.isDesktop ? 18 : 16,
-              fontFamily: boldFamily,
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: state.isDesktop ? 18 : 16,
+                fontFamily: boldFamily,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Spacer(),
+
           if (state.isDesktop)
             AppSimpleButton(
               onPressed: onAddPressed,

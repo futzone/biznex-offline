@@ -205,6 +205,22 @@ class _AddProductPageState extends State<AddProductPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Row(
+            spacing: 16,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              AppSimpleButton(
+                icon: Icons.arrow_back_ios_new,
+                onPressed: widget.onBackPressed,
+              ),
+              Text(
+                AppLocales.addProductAppbarTitle.tr(),
+                style: TextStyle(fontSize: 20, fontFamily: boldFamily),
+              ),
+            ],
+          ),
+          24.h,
           ..._buildMainInformationsWidget(),
           ..._buildSecondaryInformationsWidget(),
         ],

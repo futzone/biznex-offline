@@ -65,6 +65,7 @@ class AddTransactionPage extends HookConsumerWidget {
                   child: IgnorePointer(
                     ignoring: true,
                     child: AppTextField(
+                      maxLines: 1,
                       onlyRead: true,
                       title: AppLocales.paymentType.tr(),
                       controller: TextEditingController(text: selectedMethod.value.tr()),
