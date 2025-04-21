@@ -469,4 +469,7 @@ abstract class AppLocales {
   static var licenseKeyError = "licenseKeyError";
   static var confirmLicenseKey ="confirmLicenseKey";
   static var enterKey = "enterKey";
+  static var disableSell = "disableSell";
+  static var enableSell = "enableSell";
+  static var end = "end";
 }

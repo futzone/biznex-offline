@@ -47,7 +47,8 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                 return Padding(
                   padding: const EdgeInsets.only(left: 24, right: 24, top: 8),
                   child: Column(
-                    spacing: 12,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 24,
                     children: [
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,

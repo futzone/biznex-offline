@@ -1,6 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 
+import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/database/app_database/app_database.dart';
+import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
+import 'package:biznex/src/core/database/order_database/order_percent_database.dart';
 import 'package:biznex/src/core/database/place_database/place_database.dart';
 import 'package:biznex/src/core/database/product_database/product_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
@@ -16,6 +21,8 @@ import 'package:biznex/src/server/constants/response_messages.dart';
 import 'package:biznex/src/server/database_middleware.dart';
 import 'package:biznex/src/server/docs.dart';
 import 'package:shelf/src/request.dart';
+
+import '../../core/services/printer_services.dart';
 
 class OrdersRouter {
   Request request;
@@ -60,6 +67,52 @@ class OrdersRouter {
     final response = await _openOrder(orderModel, employee);
 
     return response;
+  }
+
+  Future<AppResponse> closeOrder(Request request) async {
+    final employee = await databaseMiddleware(orderDatabase.getBoxName('all')).employeeState();
+    if (employee == null) return AppResponse(statusCode: 403, error: ResponseMessages.unauthorized);
+    final body = await request.readAsString();
+    final bodyJson = jsonDecode(body);
+    if (bodyJson['placeId'] == null) {
+      return AppResponse(statusCode: 400, error: ResponseMessages.orderIdRequired);
+    }
+
+    final placeId = bodyJson['placeId'];
+    Order? placeState = await orderDatabase.getPlaceOrder(placeId);
+
+    Order newOrder = placeState!;
+
+    final percents = await OrderPercentDatabase().get();
+    final totalPercent = percents.map((e) => e.percent).fold(0.0, (a, b) => a + b);
+    newOrder.price = placeState.price + (placeState.price * (totalPercent / 100));
+
+    final database = OrderDatabase();
+    newOrder.status = Order.completed;
+    await database.saveOrder(newOrder);
+    await _onUpdateAmounts(newOrder);
+    await database.closeOrder(placeId: placeId);
+
+    try {
+      final model = await AppStateDatabase().getApp();
+      PrinterServices printerServices = PrinterServices(order: newOrder, model: model);
+      printerServices.printOrderCheck();
+    } catch (e) {
+      log("$e");
+    }
+
+    return AppResponse(statusCode: 200, message: ResponseMessages.orderClosed);
+  }
+
+  Future<void> _onUpdateAmounts(Order order) async {
+    ProductDatabase productDatabase = ProductDatabase();
+    for (final item in order.products) {
+      Product product = item.product;
+      if (product.amount == 1) continue;
+
+      product.amount = product.amount - item.amount;
+      await productDatabase.update(key: product.id, data: product);
+    }
   }
 
   Future<AppResponse> _openOrder(OrderModel order, Employee employee) async {
@@ -404,5 +457,16 @@ class OrdersRouter {
         contentType: 'application/json',
         errorResponse: {'error': ResponseMessages.unauthorized},
         response: {'message': ResponseMessages.orderCreated},
+      );
+
+  static ApiRequest close() => ApiRequest(
+        name: 'Close place order',
+        path: ApiEndpoints.orders,
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json', 'pin': 'XXXX'},
+        body: '{"placeId": "place_456"}',
+        contentType: 'application/json',
+        errorResponse: {'error': ResponseMessages.unauthorized},
+        response: {'message': ResponseMessages.orderClosed},
       );
 }

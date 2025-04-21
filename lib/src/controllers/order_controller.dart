@@ -168,7 +168,7 @@ class OrderController {
 
     ShowToast.success(context, AppLocales.orderClosedSuccessfully.tr());
 
-    PrinterServices printerServices = PrinterServices(order: newOrder, model: model, ref: model.ref!);
+    PrinterServices printerServices = PrinterServices(order: newOrder, model: model);
     printerServices.printOrderCheck();
   }
 
@@ -176,6 +176,8 @@ class OrderController {
     ProductDatabase productDatabase = ProductDatabase();
     for (final item in order.products) {
       Product product = item.product;
+      if (product.amount == 1) continue;
+
       product.amount = product.amount - item.amount;
       await productDatabase.update(key: product.id, data: product);
     }

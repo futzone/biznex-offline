@@ -4,8 +4,6 @@ import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_employees_page.d
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_orders_page.dart';
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_products_page.dart';
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_transactions_page.dart';
-import 'package:biznex/src/ui/screens/chart_screens/chart_screen.dart';
-import 'package:biznex/src/ui/screens/chart_screens/chart_screens.dart';
 import 'package:biznex/src/ui/screens/monitoring_screen/monitoring_card_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';

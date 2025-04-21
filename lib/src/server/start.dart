@@ -56,6 +56,12 @@ void startServer() async {
     return placesResponse.toResponse();
   });
 
+  app.put(ApiEndpoints.orders, (Request request) async {
+    OrdersRouter ordersRouter = OrdersRouter(request);
+    final placesResponse = await ordersRouter.closeOrder(request);
+    return placesResponse.toResponse();
+  });
+
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(app.call);
 
   await io.serve(handler, '0.0.0.0', 8080);

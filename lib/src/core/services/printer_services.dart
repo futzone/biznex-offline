@@ -11,12 +11,12 @@ import 'package:pdf/pdf.dart';
 class PrinterServices {
   final AppModel model;
   final Order order;
-  final WidgetRef ref;
+
 
   PrinterServices({
     required this.order,
     required this.model,
-    required this.ref,
+
   });
 
   Future<Uint8List?> shopLogoImage() async {

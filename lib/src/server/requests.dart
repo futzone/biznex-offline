@@ -14,5 +14,6 @@ List<ApiRequest> serverRequestsList() {
     OrdersRouter.orders(),
     OrdersRouter.placeState(),
     OrdersRouter.open(),
+    OrdersRouter.close(),
   ];
 }

@@ -75,7 +75,7 @@ class OrderInfoScreen extends HookConsumerWidget {
                       ],
                     ),
                     onPressed: () {
-                      PrinterServices printerServices = PrinterServices(order: order, model: state, ref: ref);
+                      PrinterServices printerServices = PrinterServices(order: order, model: state);
                       printerServices.printOrderCheck();
                     },
                   ),

@@ -169,7 +169,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                 : products)[index];
                             return SimpleButton(
                               onPressed: () {
-                                if (product.amount >= 1) {
+                                if (product.amount != -1) {
                                   orderNotifier.addItem(OrderItem(product: product, amount: 1, placeId: widget.place.id));
                                   ShowToast.success(context, AppLocales.productAddedToSet.tr());
                                 } else {

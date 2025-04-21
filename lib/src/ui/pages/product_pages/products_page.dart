@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/product_controller.dart';
-import 'package:biznex/src/core/extensions/for_double.dart';
-import 'package:biznex/src/core/model/order_models/order_set_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/pages/product_pages/add_product_page.dart';
@@ -10,15 +8,9 @@ import 'package:biznex/src/ui/screens/products_screens/products_table_header.dar
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:ionicons/ionicons.dart';
-import '../../../providers/order_set_provider.dart';
 import '../../screens/products_screens/product_screen.dart';
-import '../../widgets/helpers/app_simple_button.dart';
 
 class ProductsPage extends HookConsumerWidget {
   final ValueNotifier<AppBar> appbar;
@@ -126,7 +118,7 @@ class ProductsPage extends HookConsumerWidget {
                         return WebButton(
                           onPressed: () {
                             // addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: ''));
-                            ShowToast.success(context, AppLocales.productAddedToSet.tr());
+                            // ShowToast.success(context, AppLocales.productAddedToSet.tr());
                           },
                           builder: (focused) => AnimatedContainer(
                             duration: theme.animationDuration,
@@ -174,6 +166,9 @@ class ProductsPage extends HookConsumerWidget {
                                   child: Center(child: Text(product.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
                                 ),
                                 Expanded(flex: 1, child: Center(child: Text(product.price.priceUZS))),
+                                if(product.amount < 0)
+                                  
+                                Expanded(flex: 1, child: Center(child: Text("${AppLocales.end.tr()}"))) else
                                 Expanded(flex: 1, child: Center(child: Text("${product.amount.price} ${product.measure ?? ''}"))),
                                 Expanded(flex: 1, child: Center(child: Text(product.size ?? ' - '))),
                                 Expanded(flex: 1, child: Center(child: Text(product.barcode ?? ' - '))),
@@ -206,6 +201,22 @@ class ProductsPage extends HookConsumerWidget {
                                                 context: context,
                                                 body: ProductScreen(product),
                                               );
+                                            },
+                                          ),
+
+                                          CustomPopupItem(
+                                            title: product.amount == -1 ? AppLocales.enableSell.tr() : AppLocales.disableSell.tr(),
+                                            icon: product.amount == -1 ? Icons.done : Icons.close,
+                                            onPressed: () {
+                                              ProductController pc = ProductController(context: context, state: state);
+                                              Product pr = product;
+                                              if (product.amount != -1) {
+                                                pr.amount = -1;
+                                                pc.update(pr, pr.id);
+                                              } else {
+                                                pr.amount = 1;
+                                                pc.update(pr, pr.id);
+                                              }
                                             },
                                           ),
                                           // CustomPopupItem(title: AppLocales.add.tr(), icon: Icons.add),

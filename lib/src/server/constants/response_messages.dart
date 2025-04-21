@@ -6,4 +6,7 @@ class ResponseMessages{
   static var orderCreated = "orderCreated";
   static var orderOpened = "orderOpened";
   static var orderUpdated = "orderUpdated";
+  static var orderIdRequired = "orderIdRequired";
+  static var placeOrderNotFound = "placeOrderNotFound";
+  static var orderClosed = "orderClosed";
 }
