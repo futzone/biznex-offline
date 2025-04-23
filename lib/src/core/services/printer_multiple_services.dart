@@ -34,6 +34,7 @@ class PrinterMultipleServices {
 
       final params = await _getPrinter(product.product.category!.id);
 
+      log(params.toString());
       if (params == null) continue;
 
       _printCheck(item, order, params['url'], params['name']);

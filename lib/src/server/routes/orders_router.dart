@@ -196,7 +196,7 @@ class OrdersRouter {
       return AppResponse(statusCode: 201, message: ResponseMessages.orderOpened);
     }
 
-    final Order olState = placeState;
+    final Order? olState = await orderDatabase.getPlaceOrder(place.id);
 
     placeState.updatedDate = DateTime.now().toIso8601String();
     placeState.products = order.items.map((el) => OrderItem(product: productsMap[el.productId]!, amount: el.amount, placeId: place!.id)).toList();
@@ -207,15 +207,23 @@ class OrdersRouter {
             id: ProductUtils.generateID,
           )
         : placeState.customer;
+
+    double newTotalPrice = order.items.fold(0, (oldValue, element) {
+      return oldValue += (products.firstWhere((prd) {
+            return prd.id == element.productId;
+          }, orElse: () => Product(name: '', price: 0)).price *
+          element.amount);
+    });
+
     placeState.note = order.note ?? placeState.note;
+    placeState.price = newTotalPrice;
     placeState.scheduledDate = order.scheduledDate ?? placeState.scheduledDate;
     await orderDatabase.updatePlaceOrder(data: placeState, placeId: place.id);
 
     PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
-    final List<OrderItem> productChanges = _onGetChanges(placeState.products, olState);
+    final List<OrderItem> productChanges = _onGetChanges(placeState.products, olState!);
 
-    log('changes: ${products.length}');
-
+    log('changes: ${productChanges.length}');
     printerMultipleServices.printForBack(placeState, productChanges);
     return AppResponse(statusCode: 200, message: ResponseMessages.orderUpdated);
   }
