@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:biznex/biznex.dart';
-import 'package:biznex/src/core/database/app_database/app_database.dart';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/database/order_database/order_percent_database.dart';
@@ -14,6 +12,7 @@ import 'package:biznex/src/core/model/order_models/order_set_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
+import 'package:biznex/src/core/services/printer_multiple_services.dart';
 import 'package:biznex/src/core/utils/product_utils.dart';
 import 'package:biznex/src/server/app_response.dart';
 import 'package:biznex/src/server/constants/api_endpoints.dart';
@@ -21,7 +20,6 @@ import 'package:biznex/src/server/constants/response_messages.dart';
 import 'package:biznex/src/server/database_middleware.dart';
 import 'package:biznex/src/server/docs.dart';
 import 'package:shelf/src/request.dart';
-
 import '../../core/services/printer_services.dart';
 
 class OrdersRouter {
@@ -192,8 +190,13 @@ class OrdersRouter {
         orderNumber: DateTime.now().millisecondsSinceEpoch.toString(),
       );
       await orderDatabase.setPlaceOrder(data: newOrder, placeId: place.id);
+
+      PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
+      printerMultipleServices.printForBack(newOrder, newOrder.products);
       return AppResponse(statusCode: 201, message: ResponseMessages.orderOpened);
     }
+
+    final Order olState = placeState;
 
     placeState.updatedDate = DateTime.now().toIso8601String();
     placeState.products = order.items.map((el) => OrderItem(product: productsMap[el.productId]!, amount: el.amount, placeId: place!.id)).toList();
@@ -207,7 +210,31 @@ class OrdersRouter {
     placeState.note = order.note ?? placeState.note;
     placeState.scheduledDate = order.scheduledDate ?? placeState.scheduledDate;
     await orderDatabase.updatePlaceOrder(data: placeState, placeId: place.id);
+
+    PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
+    final List<OrderItem> productChanges = _onGetChanges(placeState.products, olState);
+
+    log('changes: ${products.length}');
+
+    printerMultipleServices.printForBack(placeState, productChanges);
     return AppResponse(statusCode: 200, message: ResponseMessages.orderUpdated);
+  }
+
+  List<OrderItem> _onGetChanges(List<OrderItem> orderItems, Order order) {
+    final List<OrderItem> changes = [];
+    for (final item in orderItems) {
+      final newProduct = order.products.firstWhere((e) {
+        return e.product.id == item.product.id;
+      }, orElse: () => item.copyWith(amount: -1));
+
+      if (newProduct.amount != item.amount && newProduct.amount > 0) {
+        changes.add(newProduct.copyWith(amount: item.amount - newProduct.amount));
+      } else if (newProduct.amount == -1) {
+        changes.add(item);
+      }
+    }
+
+    return changes;
   }
 
   static ApiRequest orders() => ApiRequest(
