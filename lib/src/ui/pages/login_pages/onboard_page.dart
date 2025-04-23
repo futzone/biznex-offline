@@ -1,13 +1,16 @@
+import 'dart:developer';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
+import 'package:biznex/src/core/services/network_services.dart';
 import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
-import 'package:window_manager/window_manager.dart';
-
 import '../../screens/onboarding_screens/onboard_card.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class OnboardPage extends ConsumerStatefulWidget {
   const OnboardPage({super.key});
@@ -30,6 +33,12 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                   appBar: AppBar(
                     title: Text("Biznex", style: TextStyle(fontSize: 28, fontFamily: boldFamily)),
                     actions: [
+                      IconButton(
+                        onPressed: () async {
+                          showDesktopModal(context: context, body: QrAddressView());
+                        },
+                        icon: Icon(Icons.qr_code, size: 28),
+                      ),
                       IconButton(
                         onPressed: () async {
                           final status = await windowManager.isFullScreen();
@@ -77,5 +86,28 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
             );
       },
     );
+  }
+}
+
+class QrAddressView extends ConsumerWidget {
+  const QrAddressView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(ipProvider).when(
+        data: (ip) {
+          if (ip == null) return 0.h;
+
+          log('server address: $ip:8080');
+          return Center(
+            child: QrImageView(
+              data: ip,
+              version: QrVersions.auto,
+              size: 400.0,
+            ),
+          );
+        },
+        error: RefErrorScreen,
+        loading: () => AppLoadingScreen());
   }
 }
