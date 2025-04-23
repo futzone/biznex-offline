@@ -75,7 +75,7 @@ class OrdersRouter {
     final body = await request.readAsString();
     final bodyJson = jsonDecode(body);
     if (bodyJson['placeId'] == null) {
-      return AppResponse(statusCode: 400, error: ResponseMessages.orderIdRequired);
+      return AppResponse(statusCode: 400, error: ResponseMessages.placeIdRequired);
     }
 
     final placeId = bodyJson['placeId'];

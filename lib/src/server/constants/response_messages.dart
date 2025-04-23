@@ -9,4 +9,5 @@ class ResponseMessages{
   static var orderIdRequired = "orderIdRequired";
   static var placeOrderNotFound = "placeOrderNotFound";
   static var orderClosed = "orderClosed";
+  static var placeIdRequired = 'placeIdRequired';
 }
