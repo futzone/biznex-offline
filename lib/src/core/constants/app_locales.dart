@@ -472,4 +472,5 @@ abstract class AppLocales {
   static var disableSell = "disableSell";
   static var enableSell = "enableSell";
   static var end = "end";
+  static var enterAddress = "enterAddress";
 }

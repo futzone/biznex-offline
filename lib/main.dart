@@ -1,5 +1,7 @@
+import 'package:biznex/src/helper/pages/login_page.dart';
 import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/server/start.dart';
+import 'package:biznex/src/ui/pages/login_pages/intro_page.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -28,7 +30,6 @@ void main() async {
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
     await windowManager.focus();
-
   });
 
   final dir = await getApplicationDocumentsDirectory();
@@ -67,7 +68,7 @@ class MyApp extends ConsumerWidget {
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,
-            home: ActivityWrapper(child: LicenseStatusWrapper()),
+            home: IntroPage(),
           ),
         );
       },

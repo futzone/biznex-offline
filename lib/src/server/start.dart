@@ -4,6 +4,7 @@ import 'package:biznex/src/server/constants/api_endpoints.dart';
 import 'package:biznex/src/server/constants/response_messages.dart';
 import 'package:biznex/src/server/docs.dart';
 import 'package:biznex/src/server/routes/categories_router.dart';
+import 'package:biznex/src/server/routes/employee_router.dart';
 import 'package:biznex/src/server/routes/orders_router.dart';
 import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
@@ -19,6 +20,15 @@ void startServer() async {
 
   app.get(ApiEndpoints.docs, (Request request) async {
     return Response.ok(renderApiRequests(), headers: {"Content-Type": "text/html"});
+  });
+
+  app.get(ApiEndpoints.employee, (Request request) async {
+    final status = authorizationServices.requestAuthChecker(request);
+    if (!status) return Response(403, body: jsonEncode({"error": ResponseMessages.unauthorized}));
+
+    EmployeeRouter placesRouter = EmployeeRouter(request);
+    final placesResponse = await placesRouter.getCategories();
+    return placesResponse.toResponse();
   });
 
   app.get(ApiEndpoints.places, (Request request) async {

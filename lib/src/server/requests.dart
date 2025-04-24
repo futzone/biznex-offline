@@ -1,5 +1,6 @@
 import 'package:biznex/src/server/docs.dart';
 import 'package:biznex/src/server/routes/categories_router.dart';
+import 'package:biznex/src/server/routes/employee_router.dart';
 import 'package:biznex/src/server/routes/orders_router.dart';
 import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
@@ -13,6 +14,7 @@ List<ApiRequest> serverRequestsList() {
     OrdersRouter.placeState(),
     OrdersRouter.open(),
     OrdersRouter.close(),
+    EmployeeRouter.docs(),
   ];
 }
 

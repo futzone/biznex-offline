@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class Employee {
   String id;
   String fullname;
@@ -20,6 +22,7 @@ class Employee {
   });
 
   factory Employee.fromJson(json) {
+
     return Employee(
       fullname: json['fullname'],
       createdDate: json['createdDate'],

@@ -82,7 +82,10 @@ class Product {
       updatedDate: json['updatedDate'] ?? '',
       informations: (json['informations'] as List<dynamic>?)?.map((e) => ProductInfo.fromJson(e)).toList(),
       description: json['description'],
-      images: json['images'],
+      images: json['images'] != null
+          ? List<String>.from(json['images'].map((e) => e.toString()))
+          : [],
+
       measure: json['measure'],
       color: json['color'],
       colorCode: json['colorCode'],

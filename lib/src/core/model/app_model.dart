@@ -11,6 +11,8 @@ const mediumFamily = "Medium";
 const bool appRoleState = false;
 
 class AppModel {
+  bool isServerApp;
+  String baseUrl;
   Employee? currentEmployee;
   String? shopName;
   String? orderHeight;
@@ -54,7 +56,9 @@ class AppModel {
   }
 
   AppModel({
+    this.baseUrl = '',
     this.currentEmployee,
+    this.isServerApp = false,
     this.currentWarehouse,
     required this.isDark,
     required this.role,
@@ -85,6 +89,7 @@ class AppModel {
       isDark: json['isDark'] ?? false,
       locale: json['locale'] ?? 'uz',
       role: json['role'],
+      isServerApp: json['isServerApp'] ?? false,
       token: json['token'],
       refresh: json['refresh'],
       data: json['data'],
@@ -103,6 +108,7 @@ class AppModel {
       shopAddress: json['shopAddress'] ?? '',
       printPhone: json['printPhone'] ?? '',
       licenseKey: json['licenseKey'] ?? '',
+      baseUrl: json['baseUrl'] ?? '',
     );
   }
 
@@ -169,6 +175,8 @@ class AppModel {
       "byeText": byeText,
       "printPhone": printPhone,
       "licenseKey": licenseKey,
+      "isServerApp": isServerApp,
+      "baseUrl": baseUrl,
     };
   }
 }

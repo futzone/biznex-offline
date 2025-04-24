@@ -25,4 +25,8 @@ class AppResponse {
 
     return Response(statusCode, body: jsonEncode({'error': error}));
   }
+
+  bool get isSuccess {
+    return (statusCode > 199 && statusCode < 300);
+  }
 }

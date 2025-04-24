@@ -18,7 +18,7 @@ class AuthorizationServices {
   }
 
   String generateToken() {
-    final jwt = JWT({'exp': DateTime.now().add(Duration(minutes: _tokenExpireTime))});
+    final jwt = JWT({'exp': DateTime.now().add(Duration(minutes: _tokenExpireTime)).millisecondsSinceEpoch ~/ 1000});
     return jwt.sign(SecretKey(_secret));
   }
 
