@@ -68,7 +68,7 @@ class MyApp extends ConsumerWidget {
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,
-            home: IntroPage(),
+            home: ActivityWrapper(child: LicenseStatusWrapper()),
           ),
         );
       },

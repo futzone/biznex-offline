@@ -1,15 +1,23 @@
 import 'package:biznex/biznex.dart';
-import 'package:network_info_plus/network_info_plus.dart';
+import 'dart:io';
 
 class NetworkServices {
-  static final _info = NetworkInfo();
+  static Future<String?> getDeviceIP() async {
+    final interfaces = await NetworkInterface.list(
+      includeLoopback: false,
+      type: InternetAddressType.IPv4,
+    );
 
-  static Future<String?> getNetworkAddress() async {
-    final address = await _info.getWifiIP();
-    return address;
+    for (var interface in interfaces) {
+      for (var addr in interface.addresses) {
+        return addr.address;
+      }
+    }
+
+    return null;
   }
 }
 
 final ipProvider = FutureProvider((ref) async {
-  return await NetworkServices.getNetworkAddress();
+  return await NetworkServices.getDeviceIP();
 });

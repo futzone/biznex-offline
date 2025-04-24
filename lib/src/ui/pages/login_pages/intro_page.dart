@@ -12,7 +12,7 @@ class IntroPage extends AppStatelessWidget {
   @override
   Widget builder(BuildContext context, AppColors theme, WidgetRef ref, AppModel state) {
     if (state.baseUrl.isEmpty) return _IntroPage();
-    if (state.isServerApp) return ActivityWrapper(child: ActivityWrapper(child: LicenseStatusWrapper()));
+    if (state.isServerApp) return ActivityWrapper(child: LicenseStatusWrapper());
     return HelperLoginPage();
   }
 }
