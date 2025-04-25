@@ -100,10 +100,27 @@ class QrAddressView extends ConsumerWidget {
 
           log('server address: $ip:8080');
           return Center(
-            child: QrImageView(
-              data: ip,
-              version: QrVersions.auto,
-              size: 400.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                QrImageView(
+                  data: ip,
+                  version: QrVersions.auto,
+                  size: 400.0,
+                ),
+                16.h,
+                SingleChildScrollView(
+                  child: Text(
+                    "IP: $ip",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },

@@ -8,19 +8,19 @@ import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 
 final FutureProvider<List<Product>> productsProvider = FutureProvider<List<Product>>((ref) async {
-  if (!ref.watch(serverAppProvider)) {
-    final List<Product> products = [];
-    final HelperApiServices apiServices = HelperApiServices();
-    final response = await apiServices.getProducts(ref.watch(currentEmployeeProvider).pincode);
-    if (response.statusCode == 200) {
-      for (final item in response.data) {
-        log((item is String).toString());
-        products.add(Product.fromJson(item));
-      }
-    }
-
-    return products;
-  }
+  // if (!ref.watch(serverAppProvider)) {
+  //   final List<Product> products = [];
+  //   final HelperApiServices apiServices = HelperApiServices();
+  //   final response = await apiServices.getProducts(ref.watch(currentEmployeeProvider).pincode);
+  //   if (response.statusCode == 200) {
+  //     for (final item in response.data) {
+  //       log((item is String).toString());
+  //       products.add(Product.fromJson(item));
+  //     }
+  //   }
+  //
+  //   return products;
+  // }
 
   ProductDatabase productDatabase = ProductDatabase();
   final list = await productDatabase.get();
