@@ -31,13 +31,26 @@ class OrderItemCardNew extends HookConsumerWidget {
     bool isTablet = getDeviceType(context) == DeviceType.tablet;
 
     useEffect(() {
-      controller.text = item.amount.price;
+      final newText = item.amount.toString();
+      if (controller.text != newText) {
+        final cursorPos = controller.selection.baseOffset;
+        controller.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(
+            offset: cursorPos > newText.length ? newText.length : cursorPos,
+          ),
+        );
+      }
+
       itemIsSaved.value = (item.amount !=
-          order?.products.firstWhere((e) {
-            return e.product.id == item.product.id;
-          }, orElse: () => item.copyWith(amount: -1)).amount);
+          order?.products.firstWhere(
+                (e) => e.product.id == item.product.id,
+            orElse: () => item.copyWith(amount: -1),
+          ).amount);
+
       return null;
     }, [item.amount, order]);
+
 
     return AppStateWrapper(builder: (theme, model) {
       return SimpleButton(
@@ -149,7 +162,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                                 8.w,
                                 TextField(
                                   onChanged: (char) async {
-                                    final value = num.tryParse(char);
+                                    final value = num.tryParse(char.replaceAll(',', '.'));
                                     if (value == null) {
                                       return orderNotifier.deleteItem(item, model, context);
                                     }
@@ -157,6 +170,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                                     orderItem.amount = value.toDouble();
                                     orderNotifier.updateItem(item);
                                   },
+
                                   controller: controller,
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
@@ -282,7 +296,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                             8.w,
                             TextField(
                               onChanged: (char) async {
-                                final value = num.tryParse(char);
+                                final value = num.tryParse(char.replaceAll(',', '.'));
                                 if (value == null) {
                                   return orderNotifier.deleteItem(item, model, context);
                                 }
@@ -290,6 +304,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                                 orderItem.amount = value.toDouble();
                                 orderNotifier.updateItem(item);
                               },
+
                               controller: controller,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.number,
