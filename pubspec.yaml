@@ -103,6 +103,7 @@ flutter:
     - assets/localization/
     - assets/animations/
     - assets/svg/
+    - assets/fonts/DejaVuSans.ttf
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

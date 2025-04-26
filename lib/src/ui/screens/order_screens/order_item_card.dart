@@ -24,7 +24,7 @@ class OrderItemCardNew extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final product = item.product;
-    final controller = useTextEditingController(text: item.amount.price);
+     final controller = useTextEditingController(text: item.amount.price);
     final orderNotifier = ref.read(orderSetProvider.notifier);
     final itemIsSaved = useState(false);
 
@@ -43,14 +43,15 @@ class OrderItemCardNew extends HookConsumerWidget {
       }
 
       itemIsSaved.value = (item.amount !=
-          order?.products.firstWhere(
+          order?.products
+              .firstWhere(
                 (e) => e.product.id == item.product.id,
-            orElse: () => item.copyWith(amount: -1),
-          ).amount);
+                orElse: () => item.copyWith(amount: -1),
+              )
+              .amount);
 
       return null;
     }, [item.amount, order]);
-
 
     return AppStateWrapper(builder: (theme, model) {
       return SimpleButton(
@@ -89,13 +90,12 @@ class OrderItemCardNew extends HookConsumerWidget {
                               height: 64,
                               width: 64,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: theme.scaffoldBgColor,
-                                image: (product.images != null && product.images!.isNotEmpty)
-                                    ? DecorationImage(image: FileImage(File(product.images!.first)), fit: BoxFit.cover)
-                                    : null,
-                                border: Border.all(color: theme.accentColor)
-                              ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: theme.scaffoldBgColor,
+                                  image: (product.images != null && product.images!.isNotEmpty)
+                                      ? DecorationImage(image: FileImage(File(product.images!.first)), fit: BoxFit.cover)
+                                      : null,
+                                  border: Border.all(color: theme.accentColor)),
                               child: !(product.images == null || product.images!.isEmpty)
                                   ? null
                                   : Center(
@@ -161,8 +161,26 @@ class OrderItemCardNew extends HookConsumerWidget {
                                 ),
                                 8.w,
                                 TextField(
-                                  onChanged: (char) async {
-                                    final value = num.tryParse(char.replaceAll(',', '.'));
+                                  onTapOutside: (_) {
+                                    final value = num.tryParse(controller.text.replaceAll(',', '.'));
+                                    if (value == null) {
+                                      return orderNotifier.deleteItem(item, model, context);
+                                    }
+                                    OrderItem orderItem = item;
+                                    orderItem.amount = value.toDouble();
+                                    orderNotifier.updateItem(item);
+                                  },
+                                  onSubmitted: (text) {
+                                    final value = num.tryParse(text.replaceAll(',', '.'));
+                                    if (value == null) {
+                                      return orderNotifier.deleteItem(item, model, context);
+                                    }
+                                    OrderItem orderItem = item;
+                                    orderItem.amount = value.toDouble();
+                                    orderNotifier.updateItem(item);
+                                  },
+                                  onEditingComplete: () {
+                                    final value = num.tryParse(controller.text.replaceAll(',', '.'));
                                     if (value == null) {
                                       return orderNotifier.deleteItem(item, model, context);
                                     }
@@ -295,8 +313,8 @@ class OrderItemCardNew extends HookConsumerWidget {
                             ),
                             8.w,
                             TextField(
-                              onChanged: (char) async {
-                                final value = num.tryParse(char.replaceAll(',', '.'));
+                              onTapOutside: (_) {
+                                final value = num.tryParse(controller.text.replaceAll(',', '.'));
                                 if (value == null) {
                                   return orderNotifier.deleteItem(item, model, context);
                                 }
@@ -304,7 +322,34 @@ class OrderItemCardNew extends HookConsumerWidget {
                                 orderItem.amount = value.toDouble();
                                 orderNotifier.updateItem(item);
                               },
+                              onSubmitted: (text) {
+                                final value = num.tryParse(text.replaceAll(',', '.'));
+                                if (value == null) {
+                                  return orderNotifier.deleteItem(item, model, context);
+                                }
+                                OrderItem orderItem = item;
+                                orderItem.amount = value.toDouble();
+                                orderNotifier.updateItem(item);
+                              },
+                              onEditingComplete: () {
+                                  final value = num.tryParse(controller.text.replaceAll(',', '.'));
+                                  if (value == null) {
+                                    return orderNotifier.deleteItem(item, model, context);
+                                  }
+                                  OrderItem orderItem = item;
+                                  orderItem.amount = value.toDouble();
+                                  orderNotifier.updateItem(item);
+                              },
 
+                              // onChanged: (char) async {
+                              //   final value = num.tryParse(char.replaceAll(',', '.'));
+                              //   if (value == null) {
+                              //     return orderNotifier.deleteItem(item, model, context);
+                              //   }
+                              //   OrderItem orderItem = item;
+                              //   orderItem.amount = value.toDouble();
+                              //   orderNotifier.updateItem(item);
+                              // },
                               controller: controller,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.number,

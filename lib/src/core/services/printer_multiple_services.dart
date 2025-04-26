@@ -1,12 +1,11 @@
 import 'dart:developer';
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:biznex/src/core/database/category_database/category_database.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/widgets.dart' as pw;
-
 import '../../../biznex.dart';
 
 class PrinterMultipleServices {
@@ -18,9 +17,7 @@ class PrinterMultipleServices {
   Future<Map?> _getPrinter(String categoryId) async {
     CategoryDatabase categoryDatabase = CategoryDatabase();
     final categories = await categoryDatabase.getAll();
-
     final ctg = categories.firstWhere((item) => item.id == categoryId, orElse: () => Category(name: ''));
-
     return ctg.printerParams;
   }
 
@@ -29,11 +26,9 @@ class PrinterMultipleServices {
 
     for (final item in categoryGroup.values) {
       final product = item.firstOrNull;
-
       if (product == null || product.product.category == null || product.product.category?.printerParams == null) continue;
 
       final params = await _getPrinter(product.product.category!.id);
-
       log(params.toString());
       if (params == null) continue;
 
@@ -56,15 +51,15 @@ class PrinterMultipleServices {
         }
       }
     }
-
     return grouped;
   }
 
   Future<void> _printCheck(List<OrderItem> products, Order order, String url, String name) async {
-    final font = await PdfGoogleFonts.robotoRegular();
-    final doc = pw.Document();
-    final pdfTheme = pw.TextStyle(fontSize: 8, font: font);
+    final fontData = await rootBundle.load('assets/fonts/DejaVuSans.ttf');
+    final ttf = pw.Font.ttf(fontData);
+    final pdfTheme = pw.TextStyle(fontSize: 8, font: ttf);
 
+    final doc = pw.Document();
     final content = pw.Column(
       mainAxisAlignment: pw.MainAxisAlignment.start,
       crossAxisAlignment: pw.CrossAxisAlignment.center,
@@ -74,7 +69,7 @@ class PrinterMultipleServices {
           pw.Center(
             child: pw.Text(
               "${products.first.product.category?.name}",
-              style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, font: font),
+              style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold, font: ttf),
               overflow: pw.TextOverflow.clip,
               maxLines: 2,
             ),
@@ -96,7 +91,7 @@ class PrinterMultipleServices {
                 pw.SizedBox(width: 8),
                 pw.Text(
                   "${item.amount.price} ${item.product.measure} * ${item.product.price.price} UZS",
-                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
                 ),
               ],
             ),
@@ -117,7 +112,7 @@ class PrinterMultipleServices {
             pw.SizedBox(width: 8),
             pw.Text(
               order.employee.fullname,
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
             ),
           ],
         ),
@@ -135,13 +130,11 @@ class PrinterMultipleServices {
             pw.SizedBox(width: 8),
             pw.Text(
               order.orderNumber ?? order.id,
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
             ),
           ],
         ),
         pw.SizedBox(height: 4),
-
-        ///
         pw.Row(
           children: [
             pw.Expanded(
@@ -155,14 +148,11 @@ class PrinterMultipleServices {
             pw.SizedBox(width: 8),
             pw.Text(
               "${order.place.father != null ? '${order.place.father!.name}, ' : ''}${order.place.name}",
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
             ),
           ],
         ),
         pw.SizedBox(height: 4),
-
-        ///
-
         pw.Row(
           children: [
             pw.Expanded(
@@ -176,7 +166,7 @@ class PrinterMultipleServices {
             pw.SizedBox(width: 8),
             pw.Text(
               DateFormat('yyyy.MM.dd HH:mm').format(DateTime.parse(order.updatedDate)),
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: font),
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
             ),
           ],
         ),
@@ -195,7 +185,7 @@ class PrinterMultipleServices {
 
     await Printing.directPrintPdf(
       printer: Printer(url: url, name: name),
-      onLayout: (PdfPageFormat format) async => doc.save(),
+      onLayout: (PdfPageFormat format) async => await doc.save(),
     );
 
     log('print');
