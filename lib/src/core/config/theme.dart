@@ -40,29 +40,30 @@ class AppColors {
   Color get iconColor => isDark ? Colors.white : Colors.black;
 
   ThemeData get themeData => ThemeData(
-    brightness: isDark ? Brightness.dark : Brightness.light,
-    primaryColor: mainColor,
-    scaffoldBackgroundColor: scaffoldBgColor,
-    appBarTheme: AppBarTheme(
-      backgroundColor: appBarColor,
-      titleTextStyle: TextStyle(color: appBarTextColor, fontSize: 20, fontFamily: "Medium"),
-      iconTheme: const IconThemeData(color: Colors.white),
-    ),
-    cardColor: cardColor,
-    dividerColor: dividerColor,
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: buttonColor,
-        foregroundColor: textColor,
-      ),
-    ),
-    iconTheme: IconThemeData(color: iconColor),
-    textTheme: TextTheme(
-      bodyLarge: TextStyle(color: textColor, fontFamily: "Extra-Bold"),
-      bodyMedium: TextStyle(color: textColor, fontFamily: "Medium"),
-      bodySmall: TextStyle(color: textColor, fontFamily: "Regular"),
-    ),
-  );
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        brightness: isDark ? Brightness.dark : Brightness.light,
+        primaryColor: mainColor,
+        scaffoldBackgroundColor: scaffoldBgColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: appBarColor,
+          titleTextStyle: TextStyle(color: appBarTextColor, fontSize: 20, fontFamily: "Medium"),
+          iconTheme: const IconThemeData(color: Colors.white),
+        ),
+        cardColor: cardColor,
+        dividerColor: dividerColor,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: buttonColor,
+            foregroundColor: textColor,
+          ),
+        ),
+        iconTheme: IconThemeData(color: iconColor),
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: textColor, fontFamily: "Extra-Bold"),
+          bodyMedium: TextStyle(color: textColor, fontFamily: "Medium"),
+          bodySmall: TextStyle(color: textColor, fontFamily: "Regular"),
+        ),
+      );
 
   Color get green => const Color(0xff0BC266);
 

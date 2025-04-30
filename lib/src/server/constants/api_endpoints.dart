@@ -6,5 +6,7 @@ class ApiEndpoints {
   static var categories = '/api/v1/categories';
   static var products = '/api/v1/products';
   static var employee = '/api/v1/me';
+  static var stats = "/api/v1/stats";
+  static var state = "/api/v1/state";
 
  }

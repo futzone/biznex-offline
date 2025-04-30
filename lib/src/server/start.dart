@@ -8,7 +8,9 @@ import 'package:biznex/src/server/routes/employee_router.dart';
 import 'package:biznex/src/server/routes/orders_router.dart';
 import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
+import 'package:biznex/src/server/routes/stats_router.dart';
 import 'package:biznex/src/server/services/authorization_services.dart';
+import 'package:biznex/src/server/services/ws_services.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -20,6 +22,15 @@ void startServer() async {
 
   app.get(ApiEndpoints.docs, (Request request) async {
     return Response.ok(renderApiRequests(), headers: {"Content-Type": "text/html"});
+  });
+
+  app.get(ApiEndpoints.state, (Request request) async {
+    final status = authorizationServices.requestAuthChecker(request);
+    if (!status) return Response(403, body: jsonEncode({"error": ResponseMessages.unauthorized}));
+
+    StatsRouter statsRouter = StatsRouter(request);
+    final placesResponse = await statsRouter.getState();
+    return placesResponse.toResponse();
   });
 
   app.get(ApiEndpoints.employee, (Request request) async {

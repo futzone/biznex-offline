@@ -41,12 +41,12 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
         final updatedItem = current.copyWith(amount: current.amount - 1);
         state = [...state]..[index] = updatedItem;
       } else {
-        deleteItem(item, model, context);
+        deleteItem(item, context);
       }
     }
   }
 
-  void deleteItem(OrderItem item, AppModel model, context) {
+  void deleteItem(OrderItem item, context) {
     final order = ref.watch(ordersProvider(item.placeId)).value;
 
     if (order != null && order.products.isNotEmpty && order.products.any((element) => element.product.id == item.product.id)) {

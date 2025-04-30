@@ -41,7 +41,7 @@ dependencies:
   hive_flutter: ^1.1.0
   easy_localization: ^3.0.7
   file_picker: ^10.1.0
-  flex_color_picker: ^3.7.0
+
   sliver_tools: ^0.2.12
   iconly: ^1.0.1
   hooks_riverpod: ^2.6.1
@@ -69,6 +69,10 @@ dependencies:
   network_info_plus: ^6.1.4
   qr_flutter: ^4.1.0
   dio: ^5.8.0+1
+  desktop_multi_window: ^0.2.1
+  desktop_lifecycle: ^0.1.1
+  flex_color_picker: ^3.6.0
+  shelf_web_socket: ^3.0.0
 
 dev_dependencies:
   flutter_test:

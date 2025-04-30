@@ -4,6 +4,7 @@ import 'package:biznex/src/server/routes/employee_router.dart';
 import 'package:biznex/src/server/routes/orders_router.dart';
 import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
+import 'package:biznex/src/server/routes/stats_router.dart';
 
 List<ApiRequest> serverRequestsList() {
   return [
@@ -15,6 +16,7 @@ List<ApiRequest> serverRequestsList() {
     OrdersRouter.open(),
     OrdersRouter.close(),
     EmployeeRouter.docs(),
+    StatsRouter.docs(),
   ];
 }
 

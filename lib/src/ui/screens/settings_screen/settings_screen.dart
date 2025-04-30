@@ -154,7 +154,7 @@ class SettingsScreen extends ConsumerWidget {
                   },
                 ),
                 const Spacer(),
-                const Center(child: Text(appVersion)),
+                const Center(child: Text("1.101.1")),
               ],
             ),
           );
