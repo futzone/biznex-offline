@@ -169,7 +169,7 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
                 },
               ),
             ),
-            if (_place != null && _place?.children != null)
+            if (_place != null && _place!.children != null && _place!.children!.isNotEmpty)
               AnimatedContainer(
                 duration: theme.animationDuration,
                 margin: 16.tb,

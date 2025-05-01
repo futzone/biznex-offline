@@ -10,7 +10,6 @@ import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
 import 'package:biznex/src/server/routes/stats_router.dart';
 import 'package:biznex/src/server/services/authorization_services.dart';
-import 'package:biznex/src/server/services/ws_services.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -106,6 +105,5 @@ void startServer() async {
   });
 
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(app.call);
-
   await io.serve(handler, '0.0.0.0', 8080);
 }
