@@ -1,17 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ui' as ui;
-import 'package:biznex/biznex.dart';
+ import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/core/services/network_services.dart';
 import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
-import 'package:desktop_multi_window/desktop_multi_window.dart';
-import '../../screens/onboarding_screens/onboard_card.dart';
+ import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
+ import '../../screens/onboarding_screens/onboard_card.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -38,18 +35,7 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                     actions: [
                       IconButton(
                         onPressed: () async {
-                          final window =
-                          await DesktopMultiWindow.createWindow(jsonEncode({
-                            'args1': 'Sub window',
-                            'args2': 100,
-                            'args3': true,
-                            'business': 'multi_window',
-                          }));
-                          window
-                            ..setFrame(const Offset(0, 0) & const Size(1280, 720))
-                            ..center()
-                            ..setTitle('Another window')
-                            ..show();
+
                         },
                         icon: Icon(Icons.qr_code, size: 28),
                       ),

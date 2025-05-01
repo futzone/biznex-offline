@@ -5,6 +5,7 @@ import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 
 import '../../../core/model/order_models/order_model.dart';
+import '../../widgets/custom/app_file_image.dart';
 
 class OrderItemCardNew extends HookConsumerWidget {
   final OrderItem item;
@@ -132,36 +133,7 @@ class OrderItemCardNew extends HookConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    height: 64,
-                    width: 64,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: theme.scaffoldBgColor,
-                      image: (product.images != null && product.images!.isNotEmpty)
-                          ? DecorationImage(
-                              image: FileImage(File(product.images!.first)),
-                              fit: BoxFit.cover,
-                              onError: (exception, stackTrace) {
-                                print("Rasm yuklashda xatolik: $exception");
-                              },
-                            )
-                          : null,
-                      border: Border.all(color: theme.accentColor),
-                    ),
-                    child: (product.images == null || product.images!.isEmpty)
-                        ? Center(
-                            child: Text(
-                              product.name.isNotEmpty ? product.name.trim()[0] : '?',
-                              style: TextStyle(
-                                color: theme.textColor,
-                                fontSize: 24,
-                                fontFamily: boldFamily,
-                              ),
-                            ),
-                          )
-                        : null,
-                  ),
+                  AppFileImage(name: product.name, path: product.images?.firstOrNull, size: 64),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 16.0),

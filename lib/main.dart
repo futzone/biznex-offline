@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/server/start.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
@@ -37,18 +39,49 @@ void main() async {
 
   startServer();
   await EasyLocalization.ensureInitialized();
-  runApp(
-    EasyLocalization(
-      supportedLocales: const [
-        Locale('ru', 'RU'),
-        Locale('uz', 'UZ'),
-        Locale('en', 'US'),
-      ],
-      fallbackLocale: const Locale('uz', 'UZ'),
-      path: 'assets/localization',
-      child: const ProviderScope(child: MyApp()),
-    ),
-  );
+
+  runZonedGuarded(() {
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return Material(
+        color: Colors.white,
+        child: Center(
+          child: SelectableText(
+            '❌ UI Error:\n\n${details.exceptionAsString()}\n\n${details.stack}',
+            style: const TextStyle(color: Colors.red, fontSize: 14),
+          ),
+        ),
+      );
+    };
+
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+    };
+
+    runApp(
+      EasyLocalization(
+        supportedLocales: const [
+          Locale('ru', 'RU'),
+          Locale('uz', 'UZ'),
+          Locale('en', 'US'),
+        ],
+        fallbackLocale: const Locale('uz', 'UZ'),
+        path: 'assets/localization',
+        child: const ProviderScope(child: MyApp()),
+      ),
+    );
+  }, (error, stack) {
+    runApp(MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: SelectableText(
+            '❌ CATCHED ERROR:\n\n$error\n\n$stack',
+            style: const TextStyle(color: Colors.red, fontSize: 14),
+          ),
+        ),
+      ),
+    ));
+  });
 }
 
 class MyApp extends ConsumerWidget {

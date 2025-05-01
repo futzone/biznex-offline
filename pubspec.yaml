@@ -69,8 +69,6 @@ dependencies:
   network_info_plus: ^6.1.4
   qr_flutter: ^4.1.0
   dio: ^5.8.0+1
-  desktop_multi_window: ^0.2.1
-  desktop_lifecycle: ^0.1.1
   flex_color_picker: ^3.6.0
   shelf_web_socket: ^3.0.0
 

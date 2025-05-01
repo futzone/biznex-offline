@@ -8,6 +8,7 @@ import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
+import 'package:biznex/src/ui/widgets/custom/app_file_image.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
@@ -188,17 +189,9 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                   spacing: 8,
                                   children: [
                                     Expanded(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: theme.accentColor,
-                                          image: (product.images == null || product.images!.isEmpty)
-                                              ? null
-                                              : DecorationImage(
-                                                  image: FileImage(File(product.images!.first)),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                        ),
+                                      child: AppFileImage(
+                                        name: product.name,
+                                        path: product.images?.firstOrNull,
                                       ),
                                     ),
                                     Row(
