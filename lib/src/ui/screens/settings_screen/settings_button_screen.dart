@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 class SettingsButtonScreen extends StatelessWidget {
   final AppColors theme;
   final AppModel model;
+  final bool opened;
 
-  const SettingsButtonScreen({super.key, required this.theme, required this.model});
+  const SettingsButtonScreen({super.key, required this.theme, required this.model, required this.opened});
 
   @override
   Widget build(BuildContext context) {
@@ -20,41 +21,43 @@ class SettingsButtonScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: theme.accentColor),
       ),
-      child: Row(
-        children: [
-          Container(
-            margin: 12.right,
-            height: 34,
-            width: 34,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: theme.accentColor,
-            ),
-            child: Icon(Icons.person, color: theme.textColor),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+      child: !opened
+          ? SettingsScreenButton(theme)
+          : Row(
               children: [
-                Text(
-                  model.shopName ?? 'Biznex',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Container(
+                  margin: 12.right,
+                  height: 34,
+                  width: 34,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: theme.accentColor,
+                  ),
+                  child: Icon(Icons.person, color: theme.textColor),
                 ),
-                Text(
-                  model.currentEmployee?.fullname ?? 'Admin',
-                  style: const TextStyle(color: Colors.white54, fontWeight: FontWeight.w300),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        model.shopName ?? 'Biznex',
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        model.currentEmployee?.fullname ?? 'Admin',
+                        style: const TextStyle(color: Colors.white54, fontWeight: FontWeight.w300),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
+                SettingsScreenButton(theme),
               ],
             ),
-          ),
-          SettingsScreenButton(theme),
-        ],
-      ),
     );
   }
 }

@@ -15,32 +15,30 @@ import 'package:window_manager/window_manager.dart';
 bool debugMode = true;
 const appVersion = 'v1.0.2';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
+void main() {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  WindowOptions windowOptions = WindowOptions(
-    size: Size(1200, 720),
-    minimumSize: Size(1200, 720),
-    center: true,
-    backgroundColor: Colors.transparent,
-    // skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
+    await windowManager.ensureInitialized();
+    WindowOptions windowOptions = WindowOptions(
+      size: Size(1200, 720),
+      minimumSize: Size(1200, 720),
+      center: true,
+      backgroundColor: Colors.transparent,
+      titleBarStyle: TitleBarStyle.normal,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
 
-  final dir = await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
+    final dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+    Hive.initFlutter();
 
-  Hive.initFlutter();
+    startServer();
+    await EasyLocalization.ensureInitialized();
 
-  startServer();
-  await EasyLocalization.ensureInitialized();
-
-  runZonedGuarded(() {
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return Material(
         color: Colors.white,

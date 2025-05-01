@@ -24,6 +24,7 @@ class MainPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final pageValue = useState(2);
+
     final appbar = useState(AppBar());
     final fab = useState<FloatingActionButton?>(null);
     return AppStateWrapper(
