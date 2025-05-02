@@ -467,11 +467,15 @@ abstract class AppLocales {
   static var deletePlaceQuestionText = "deletePlaceQuestionText";
   static var deleteMeasureQuestionText = "deleteMeasureQuestionText";
   static var licenseKeyError = "licenseKeyError";
-  static var confirmLicenseKey ="confirmLicenseKey";
+  static var confirmLicenseKey = "confirmLicenseKey";
   static var enterKey = "enterKey";
   static var disableSell = "disableSell";
   static var enableSell = "enableSell";
   static var end = "end";
   static var enterAddress = "enterAddress";
   static var enterPincode = "enterPincode";
+  static var priceFilterText = "priceFilterText";
+  static var amountFilterText = "amountFilterText";
+  static var createdDateFilter = "createdDateFilter";
+  static var updatedDateFilter = "updatedDateFilter";
 }

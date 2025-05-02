@@ -51,8 +51,6 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
   void onNextPressed(String pincode, Employee employee) async {
     log("\n\npincode: ${pincode}, Employee:${employee.fullname} fromAdmin: ${widget.fromAdmin}");
 
-
-
     if (pincodeChars.every((e) => e.isNotEmpty)) {
       final enteredPin = pincodeChars.join('');
 
@@ -111,7 +109,6 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
   @override
   Widget build(BuildContext context) {
     final currentEmployee = ref.watch(currentEmployeeProvider);
-    print(model.pincode);
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -119,13 +116,22 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              AppLocales.enterNewPincode.tr(),
-              style: TextStyle(
-                fontFamily: boldFamily,
-                fontSize: 20,
+            if ((model.pincode.isEmpty && currentEmployee.roleName.toLowerCase() == 'admin'))
+              Text(
+                AppLocales.enterNewPincode.tr(),
+                style: TextStyle(
+                  fontFamily: boldFamily,
+                  fontSize: 20,
+                ),
+              )
+            else
+              Text(
+                AppLocales.enterPincode.tr(),
+                style: TextStyle(
+                  fontFamily: boldFamily,
+                  fontSize: 20,
+                ),
               ),
-            ),
             16.h,
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -203,7 +209,12 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
     );
   }
 
-  Widget buildNumberButton({required void Function() onPressed, required String number, IconData? icon, bool primary = false}) {
+  Widget buildNumberButton({
+    required void Function() onPressed,
+    required String number,
+    IconData? icon,
+    bool primary = false,
+  }) {
     return SimpleButton(
       onPressed: onPressed,
       child: Container(

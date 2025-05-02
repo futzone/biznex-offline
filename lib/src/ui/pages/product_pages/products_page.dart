@@ -4,6 +4,7 @@ import 'package:biznex/src/controllers/product_controller.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/pages/product_pages/add_product_page.dart';
+import 'package:biznex/src/ui/screens/products_screens/product_card_screen.dart';
 import 'package:biznex/src/ui/screens/products_screens/products_table_header.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
@@ -20,11 +21,13 @@ class ProductsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final filterList = useState([]);
     final isAddProduct = useState(false);
     final isUpdateProduct = useState(false);
     final currentProduct = useState<Product?>(null);
     final searchController = useTextEditingController();
     final searchResultList = useState(<Product>[]);
+    final filterResultList = useState(<Product>[]);
 
     void onSearchChanges(String char) {
       final providerListener = ref.watch(productsProvider).value ?? [];
@@ -32,6 +35,52 @@ class ProductsPage extends HookConsumerWidget {
         return item.name.toLowerCase().contains(char.toLowerCase());
       }).toList();
     }
+
+    void onFilterChanged(String filter) {
+      if (filter.isEmpty) {
+        filterList.value = [];
+        filterResultList.value = [];
+        return;
+      }
+
+      // Filterni toggle qilish (bor bo‘lsa olib tashla, yo‘q bo‘lsa qo‘sh)
+      if (filterList.value.contains(filter)) {
+        filterList.value.remove(filter);
+      } else {
+        filterList.value.add(filter);
+      }
+
+      final products = ref.watch(productsProvider).value ?? [];
+
+      List<Product> sorted = List.from(products);
+
+      if (filterList.value.contains("price")) {
+        sorted.sort((a, b) => b.price.compareTo(a.price));
+      }
+
+      if (filterList.value.contains("updated")) {
+        sorted.sort((a, b) {
+          final dateA = DateTime.tryParse(a.updatedDate ?? '') ?? DateTime(2025);
+          final dateB = DateTime.tryParse(b.updatedDate ?? '') ?? DateTime(2025);
+          return dateB.compareTo(dateA);
+        });
+      }
+
+      if (filterList.value.contains("created")) {
+        sorted.sort((a, b) {
+          final dateA = DateTime.tryParse(a.cratedDate ?? '') ?? DateTime(2025);
+          final dateB = DateTime.tryParse(b.cratedDate ?? '') ?? DateTime(2025);
+          return dateB.compareTo(dateA);
+        });
+      }
+
+      if (filterList.value.contains("amount")) {
+        sorted.sort((a, b) => b.amount.compareTo(a.amount));
+      }
+
+      filterResultList.value = sorted;
+    }
+
 
     return AppStateWrapper(builder: (theme, state) {
       if (isAddProduct.value) {
@@ -70,9 +119,41 @@ class ProductsPage extends HookConsumerWidget {
                 ),
                 suffixIcon: Padding(
                   padding: 8.lr,
-                  child: IconButton(
-                    icon: Icon(Ionicons.filter_outline),
-                    onPressed: () {},
+                  child: CustomPopupMenu(
+                    theme: theme,
+                    children: [
+                      CustomPopupItem(
+                        title: AppLocales.all.tr(),
+                        icon: Ionicons.list_outline,
+                        onPressed: () => onFilterChanged(''),
+                        iconColor: filterList.value.isEmpty ? Colors.green : null,
+                      ),
+                      CustomPopupItem(
+                        onPressed: () => onFilterChanged('price'),
+                        title: AppLocales.priceFilterText.tr(),
+                        icon: Ionicons.logo_usd,
+                        iconColor: filterList.value.contains('price') ? Colors.green : null,
+                      ),
+                      CustomPopupItem(
+                        onPressed: () => onFilterChanged('amount'),
+                        title: AppLocales.amountFilterText.tr(),
+                        icon: Icons.storefront_outlined,
+                        iconColor: filterList.value.contains('amount') ? Colors.green : null,
+                      ),
+                      CustomPopupItem(
+                        onPressed: () => onFilterChanged('created'),
+                        title: AppLocales.createdDateFilter.tr(),
+                        icon: Icons.calendar_month,
+                        iconColor: filterList.value.contains('created') ? Colors.green : null,
+                      ),
+                      CustomPopupItem(
+                        title: AppLocales.updatedDateFilter.tr(),
+                        icon: Icons.calendar_month,
+                        onPressed: () => onFilterChanged('updated'),
+                        iconColor: filterList.value.contains('updated') ? Colors.green : null,
+                      ),
+                    ],
+                    child: Icon(Ionicons.filter_outline),
                   ),
                 ),
                 onChanged: onSearchChanges,
@@ -107,6 +188,32 @@ class ProductsPage extends HookConsumerWidget {
                     if (searchResultList.value.isEmpty && searchController.text.isNotEmpty) {
                       return AppEmptyWidget();
                     }
+
+                    if (filterResultList.value.isEmpty && filterList.value.isNotEmpty) {
+                      return AppEmptyWidget();
+                    }
+
+                    if (filterResultList.value.isNotEmpty && filterList.value.isNotEmpty) {
+                      return ListView.builder(
+                        padding: Dis.only(top: 16, bottom: 24),
+                        itemCount: filterResultList.value.length,
+                        itemBuilder: (context, index) {
+                          Product product = filterResultList.value[index];
+
+                          return ProductCardScreen(
+                            theme: theme,
+                            state: state,
+                            product: product,
+                            onPressedEdit: () async {
+                              currentProduct.value = product;
+                              await Future.delayed(Duration(milliseconds: 100));
+                              isUpdateProduct.value = true;
+                            },
+                          );
+                        },
+                      );
+                    }
+
                     products as List<Product>;
                     if (products.isEmpty) return AppEmptyWidget();
                     return ListView.builder(
@@ -115,133 +222,15 @@ class ProductsPage extends HookConsumerWidget {
                       itemBuilder: (context, index) {
                         Product product = searchResultList.value.isNotEmpty ? searchResultList.value[index] : products[index];
 
-                        return WebButton(
-                          onPressed: () {
-                            // addOrUpdateOrderItem(ref, OrderItem(product: product, amount: 1, placeId: ''));
-                            // ShowToast.success(context, AppLocales.productAddedToSet.tr());
+                        return ProductCardScreen(
+                          theme: theme,
+                          state: state,
+                          product: product,
+                          onPressedEdit: () async {
+                            currentProduct.value = product;
+                            await Future.delayed(Duration(milliseconds: 100));
+                            isUpdateProduct.value = true;
                           },
-                          builder: (focused) => AnimatedContainer(
-                            duration: theme.animationDuration,
-                            margin: 8.tb,
-                            padding: Dis.only(lr: 16, tb: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: focused ? theme.mainColor : theme.accentColor),
-                              color: focused ? theme.mainColor.withOpacity(0.1) : theme.accentColor,
-                            ),
-                            child: Row(
-                              spacing: 16,
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Container(
-                                      height: 64,
-                                      width: 64,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        color: theme.scaffoldBgColor,
-                                        image: (product.images != null && product.images!.isNotEmpty)
-                                            ? DecorationImage(image: FileImage(File(product.images!.first)), fit: BoxFit.cover)
-                                            : null,
-                                      ),
-                                      child: !(product.images == null || product.images!.isEmpty)
-                                          ? null
-                                          : Center(
-                                              child: Text(
-                                                product.name.trim()[0],
-                                                style: TextStyle(
-                                                  color: theme.textColor,
-                                                  fontSize: 24,
-                                                  fontFamily: boldFamily,
-                                                ),
-                                              ),
-                                            ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Center(child: Text(product.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                                ),
-                                Expanded(flex: 1, child: Center(child: Text(product.price.priceUZS))),
-                                if(product.amount < 0)
-                                  
-                                Expanded(flex: 1, child: Center(child: Text("${AppLocales.end.tr()}"))) else
-                                Expanded(flex: 1, child: Center(child: Text("${product.amount.price} ${product.measure ?? ''}"))),
-                                Expanded(flex: 1, child: Center(child: Text(product.size ?? ' - '))),
-                                Expanded(flex: 1, child: Center(child: Text(product.barcode ?? ' - '))),
-                                Expanded(flex: 1, child: Center(child: Text(product.tagnumber ?? ' - '))),
-                                Expanded(
-                                  flex: 1,
-                                  child: Row(
-                                    spacing: 16,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      CustomPopupMenu(
-                                        theme: theme,
-                                        children: [
-                                          CustomPopupItem(
-                                            title: AppLocales.edit.tr(),
-                                            icon: Icons.edit,
-                                            onPressed: () async {
-                                              currentProduct.value = product;
-                                              await Future.delayed(Duration(milliseconds: 100));
-                                              isUpdateProduct.value = true;
-                                            },
-                                          ),
-                                          CustomPopupItem(
-                                            title: AppLocales.viewAll.tr(),
-                                            icon: Icons.remove_red_eye_outlined,
-                                            onPressed: () async {
-                                              showDesktopModal(
-                                                width: MediaQuery.of(context).size.width * 0.4,
-                                                context: context,
-                                                body: ProductScreen(product),
-                                              );
-                                            },
-                                          ),
-
-                                          CustomPopupItem(
-                                            title: product.amount == -1 ? AppLocales.enableSell.tr() : AppLocales.disableSell.tr(),
-                                            icon: product.amount == -1 ? Icons.done : Icons.close,
-                                            onPressed: () {
-                                              ProductController pc = ProductController(context: context, state: state);
-                                              Product pr = product;
-                                              if (product.amount != -1) {
-                                                pr.amount = -1;
-                                                pc.update(pr, pr.id);
-                                              } else {
-                                                pr.amount = 1;
-                                                pc.update(pr, pr.id);
-                                              }
-                                            },
-                                          ),
-                                          // CustomPopupItem(title: AppLocales.add.tr(), icon: Icons.add),
-                                          // CustomPopupItem(title: AppLocales.monitoring.tr(), icon: Icons.bar_chart),
-                                          CustomPopupItem(
-                                            title: AppLocales.delete.tr(),
-                                            icon: Icons.delete_outline,
-                                            onPressed: () => ProductController.onDeleteProduct(context: context, state: state, id: product.id),
-                                          ),
-                                        ],
-                                        child: IgnorePointer(
-                                          ignoring: true,
-                                          child: IconButton.outlined(
-                                            onPressed: () {},
-                                            icon: Icon(Icons.more_vert),
-                                            color: theme.textColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
                         );
                       },
                     );

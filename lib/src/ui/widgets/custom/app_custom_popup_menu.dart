@@ -1,4 +1,3 @@
-
 import 'package:biznex/src/core/config/theme.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_custom_padding.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +40,7 @@ class CustomPopupItem {
         children: [
           if (icon != null) Icon(icon, size: 20, color: iconColor),
           if (icon != null) const SizedBox(width: 8),
-          Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          Text(title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: iconColor)),
         ],
       ),
     );
