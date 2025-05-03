@@ -2,6 +2,7 @@ import 'package:biznex/biznex.dart';
 import 'package:biznex/src/ui/screens/settings_screen/settings_button_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:window_manager/window_manager.dart';
 
 class AppSidebar extends HookConsumerWidget {
   final ValueNotifier<int> pageNotifier;
@@ -54,7 +55,16 @@ class AppSidebar extends HookConsumerWidget {
     Widget sidebarItemBuilder(String icon, String name, int page) {
       final selected = (page == pageNotifier.value);
 
-      return _buildSidebarItem(name, icon, selected, () => pageNotifier.value = page, openedValue.value);
+      return _buildSidebarItem(
+        name,
+        icon,
+        selected,
+        () {
+          if (page == -1) return;
+          pageNotifier.value = page;
+        },
+        openedValue.value,
+      );
     }
 
     return AppStateWrapper(builder: (theme, state) {
@@ -126,6 +136,16 @@ class AppSidebar extends HookConsumerWidget {
                     // sidebarItemBuilder("assets/icons/hanger.svg", AppLocales.productSizes.tr(), 6),
                     sidebarItemBuilder("assets/icons/reprots.svg", AppLocales.reports.tr(), 7),
                     sidebarItemBuilder("assets/icons/users.svg", AppLocales.employees.tr(), 8),
+                    SimpleButton(
+                      onPressed: () async {
+                        final isFullscreen = await windowManager.isFullScreen();
+                        await windowManager.setFullScreen(!isFullscreen);
+                      },
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: sidebarItemBuilder("assets/icons/fullscreen.svg", AppLocales.fullScreen.tr(), -1),
+                      ),
+                    ),
                     // sidebarItemBuilder("assets/icons/printer-svgrepo-com.svg", AppLocales.printing.tr(), 9),
                     // sidebarItemBuilder("assets/icons/delivery.svg", AppLocales.delivery.tr(), 10),
                   ],

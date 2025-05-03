@@ -478,4 +478,5 @@ abstract class AppLocales {
   static var amountFilterText = "amountFilterText";
   static var createdDateFilter = "createdDateFilter";
   static var updatedDateFilter = "updatedDateFilter";
+  static var fullScreen = "fullScreen";
 }

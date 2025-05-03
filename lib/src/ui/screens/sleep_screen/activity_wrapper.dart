@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart'; // onPointerHover uchun kerak bo'lishi mumkin
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ActivityWrapper extends StatefulWidget {
@@ -8,24 +10,37 @@ class ActivityWrapper extends StatefulWidget {
   const ActivityWrapper({super.key, required this.child});
 
   @override
-  State<ActivityWrapper> createState() => _InactivityWrapperState();
+  State<ActivityWrapper> createState() => _ActivityWrapperState();
 }
 
-class _InactivityWrapperState extends State<ActivityWrapper> {
+class _ActivityWrapperState extends State<ActivityWrapper> {
   bool _showLogo = false;
   Timer? _inactivityTimer;
   late final FocusNode _focusNode;
+  final Duration _inactivityTimeout = const Duration(seconds: 30);
 
   void _resetTimer() {
-    _inactivityTimer?.cancel();
-    setState(() => _showLogo = false);
-    _inactivityTimer = Timer(const Duration(seconds: 30), () {
-      setState(() => _showLogo = true);
+    if (_inactivityTimer?.isActive ?? false) {
+      _inactivityTimer!.cancel();
+    }
+    if (_showLogo) {
+      setState(() => _showLogo = false);
+    }
+    _inactivityTimer = Timer(_inactivityTimeout, () {
+      if (mounted) {
+        setState(() => _showLogo = true);
+      }
     });
   }
 
-  void _onUserInteraction() {
+  void _onUserInteraction(PointerEvent event) {
     _resetTimer();
+  }
+
+  void _onKeyEvent(RawKeyEvent event) {
+    if (event is RawKeyDownEvent) {
+      _resetTimer();
+    }
   }
 
   @override
@@ -33,7 +48,9 @@ class _InactivityWrapperState extends State<ActivityWrapper> {
     super.initState();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
+      if (mounted) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      }
     });
     _resetTimer();
   }
@@ -49,9 +66,12 @@ class _InactivityWrapperState extends State<ActivityWrapper> {
   Widget build(BuildContext context) {
     return RawKeyboardListener(
       focusNode: _focusNode,
-      onKey: (_) => _onUserInteraction(),
+      onKey: _onKeyEvent,
+      autofocus: true,
       child: Listener(
-        onPointerDown: (_) => _onUserInteraction(),
+        onPointerDown: _onUserInteraction,
+        onPointerMove: _onUserInteraction,
+        onPointerHover: _onUserInteraction,
         child: Stack(
           children: [
             widget.child,
@@ -59,8 +79,9 @@ class _InactivityWrapperState extends State<ActivityWrapper> {
               Positioned.fill(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: _onUserInteraction,
-                  onPanDown: (_) => _onUserInteraction(),
+                  onTap: () => _resetTimer(),
+                  onPanDown: (_) => _resetTimer(),
+                  onTapDown: (_) => _resetTimer(),
                   child: SvgPicture.asset(
                     'assets/icons/biznex-logo.svg',
                     width: MediaQuery.of(context).size.width,

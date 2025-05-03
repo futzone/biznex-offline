@@ -72,23 +72,24 @@ class _AddProductPageState extends State<AddProductPage> {
       return;
     }
     Product product = Product(
-        cratedDate: widget.product?.cratedDate,
-        updatedDate: DateTime.now().toIso8601String(),
-        id: widget.product == null ? '' : widget.product!.id,
-        name: nameController.text.trim(),
-        price: double.tryParse(resultPriceController.text.trim())!,
-        description: _descriptionController.text.trim(),
-        barcode: productBarcodeController.text.trim(),
-        tagnumber: productTagnumberController.text.trim(),
-        informations: _productInformations,
-        images: _imagesList,
-        measure: _productMeasure?.name,
-        color: _productColor?.name,
-        colorCode: _productColor?.code,
-        size: _productSize?.name,
-        amount: double.tryParse(amountController.text.trim()) ?? 1.0,
-        percent: double.tryParse(percentController.text.trim()) ?? 0.0,
-        category: _category);
+      cratedDate: widget.product?.cratedDate,
+      updatedDate: DateTime.now().toIso8601String(),
+      id: widget.product == null ? '' : widget.product!.id,
+      name: nameController.text.trim(),
+      price: double.tryParse(resultPriceController.text.trim())!,
+      description: _descriptionController.text.trim(),
+      barcode: productBarcodeController.text.trim(),
+      tagnumber: productTagnumberController.text.trim(),
+      informations: _productInformations,
+      images: _imagesList,
+      measure: _productMeasure?.name,
+      color: _productColor?.name,
+      colorCode: _productColor?.code,
+      size: _productSize?.name,
+      amount: double.tryParse(amountController.text.trim()) ?? 1.0,
+      percent: double.tryParse(percentController.text.trim()) ?? 0.0,
+      category: _category,
+    );
 
     ProductController productController = ProductController(
       context: context,

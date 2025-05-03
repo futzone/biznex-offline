@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/order_database/order_database.dart';
@@ -150,6 +149,8 @@ class OrderController {
     Order newOrder = currentState;
 
     final percents = await OrderPercentDatabase().get();
+
+
     final totalPercent = percents.map((e) => e.percent).fold(0.0, (a, b) => a + b);
     newOrder.price = currentState.price + (currentState.price * (totalPercent / 100));
 
@@ -157,7 +158,7 @@ class OrderController {
     if (note != null) newOrder.note = note;
     newOrder.status = Order.completed;
     await _database.saveOrder(newOrder);
-    await _onUpdateAmounts(newOrder);
+    // await _onUpdateAmounts(newOrder);
     await _database.closeOrder(placeId: place.id);
     model.ref!.invalidate(ordersProvider(place.id));
     model.ref!.invalidate(ordersProvider);

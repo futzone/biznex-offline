@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/server/start.dart';
@@ -11,6 +12,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:toastification/toastification.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:path/path.dart' as path;
 
 bool debugMode = true;
 const appVersion = 'v1.0.2';
@@ -32,9 +34,10 @@ void main() {
       await windowManager.focus();
     });
 
-    final dir = await getApplicationDocumentsDirectory();
+    final appDir = await getApplicationSupportDirectory();
+    final dir = Directory(path.join(appDir.path, 'database'));
     Hive.init(dir.path);
-    Hive.initFlutter();
+    // Hive.initFlutter();
 
     startServer();
     await EasyLocalization.ensureInitialized();

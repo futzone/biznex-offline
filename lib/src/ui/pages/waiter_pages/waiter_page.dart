@@ -13,6 +13,7 @@ import 'package:biznex/src/ui/screens/settings_screen/employee_settings_screen.d
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
+import 'package:window_manager/window_manager.dart';
 import '../../screens/order_screens/order_half_page.dart';
 
 class WaiterPage extends ConsumerStatefulWidget {
@@ -39,6 +40,13 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
           leading: widget.haveBack ? null : Icon(Ionicons.person_outline, size: 28),
           title: Text(employee.fullname),
           actions: [
+            IconButton(
+              onPressed: () async {
+                final isFullscreen = await windowManager.isFullScreen();
+                await windowManager.setFullScreen(!isFullscreen);
+              },
+              icon: Icon(Icons.fullscreen_outlined, size: 40),
+            ),
             IconButton(
               onPressed: () {
                 showDesktopModal(
