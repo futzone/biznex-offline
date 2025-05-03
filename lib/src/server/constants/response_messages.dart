@@ -10,4 +10,6 @@ class ResponseMessages{
   static var placeOrderNotFound = "placeOrderNotFound";
   static var orderClosed = "orderClosed";
   static var placeIdRequired = 'placeIdRequired';
+  static var imagePathRequired = 'imagePathRequired';
+  static var imageNotFound = 'imageNotFound';
 }

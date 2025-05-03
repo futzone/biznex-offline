@@ -8,5 +8,5 @@ class ApiEndpoints {
   static var employee = '/api/v1/me';
   static var stats = "/api/v1/stats";
   static var state = "/api/v1/state";
-
- }
+  static var getImage = '/api/v1/image/<path>';
+}

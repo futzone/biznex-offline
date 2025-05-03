@@ -5,6 +5,7 @@ import 'package:biznex/src/server/constants/response_messages.dart';
 import 'package:biznex/src/server/docs.dart';
 import 'package:biznex/src/server/routes/categories_router.dart';
 import 'package:biznex/src/server/routes/employee_router.dart';
+import 'package:biznex/src/server/routes/file_router.dart';
 import 'package:biznex/src/server/routes/orders_router.dart';
 import 'package:biznex/src/server/routes/places_router.dart';
 import 'package:biznex/src/server/routes/products_router.dart';
@@ -102,6 +103,15 @@ void startServer() async {
     OrdersRouter ordersRouter = OrdersRouter(request);
     final placesResponse = await ordersRouter.closeOrder(request);
     return placesResponse.toResponse();
+  });
+
+  app.get(ApiEndpoints.getImage, (Request request, String path) async {
+    final status = authorizationServices.requestAuthChecker(request);
+    if (!status) return Response(403, body: jsonEncode({"error": ResponseMessages.unauthorized}));
+
+    FileRouter fileRouter = FileRouter();
+    final placesResponse = await fileRouter.getImage(request);
+    return placesResponse.toImageResponse();
   });
 
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(app.call);

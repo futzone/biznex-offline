@@ -83,9 +83,9 @@ class AppSidebar extends HookConsumerWidget {
                   ? Padding(
                       padding: const EdgeInsets.only(top: 16),
                       child: Icon(
-                        Ionicons.menu_outline,
-                        size: 32,
+                        Icons.dashboard_rounded,
                         color: Colors.white,
+                        size: 32,
                       ),
                     )
                   : Padding(
@@ -94,15 +94,7 @@ class AppSidebar extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (openedValue.value)
-                            Text(
-                              "BIZNEX",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
+                          if (openedValue.value) SvgPicture.asset("assets/icons/logo-text.svg", color: theme.mainColor),
                           if (openedValue.value)
                             Center(child: Icon(Icons.arrow_back_ios, color: Colors.white))
                           else
