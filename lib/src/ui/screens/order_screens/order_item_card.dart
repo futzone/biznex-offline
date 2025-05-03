@@ -29,14 +29,13 @@ class OrderItemCardNew extends HookConsumerWidget {
     if (value.isNaN || value.isInfinite) {
       return value.toString();
     }
-    // Avval 3 xonagacha yaxlitlaymiz (float xatoliklarini kamaytirish uchun)
+
     num roundedValue = double.parse(value.toStringAsFixed(3));
     String formatted = roundedValue.toString();
 
-    // Agar kasr qismi bo'lsa, oxiridagi keraksiz nollarni olib tashlaymiz
     if (formatted.contains('.')) {
-      formatted = formatted.replaceAll(RegExp(r'0*$'), ''); // Oxiridagi nollar
-      formatted = formatted.replaceAll(RegExp(r'\.$'), ''); // Oxiridagi nuqta (agar 5.0 -> 5. -> 5 bo'lsa)
+      formatted = formatted.replaceAll(RegExp(r'0*$'), '');
+      formatted = formatted.replaceAll(RegExp(r'\.$'), '');
     }
     return formatted;
   }
@@ -329,11 +328,19 @@ class OrderItemCardNew extends HookConsumerWidget {
                     ),
                   if (infoView)
                     Expanded(
-                      child: Center(
-                        child: Text(
-                          (item.amount * item.product.price).priceUZS,
-                          style: TextStyle(fontSize: 18, fontFamily: boldFamily),
-                        ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${AppLocales.total.tr()}:",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Text(
+                            (item.amount * item.product.price).priceUZS,
+                            style: TextStyle(fontSize: 18, fontFamily: boldFamily),
+                          ),
+                        ],
                       ),
                     ),
                 ],

@@ -1,6 +1,5 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/transaction_controller.dart';
-import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/transaction_model/transaction_model.dart';
 import 'package:biznex/src/core/services/printer_services.dart';
