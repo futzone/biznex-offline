@@ -324,7 +324,11 @@ class OrderItemCardNew extends HookConsumerWidget {
                       },
                       icon: Icon(Icons.delete_outline, color: Colors.red),
                       style: IconButton.styleFrom(
-                          side: BorderSide(color: Colors.red), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                        side: BorderSide(color: Colors.red),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
                   if (infoView)
                     Expanded(

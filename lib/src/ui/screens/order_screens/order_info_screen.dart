@@ -49,7 +49,7 @@ class OrderInfoScreen extends HookConsumerWidget {
               Row(
                 children: [
                   Text("${AppLocales.place.tr()}: ", style: TextStyle(fontSize: 16)),
-                  AppText.$18Bold(order.place.father == null ? order.place.name : "${order.place.father?.name}, ${order.place.name}"),
+                  AppText.$18Bold((order.place.father == null || order.place.father!.name.isEmpty) ? order.place.name : "${order.place.father?.name}, ${order.place.name}"),
                   Spacer(),
                   Text("${order.employee.roleName}: ", style: TextStyle(fontSize: 16)),
                   AppText.$18Bold(order.employee.fullname),

@@ -82,7 +82,7 @@ class PlacesPage extends HookConsumerWidget {
               ),
               floatingActionButtonNotifier: floatingActionButton,
               actions: [
-                if (state.isDesktop) 160.w,
+                24.w,
                 if (state.isDesktop)
                   Expanded(
                     child: AppTextField(

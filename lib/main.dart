@@ -97,6 +97,7 @@ class MyApp extends ConsumerWidget {
           child: MaterialApp(
             locale: context.locale,
             localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,

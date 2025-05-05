@@ -479,4 +479,6 @@ abstract class AppLocales {
   static var createdDateFilter = "createdDateFilter";
   static var updatedDateFilter = "updatedDateFilter";
   static var fullScreen = "fullScreen";
+  static var languageChangedToRussian = "languageChangedToRussian";
+  static var languageChangedToUzbek = "languageChangedToUzbek";
 }

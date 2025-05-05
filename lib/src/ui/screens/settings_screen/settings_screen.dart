@@ -14,6 +14,7 @@ import 'package:biznex/src/ui/screens/settings_screen/order_settings_screen.dart
 import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -104,8 +105,10 @@ class SettingsScreen extends ConsumerWidget {
                   onPressed: () {
                     if (context.locale.languageCode == 'uz') {
                       context.setLocale(const Locale('ru', 'RU'));
+                      ShowToast.success(context, AppLocales.languageChangedToRussian.tr());
                     } else {
                       context.setLocale(const Locale('uz', 'UZ'));
+                      ShowToast.success(context, AppLocales.languageChangedToUzbek.tr());
                     }
                     if (!kIsWeb) {
                       // AppRouter.open(context, const MaterialHomePage());

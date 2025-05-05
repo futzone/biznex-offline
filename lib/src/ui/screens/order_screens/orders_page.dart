@@ -450,7 +450,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                                                         style: TextStyle(),
                                                       ),
                                                       Text(
-                                                        "${order.place.father != null ? '${order.place.father!.name}, ' : ''}${order.place.name}",
+                                                        "${(order.place.father != null && order.place.father!.name.isNotEmpty) ? '${order.place.father!.name}, ' : ''}${order.place.name}",
                                                         style: TextStyle(fontFamily: boldFamily),
                                                       ),
                                                     ],

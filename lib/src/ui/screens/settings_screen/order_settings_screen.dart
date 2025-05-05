@@ -109,7 +109,7 @@ class OrderSettingsScreen extends HookConsumerWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: AppTextField(
                     title: '%',
                     controller: percentController,
@@ -118,7 +118,7 @@ class OrderSettingsScreen extends HookConsumerWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: AppPrimaryButton(
                     theme: theme,
                     onPressed: () {
