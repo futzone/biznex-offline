@@ -369,5 +369,17 @@
   "deleteMeasureQuestionText": "Are you sure you want to delete the measurement unit?",
   "licenseKeyError": "Invalid or expired license key.",
   "confirmLicenseKey": "Confirm license key",
-  "enterKey": "Enter key"
+  "enterKey": "Enter key",
+  "disableSell": "Disable selling",
+  "enableSell": "Enable selling",
+  "end": "End",
+  "enterAddress": "Enter address",
+  "enterPincode": "Enter pincode",
+  "priceFilterText": "Price filter",
+  "amountFilterText": "Amount filter",
+  "createdDateFilter": "Filter by creation date",
+  "updatedDateFilter": "Filter by update date",
+  "fullScreen": "Full screen",
+  "languageChangedToRussian": "Language changed to Russian",
+  "languageChangedToUzbek": "Language changed to Uzbek"
 }

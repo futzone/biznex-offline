@@ -467,5 +467,17 @@
   "deleteMeasureQuestionText": "O‘lchov birligini o‘chirib tashlamoqchimisiz?",
   "licenseKeyError": "Litsenziya kaliti xato yoki muddati tugagan.",
   "confirmLicenseKey": "Litsenziya kalitini tasdiqlang",
-  "enterKey": "Kalitni kiriting"
+  "enterKey": "Kalitni kiriting",
+  "disableSell": "Sotishni o‘chirish",
+  "enableSell": "Sotishni yoqish",
+  "end": "Yakunlash",
+  "enterAddress": "Manzilni kiriting",
+  "enterPincode": "Pin kodni kiriting",
+  "priceFilterText": "Narx bo‘yicha",
+  "amountFilterText": "Miqdor bo‘yicha",
+  "createdDateFilter": "Yaratilgan sana bo‘yicha",
+  "updatedDateFilter": "Yangilangan sana bo‘yicha",
+  "fullScreen": "To‘liq ekran",
+  "languageChangedToRussian": "Til rus tiliga o‘zgartirildi",
+  "languageChangedToUzbek": "Til o‘zbek tiliga o‘zgartirildi"
 }

@@ -463,5 +463,17 @@
   "deleteMeasureQuestionText": "Вы действительно хотите удалить единицу измерения?",
   "licenseKeyError": "Неверный или просроченный лицензионный ключ.",
   "confirmLicenseKey": "Подтвердите лицензионный ключ",
-  "enterKey": "Введите ключ"
+  "enterKey": "Введите ключ",
+  "disableSell": "Отключить продажу",
+  "enableSell": "Включить продажу",
+  "end": "Завершить",
+  "enterAddress": "Введите адрес",
+  "enterPincode": "Введите почтовый код",
+  "priceFilterText": "Фильтр по цене",
+  "amountFilterText": "Фильтр по количеству",
+  "createdDateFilter": "Фильтр по дате создания",
+  "updatedDateFilter": "Фильтр по дате обновления",
+  "fullScreen": "Полный экран",
+  "languageChangedToRussian": "Язык изменён на русский",
+  "languageChangedToUzbek": "Язык изменён на узбекский"
 }
