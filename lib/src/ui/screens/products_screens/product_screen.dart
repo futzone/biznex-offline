@@ -91,7 +91,9 @@ class ProductScreen extends AppStatelessWidget {
                   ),
                 if (product.description != null) AppText.subtitle(product.description!, state),
                 if (product.cratedDate != null || product.updatedDate != null)
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     spacing: 24,
                     children: [
                       AppText.$14Bold(
@@ -108,6 +110,7 @@ class ProductScreen extends AppStatelessWidget {
         ),
         ConfirmCancelButton(
           confirmText: AppLocales.toSet.tr(),
+          onlyClose: true,
         ),
       ],
     );

@@ -407,7 +407,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                                                   Row(
                                                     spacing: 8,
                                                     children: [
-                                                      Icon(Ionicons.time_outline),
+                                                      Icon(Icons.more_time_outlined),
                                                       Text(
                                                         "${AppLocales.createdDate.tr()}: ",
                                                         style: TextStyle(),
@@ -421,7 +421,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                                                   Row(
                                                     spacing: 8,
                                                     children: [
-                                                      Icon(Ionicons.time_outline),
+                                                      Icon(Icons.access_time_outlined),
                                                       Text(
                                                         "${order.status == Order.completed ? AppLocales.closedDate.tr() : AppLocales.updatedDate.tr()}: ",
                                                         style: TextStyle(),

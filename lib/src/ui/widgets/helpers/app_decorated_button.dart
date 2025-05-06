@@ -75,6 +75,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
   final double? spacing;
   final EdgeInsets? padding;
   final Color? cancelColor;
+  final bool onlyClose;
 
   const ConfirmCancelButton({
     super.key,
@@ -86,6 +87,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
     this.confirmIcon,
     this.cancelIcon,
     this.padding,
+    this.onlyClose = false,
     this.cancelColor,
   });
 
@@ -125,7 +127,10 @@ class ConfirmCancelButton extends AppStatelessWidget {
             ),
           ),
         ),
+
+        if(!onlyClose)
         if (spacing == null) state.getSpacing.w else spacing!.w,
+        if(!onlyClose)
         Expanded(
           child: AppPrimaryButton(
             padding: padding,

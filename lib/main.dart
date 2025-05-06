@@ -23,8 +23,8 @@ void main() {
 
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = WindowOptions(
-      size: Size(1200, 720),
-      minimumSize: Size(1200, 720),
+      size: Size(1280, 720),
+      minimumSize: Size(1280, 720),
       center: true,
       backgroundColor: Colors.transparent,
       titleBarStyle: TitleBarStyle.normal,
