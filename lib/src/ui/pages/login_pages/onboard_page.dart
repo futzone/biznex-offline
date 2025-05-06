@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
- import 'package:biznex/biznex.dart';
+import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/core/services/network_services.dart';
 import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
- import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
- import '../../screens/onboarding_screens/onboard_card.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
+import '../../screens/onboarding_screens/onboard_card.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -35,12 +35,6 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                     actions: [
                       IconButton(
                         onPressed: () async {
-
-                        },
-                        icon: Icon(Icons.qr_code, size: 28),
-                      ),
-                      IconButton(
-                        onPressed: () async {
                           final status = await windowManager.isFullScreen();
                           await windowManager.setFullScreen(!status);
                         },
@@ -63,7 +57,7 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                         return OnboardCard(
                           theme: theme,
                           roleName: "Admin",
-                          fullname: "Super Admin",
+                          fullname: "Admin",
                           onPressed: () {
                             AppRouter.go(context, LoginPageHarom(model: state, theme: theme, fromAdmin: true));
                           },
@@ -128,5 +122,3 @@ class QrAddressView extends ConsumerWidget {
         loading: () => AppLoadingScreen());
   }
 }
-
- 

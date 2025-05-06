@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/employee_controller.dart';
+import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
+import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
@@ -44,7 +49,28 @@ class EmployeeSettingsScreen extends HookConsumerWidget {
             24.h,
             ConfirmCancelButton(
               confirmText: AppLocales.save.tr(),
-              onConfirm: () {
+              onConfirm: () async {
+                log(employee.toJson().toString());
+                log(pincode.text.trim());
+                log(pincodeNew.text.trim());
+
+
+                if (employee.roleName.toString().toLowerCase() == "admin") {
+                  if (state.pincode != pincode.text.trim() && pincodeNew.text.trim().length == 4) {
+                    ShowToast.error(context, AppLocales.incorrectPincode.tr());
+                    return;
+                  }
+
+                  AppModel app = state;
+                  app.pincode = pincodeNew.text.trim();
+                  await AppStateDatabase().updateApp(app).then((_) {
+                    ref.invalidate(appStateProvider);
+                    AppRouter.close(context);
+                    ShowToast.success(context, AppLocales.update.tr());
+                  });
+                  return;
+                }
+
                 if (employee.pincode != pincode.text.trim() && pincodeNew.text.trim().length == 4) {
                   ShowToast.error(context, AppLocales.incorrectPincode.tr());
                   return;
