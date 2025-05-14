@@ -8,10 +8,16 @@ import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/employee_models/role_model.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
+import 'package:biznex/src/ui/pages/login_pages/login_half_page.dart';
 import 'package:biznex/src/ui/pages/main_pages/main_page.dart';
 import 'package:biznex/src/ui/pages/waiter_pages/waiter_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pin_keyboard/pin_keyboard.dart';
 
 class LoginPageHarom extends ConsumerStatefulWidget {
   final AppModel model;
@@ -32,27 +38,17 @@ class LoginPageHarom extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPageHarom> {
+  String _pincode = '';
+  final FocusNode _focusNode = FocusNode();
+
   AppModel get model => widget.model;
 
   AppColors get theme => widget.theme;
 
-  List<String> pincodeChars = ['', '', '', ''];
-
-  void onPressedNumber(String number, String pincode) async {
-    for (int i = 0; i < pincodeChars.length; i++) {
-      if (pincodeChars[i].isEmpty) {
-        pincodeChars[i] = number;
-        setState(() {});
-        break;
-      }
-    }
-  }
-
   void onNextPressed(String pincode, Employee employee) async {
-    log("\n\npincode: ${pincode}, Employee:${employee.fullname} fromAdmin: ${widget.fromAdmin}");
-
-    if (pincodeChars.every((e) => e.isNotEmpty)) {
-      final enteredPin = pincodeChars.join('');
+    await Future.delayed(Duration(milliseconds: 100));
+    if (_pincode.length == 4) {
+      final enteredPin = _pincode;
 
       if (model.pincode.isEmpty && employee.roleName.toLowerCase() == 'admin') {
         final app = model..pincode = enteredPin;
@@ -69,8 +65,7 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
         if (pincode != enteredPin) {
           log("$pincode!= $enteredPin");
           ShowToast.error(context, AppLocales.incorrectPincode.tr());
-          log('❌ Kiritilgan PIN noto‘g‘ri');
-          pincodeChars = ['', '', '', ''];
+          _pincode = '';
           return setState(() {});
         }
 
@@ -90,118 +85,140 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
         return AppRouter.close(context);
       }
 
+
+      if(employee.roleName.toLowerCase() == 'admin' && pincode == enteredPin) {
+        return AppRouter.open(context, MainPage());
+      }
+
       ShowToast.error(context, AppLocales.incorrectPincode.tr());
-      pincodeChars = ['', '', '', ''];
+      _pincode = '';
       return setState(() {});
     }
   }
 
-  void onDeletePressed() {
-    for (int i = 0; i < pincodeChars.length; i++) {
-      if (pincodeChars[pincodeChars.length - 1 - i].isNotEmpty) {
-        pincodeChars[pincodeChars.length - 1 - i] = '';
-        setState(() {});
-        break;
-      }
-    }
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.requestFocus();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final currentEmployee = ref.watch(currentEmployeeProvider);
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+    return RawKeyboardListener(
+      focusNode: _focusNode,
+      autofocus: true,
+      onKey: (RawKeyEvent keyEvent) {
+        if (keyEvent is RawKeyDownEvent) {
+          final key = keyEvent.logicalKey.keyLabel;
+
+          if (int.tryParse(key) != null && _pincode.length < 4) {
+            setState(() {
+              _pincode += key;
+              if (_pincode.length == 4) {
+                Future.microtask(() {
+                  onNextPressed(currentEmployee.pincode, currentEmployee);
+                });
+              }
+            });
+          }
+        }
+      },
+      child: Scaffold(
+        body: Row(
           children: [
-            if ((model.pincode.isEmpty && currentEmployee.roleName.toLowerCase() == 'admin'))
-              Text(
-                AppLocales.enterNewPincode.tr(),
-                style: TextStyle(
-                  fontFamily: boldFamily,
-                  fontSize: 20,
-                ),
-              )
-            else
-              Text(
-                AppLocales.enterPincode.tr(),
-                style: TextStyle(
-                  fontFamily: boldFamily,
-                  fontSize: 20,
+            LoginHalfPage(model),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  spacing: 24,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/Vector 614.png', width: 160),
+                    Text(
+                      model.pincode.isEmpty ? AppLocales.enterNewPincode.tr() : AppLocales.enterPincode.tr(),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontFamily: mediumFamily,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 16,
+                      children: List.generate(4, (index) {
+                        return Container(
+                          height: 68,
+                          width: 68,
+                          decoration: BoxDecoration(
+                            color: theme.accentColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: !(index < _pincode.length)
+                              ? null
+                              : Icon(
+                                  Icons.circle,
+                                  color: theme.mainColor,
+                                ),
+                        );
+                      }),
+                    ),
+                    PinKeyboard(
+                      maxWidth: MediaQuery.of(context).size.width * 0.3,
+                      space: MediaQuery.of(context).size.height * 0.1,
+                      textColor: widget.theme.textColor,
+                      length: 4,
+                      enableBiometric: false,
+                      iconBackspaceColor: widget.theme.textColor,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w900,
+                      onChange: (pin) {
+                        setState(() {
+                          _pincode = pin;
+                        });
+                      },
+                      onConfirm: (pin) {
+                        Future.microtask(() {
+                          onNextPressed(currentEmployee.pincode, currentEmployee);
+                        });
+                      },
+                      // onBiometric: () {},
+                    ),
+                    0.h,
+                    AppPrimaryButton(
+                      theme: theme,
+                      onPressed: () {
+                        onNextPressed(currentEmployee.pincode, currentEmployee);
+                      },
+                      child: Row(
+                        spacing: 8,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            AppLocales.login.tr(),
+                            style: TextStyle(
+                              fontFamily: mediumFamily,
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward, size: 20, color: Colors.white),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            16.h,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: List.generate(pincodeChars.length, (index) {
-                return Container(
-                  height: 64,
-                  width: 64,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: pincodeChars[index].isEmpty ? theme.secondaryTextColor : theme.mainColor,
-                      width: 2,
-                    ),
-                  ),
-                  child: Center(
-                    child: AppText.$24Bold(pincodeChars[index]),
-                  ),
-                );
-              }),
-            ),
-            24.h,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: [
-                buildNumberButton(onPressed: () => onPressedNumber("1", currentEmployee.pincode), number: "1"),
-                buildNumberButton(onPressed: () => onPressedNumber("2", currentEmployee.pincode), number: "2"),
-                buildNumberButton(onPressed: () => onPressedNumber("3", currentEmployee.pincode), number: "3"),
-              ],
-            ),
-            16.h,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: [
-                buildNumberButton(onPressed: () => onPressedNumber("4", currentEmployee.pincode), number: "4"),
-                buildNumberButton(onPressed: () => onPressedNumber("5", currentEmployee.pincode), number: "5"),
-                buildNumberButton(onPressed: () => onPressedNumber("6", currentEmployee.pincode), number: "6"),
-              ],
-            ),
-            16.h,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: [
-                buildNumberButton(onPressed: () => onPressedNumber("7", currentEmployee.pincode), number: "7"),
-                buildNumberButton(onPressed: () => onPressedNumber("8", currentEmployee.pincode), number: "8"),
-                buildNumberButton(onPressed: () => onPressedNumber("9", currentEmployee.pincode), number: "9"),
-              ],
-            ),
-            16.h,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 16,
-              children: [
-                buildNumberButton(onPressed: onDeletePressed, number: "9", icon: Icons.backspace_outlined),
-                buildNumberButton(onPressed: () => onPressedNumber("0", currentEmployee.pincode), number: "0"),
-                buildNumberButton(
-                  onPressed: () => onNextPressed(currentEmployee.pincode, currentEmployee),
-                  number: "Go",
-                  icon: Icons.arrow_forward_ios_outlined,
-                  primary: true,
-                ),
-              ],
             ),
           ],
         ),

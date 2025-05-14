@@ -16,7 +16,7 @@ class ActivityWrapper extends StatefulWidget {
 class _ActivityWrapperState extends State<ActivityWrapper> {
   Timer? _inactivityTimer;
   late final FocusNode _focusNode;
-  final Duration _inactivityTimeout = const Duration(seconds: 30);
+  final Duration _inactivityTimeout = const Duration(seconds: 3000);
 
   OverlayEntry? _logoOverlayEntry;
 

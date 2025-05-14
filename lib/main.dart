@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:io';
-
 import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/server/start.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
@@ -17,7 +15,7 @@ import 'package:path/path.dart' as path;
 bool debugMode = true;
 const appVersion = 'v1.0.2';
 
-void main()  async {
+void main() async {
   // runZonedGuarded(() async {
   //   WidgetsFlutterBinding.ensureInitialized();
   //
@@ -84,59 +82,59 @@ void main()  async {
   //   ));
   // });
 
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-    await windowManager.ensureInitialized();
-    WindowOptions windowOptions = WindowOptions(
-      size: Size(1280, 720),
-      minimumSize: Size(1280, 720),
-      center: true,
-      backgroundColor: Colors.transparent,
-      titleBarStyle: TitleBarStyle.normal,
-    );
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
+  await windowManager.ensureInitialized();
+  WindowOptions windowOptions = WindowOptions(
+    size: Size(1280, 720),
+    minimumSize: Size(1280, 720),
+    center: true,
+    backgroundColor: Colors.transparent,
+    titleBarStyle: TitleBarStyle.normal,
+    fullScreen: true,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
 
-    final appDir = await getApplicationSupportDirectory();
-    final dir = Directory(path.join(appDir.path, 'database'));
-    Hive.init(dir.path);
-    // Hive.initFlutter();
+  final appDir = await getApplicationSupportDirectory();
+  final dir = Directory(path.join(appDir.path, 'database'));
+  Hive.init(dir.path);
+  // Hive.initFlutter();
 
-    startServer();
-    await EasyLocalization.ensureInitialized();
+  startServer();
+  await EasyLocalization.ensureInitialized();
 
-    ErrorWidget.builder = (FlutterErrorDetails details) {
-      return Material(
-        color: Colors.white,
-        child: Center(
-          child: SelectableText(
-            '❌ UI Error:\n\n${details.exceptionAsString()}\n\n${details.stack}',
-            style: const TextStyle(color: Colors.red, fontSize: 14),
-          ),
-        ),
-      );
-    };
+  // ErrorWidget.builder = (FlutterErrorDetails details) {
+  //   return Material(
+  //     color: Colors.white,
+  //     child: Center(
+  //       child: SelectableText(
+  //         '❌ UI Error:\n\n${details.exceptionAsString()}\n\n${details.stack}',
+  //         style: const TextStyle(color: Colors.red, fontSize: 14),
+  //       ),
+  //     ),
+  //   );
+  // };
+  //
+  // FlutterError.onError = (FlutterErrorDetails details) {
+  //   FlutterError.presentError(details);
+  // };
 
-    FlutterError.onError = (FlutterErrorDetails details) {
-      FlutterError.presentError(details);
-    };
-
-    runApp(
-      EasyLocalization(
-        supportedLocales: const [
-          Locale('ru', 'RU'),
-          Locale('uz', 'UZ'),
-          Locale('en', 'US'),
-        ],
-        fallbackLocale: const Locale('uz', 'UZ'),
-        path: 'assets/localization',
-        child: const ProviderScope(child: MyApp()),
-      ),
-    );
-  }
-
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('ru', 'RU'),
+        Locale('uz', 'UZ'),
+        Locale('en', 'US'),
+      ],
+      fallbackLocale: const Locale('uz', 'UZ'),
+      path: 'assets/localization',
+      child: const ProviderScope(child: MyApp()),
+    ),
+  );
+}
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
