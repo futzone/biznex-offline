@@ -19,7 +19,8 @@ class SettingsButtonScreen extends StatelessWidget {
       padding: Dis.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: theme.accentColor),
+        // border: Border.all(color: theme.accentColor),
+        color: Colors.white.withValues(alpha: 0.12)
       ),
       child: !opened
           ? SettingsScreenButton(theme)

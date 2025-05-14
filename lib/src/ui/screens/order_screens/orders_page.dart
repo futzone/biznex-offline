@@ -1,5 +1,8 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/extensions/color_generator.dart';
+import 'package:biznex/src/core/extensions/for_string.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_filter_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
@@ -18,6 +21,7 @@ import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class OrdersPage extends StatefulHookConsumerWidget {
   const OrdersPage({super.key});
@@ -373,142 +377,18 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                       Expanded(
                         child: orders.isEmpty
                             ? AppEmptyWidget()
-                            : ListView.builder(
-                                padding: 120.bottom,
-                                itemCount: orders.length,
+                            : GridView.builder(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: context.w(16),
+                                  mainAxisSpacing: context.h(16),
+                                  childAspectRatio: 353 / 363,
+                                ),
                                 itemBuilder: (context, index) {
-                                  final order = orders[index];
-                                  return WebButton(
-                                    onPressed: () {
-                                      showDesktopModal(
-                                        context: context,
-                                        body: OrderInfoScreen(order),
-                                        width: MediaQuery.of(context).size.width * 0.4,
-                                      );
-                                    },
-                                    builder: (focused) {
-                                      return AnimatedContainer(
-                                        margin: 16.bottom,
-                                        padding: 16.all,
-                                        duration: theme.animationDuration,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(16),
-                                          color: focused ? theme.mainColor.withOpacity(0.2) : theme.accentColor,
-                                          border: Border.all(color: focused ? theme.mainColor : theme.accentColor),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                spacing: 8,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    spacing: 8,
-                                                    children: [
-                                                      Icon(Icons.more_time_outlined),
-                                                      Text(
-                                                        "${AppLocales.createdDate.tr()}: ",
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Text(
-                                                        DateFormat('yyyy.MM.dd, HH:mm').format(DateTime.parse(order.createdDate)),
-                                                        style: TextStyle(fontFamily: boldFamily),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    spacing: 8,
-                                                    children: [
-                                                      Icon(Icons.access_time_outlined),
-                                                      Text(
-                                                        "${order.status == Order.completed ? AppLocales.closedDate.tr() : AppLocales.updatedDate.tr()}: ",
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Text(
-                                                        DateFormat('yyyy.MM.dd, HH:mm').format(DateTime.parse(order.createdDate)),
-                                                        style: TextStyle(fontFamily: boldFamily),
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                spacing: 8,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    spacing: 8,
-                                                    children: [
-                                                      SvgPicture.asset('assets/icons/dining-table.svg', height: 24, width: 24),
-                                                      Text(
-                                                        "${AppLocales.place.tr()}: ",
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Text(
-                                                        "${(order.place.father != null && order.place.father!.name.isNotEmpty) ? '${order.place.father!.name}, ' : ''}${order.place.name}",
-                                                        style: TextStyle(fontFamily: boldFamily),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    spacing: 8,
-                                                    children: [
-                                                      Icon(Ionicons.wallet_outline),
-                                                      Text(
-                                                        "${AppLocales.total.tr()}: ",
-                                                        style: TextStyle(),
-                                                      ),
-                                                      Text(
-                                                        order.price.priceUZS,
-                                                        style: TextStyle(fontFamily: boldFamily),
-                                                      ),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            if (order.status == Order.completed) Center(child: Icon(Icons.done, size: 32, color: theme.mainColor)),
-                                            if (order.status == Order.cancelled) Center(child: Icon(Icons.close, size: 32, color: Colors.red)),
-                                            if (order.status == Order.opened) Center(child: Icon(Icons.close, size: 32, color: Colors.amber)),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  return OrderCard(order: orders[index], theme: theme);
                                 },
                               ),
                       ),
-                      if (orderFilter.value.isActive())
-                        state.whenProviderData(
-                            provider: ordersFilterProvider(orderFilter.value),
-                            builder: (orders) {
-                              orders as List<Order>;
-
-                              final double totalSumm = orders.fold(0.0, (value, element) => value += element.price);
-
-                              return Padding(
-                                padding: Dis.only(tb: 8),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "${AppLocales.selectedFilterResultSummLabel.tr()}: ",
-                                      style: TextStyle(fontSize: 20, fontFamily: mediumFamily),
-                                    ),
-                                    Text(
-                                      totalSumm.priceUZS,
-                                      style: TextStyle(fontSize: 24, fontFamily: boldFamily),
-                                    )
-                                  ],
-                                ),
-                              );
-                            })
                     ],
                   ),
                 );
@@ -516,5 +396,252 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
             ),
       );
     });
+  }
+}
+
+class OrderCard extends StatelessWidget {
+  final Order order;
+  final AppColors theme;
+
+  const OrderCard({super.key, required this.order, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+      ),
+      padding: Dis.all(context.s(16)),
+      child: Column(
+        // spacing: context.h(16),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            spacing: context.w(16),
+            children: [
+              Container(
+                height: context.s(56),
+                width: context.s(56),
+                decoration: BoxDecoration(
+                  color: generateColorFromString(order.employee.id),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Text(
+                    order.employee.fullname.initials,
+                    style: TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
+                      fontFamily: mediumFamily,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  spacing: context.h(4),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      order.employee.roleName,
+                      style: TextStyle(
+                        fontSize: context.s(16),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: mediumFamily,
+                      ),
+                    ),
+                    Text(
+                      "ID: ${order.orderNumber}",
+                      style: TextStyle(
+                        fontSize: context.s(12),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: regularFamily,
+                        color: theme.secondaryTextColor,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                padding: Dis.all(context.s(12)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: colorFromStatus(order.status.toString()),
+                  ),
+                  color: colorFromStatus(order.status.toString()).withValues(alpha: 0.1),
+                ),
+                child: Text(
+                  order.status.toString().tr(),
+                  style: TextStyle(
+                    fontSize: context.s(12),
+                    color: colorFromStatus(order.status.toString()),
+                    fontFamily: mediumFamily,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat('dd.MM.yyyy').format(DateTime.parse(order.createdDate)),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: mediumFamily,
+                  color: Colors.blueGrey.shade500,
+                ),
+              ),
+              Text(
+                DateFormat('HH:mm').format(DateTime.parse(order.createdDate)),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: mediumFamily,
+                  color: Colors.blueGrey.shade500,
+                ),
+              )
+            ],
+          ),
+          Container(height: 1, color: Colors.grey.shade200, width: double.infinity),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                AppLocales.productName.tr(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: mediumFamily,
+                  color: Colors.blueGrey.shade400,
+                ),
+              ),
+              Text(
+                AppLocales.price.tr(),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: mediumFamily,
+                  color: Colors.blueGrey.shade400,
+                ),
+              )
+            ],
+          ),
+          for (int i = 0; i < (order.products.length > 3 ? 3 : order.products.length); i++)
+            Row(
+              spacing: 12,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    order.products[i].product.name,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: mediumFamily,
+                      color: Colors.blueGrey.shade400,
+                    ),
+                  ),
+                ),
+                Text(
+                  "${order.products[i].amount.toMeasure} x ${order.products[i].product.price.priceUZS}",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: mediumFamily,
+                    color: Colors.blueGrey.shade400,
+                  ),
+                )
+              ],
+            ),
+          Container(height: 1, color: Colors.grey.shade200, width: double.infinity),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${AppLocales.total.tr()}: ",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: mediumFamily,
+                  // color: Colors.blueGrey.shade400,
+                ),
+              ),
+              Text(
+                order.price.priceUZS,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: boldFamily,
+                  // color: Colors.blueGrey.shade400,
+                ),
+              )
+            ],
+          ),
+          Row(
+            spacing: 16,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: Dis.tb(context.h(12)),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: Text(
+                      AppLocales.more.tr(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                        fontFamily: mediumFamily,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  padding: Dis.tb(context.h(12)),
+                  decoration: BoxDecoration(
+                    color: theme.mainColor,
+                    border: Border.all(color: theme.mainColor),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    spacing: 8,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppLocales.more.tr(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontFamily: mediumFamily,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Icon(Iconsax.tick_square, color: Colors.white)
+                    ],
+                  ),
+                ),
+              ),
+              // Container(),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

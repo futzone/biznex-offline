@@ -44,10 +44,12 @@ extension DoubleFormatter on num {
   }
 
   String get toMeasure {
-    if (toString().split('.').last == "0") {
-      return "${toInt()}";
+    if (this % 1 == 0) {
+      return toInt().toString();
     }
 
-    return toString();
+    final str = toStringAsFixed(3);
+    final trimmed = double.parse(str).toString();
+    return trimmed;
   }
 }

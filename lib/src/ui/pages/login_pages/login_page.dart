@@ -14,9 +14,7 @@ import 'package:biznex/src/ui/pages/waiter_pages/waiter_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pin_keyboard/pin_keyboard.dart';
 
 class LoginPageHarom extends ConsumerStatefulWidget {

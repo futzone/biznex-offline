@@ -29,7 +29,7 @@ class AppColors {
 
   Color get appBarIconColor => isDark ? Colors.white : Colors.black;
 
-  Color get scaffoldBgColor => isDark ? const Color(0xFF121212) : Colors.white;
+  Color get scaffoldBgColor => isDark ? const Color(0xFF121212) : Color(0xFFF1F3F6);
 
   Color get cardColor => isDark ? const Color(0xFF1E1E1E) : Colors.white;
 
@@ -78,4 +78,6 @@ class AppColors {
   Color get orange => Colors.orange;
 
   Color get pink => Colors.pink;
+
+  get white => Colors.white;
 }
