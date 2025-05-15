@@ -15,8 +15,10 @@ class AppFileImage extends ConsumerWidget {
   final dynamic path;
   final String name;
   final double? size;
+  final Color? color;
+  final double radius;
 
-  const AppFileImage({super.key, required this.name, required this.path, this.size});
+  const AppFileImage({this.color, this.radius = 8, super.key, required this.name, required this.path, this.size});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,8 +31,8 @@ class AppFileImage extends ConsumerWidget {
                   height: size,
                   width: size,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: theme.scaffoldBgColor,
+                    borderRadius: BorderRadius.circular(radius),
+                    color: color ?? theme.scaffoldBgColor,
                     border: Border.all(color: theme.accentColor),
                   ),
                   child: Center(
@@ -50,8 +52,8 @@ class AppFileImage extends ConsumerWidget {
                   height: size,
                   width: size,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: theme.scaffoldBgColor,
+                    borderRadius: BorderRadius.circular(radius),
+                    color: color ?? theme.scaffoldBgColor,
                     image: data != null
                         ? DecorationImage(
                             image: FileImage(data),

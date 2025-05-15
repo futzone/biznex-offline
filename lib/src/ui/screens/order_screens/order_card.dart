@@ -1,5 +1,6 @@
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_string.dart';
+import 'package:biznex/src/ui/screens/order_screens/order_detail_screen.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 import '../../../../biznex.dart';
@@ -195,59 +196,66 @@ class OrderCard extends StatelessWidget {
             children: [
               Expanded(
                 flex: 2,
-                child: Container(
-                  padding: Dis.tb(context.h(12)),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      AppLocales.about.tr(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                        fontFamily: mediumFamily,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                child: WebButton(
+                    onPressed: () {
+                      OrderDetail.show(context, order);
+                    },
+                    builder: (focused) {
+                      return Container(
+                        padding: Dis.tb(context.h(12)),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: BorderRadius.circular(12),
+                          color: focused ? theme.mainColor.withValues(alpha: 0.2) : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocales.about.tr(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                              fontFamily: mediumFamily,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+
+              if (order.status != Order.completed)
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    padding: Dis.tb(context.h(12)),
+                    decoration: BoxDecoration(
+                      color: theme.mainColor,
+                      border: Border.all(color: theme.mainColor),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      spacing: 8,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppLocales.done.tr(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontFamily: mediumFamily,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Icon(Iconsax.tick_square, color: Colors.white)
+                      ],
                     ),
                   ),
                 ),
-              ),
-
-              if(order.status != Order.completed)
-              Expanded(
-                flex: 3,
-                child: Container(
-                  padding: Dis.tb(context.h(12)),
-                  decoration: BoxDecoration(
-                    color: theme.mainColor,
-                    border: Border.all(color: theme.mainColor),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocales.done.tr(),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontFamily: mediumFamily,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Icon(Iconsax.tick_square, color: Colors.white)
-                    ],
-                  ),
-                ),
-              ),
               // Container(),
             ],
           )

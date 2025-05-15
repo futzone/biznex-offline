@@ -1,9 +1,6 @@
-import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
 import 'package:flutter/material.dart';
-
-import '../helpers/app_custom_padding.dart';
 
 Future showDesktopModal({required BuildContext context, required Widget body, double? width}) async {
   return showGeneralDialog(
@@ -54,7 +51,7 @@ class AppCustomDialog extends StatelessWidget {
                           ? MediaQuery.of(context).size.width * 0.6
                           : MediaQuery.of(context).size.width),
           height: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(context.s(16)),
           decoration: BoxDecoration(
             borderRadius: app.isMobile
                 ? null
@@ -62,7 +59,7 @@ class AppCustomDialog extends StatelessWidget {
                     topLeft: Radius.circular(16),
                     bottomLeft: Radius.circular(16),
                   ),
-            color: theme.scaffoldBgColor,
+            color: theme.white,
           ),
           child: body,
         ),
