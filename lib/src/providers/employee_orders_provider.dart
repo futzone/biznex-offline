@@ -44,6 +44,7 @@ final ordersFilterProvider = FutureProvider.family((ref, OrderFilterModel filter
       if (filter.dateTime != null && !isTodayOrder(filter.dateTime!, el)) return false;
       if (filter.product != null && !haveInProducts(el, filter.product!)) return false;
       if (filter.place != null && !haveInPlaces(el, filter.place!)) return false;
+      if (filter.query != null && !el.orderNumber.toString().toLowerCase().contains(filter.query!.toLowerCase())) return false;
       return true;
     })
   ];

@@ -21,7 +21,7 @@ class AppColors {
 
   Color get textColor => isDark ? Colors.white : Colors.black;
 
-  Color get secondaryTextColor => isDark ? const Color(0xffababab) : const Color(0xff6c6c6c);
+  Color get secondaryTextColor => isDark ? const Color(0xffababab) : const Color(0xff969BA7);
 
   Color get appBarColor => isDark ? scaffoldBgColor : sidebarBG;
 

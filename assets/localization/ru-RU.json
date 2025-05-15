@@ -475,5 +475,8 @@
   "updatedDateFilter": "Фильтр по дате обновления",
   "fullScreen": "Полный экран",
   "languageChangedToRussian": "Язык изменён на русский",
-  "languageChangedToUzbek": "Язык изменён на узбекский"
+  "languageChangedToUzbek": "Язык изменён на узбекский",
+  "enterOrderId": "Введите номер заказа",
+  "about": "Подробнее",
+  "done": "Выполнено"
 }

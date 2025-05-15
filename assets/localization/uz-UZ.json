@@ -479,5 +479,8 @@
   "updatedDateFilter": "Yangilangan sana bo‘yicha",
   "fullScreen": "To‘liq ekran",
   "languageChangedToRussian": "Til rus tiliga o‘zgartirildi",
-  "languageChangedToUzbek": "Til o‘zbek tiliga o‘zgartirildi"
+  "languageChangedToUzbek": "Til o‘zbek tiliga o‘zgartirildi",
+  "enterOrderId": "Buyurtma raqamini kiriting",
+  "about": "Batafsil",
+  "done": "Bajarildi"
 }

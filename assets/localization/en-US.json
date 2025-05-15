@@ -381,5 +381,8 @@
   "updatedDateFilter": "Filter by update date",
   "fullScreen": "Full screen",
   "languageChangedToRussian": "Language changed to Russian",
-  "languageChangedToUzbek": "Language changed to Uzbek"
+  "languageChangedToUzbek": "Language changed to Uzbek",
+  "enterOrderId": "Enter the order ID",
+  "about": "About",
+  "done": "Done"
 }

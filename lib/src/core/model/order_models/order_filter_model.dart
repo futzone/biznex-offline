@@ -8,8 +8,9 @@ class OrderFilterModel {
   String? status;
   String? product;
   String? place;
+  String? query;
 
-  bool isActive() => employee != null || dateTime != null || status != null || product != null || place != null;
+  bool isActive() => employee != null || dateTime != null || status != null || product != null || place != null || query != null;
 
   OrderFilterModel({
     this.place,
@@ -17,5 +18,6 @@ class OrderFilterModel {
     this.dateTime,
     this.employee,
     this.status,
+    this.query,
   });
 }

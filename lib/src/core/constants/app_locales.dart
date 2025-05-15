@@ -481,4 +481,7 @@ abstract class AppLocales {
   static var fullScreen = "fullScreen";
   static var languageChangedToRussian = "languageChangedToRussian";
   static var languageChangedToUzbek = "languageChangedToUzbek";
+  static var enterOrderId = "enterOrderId";
+  static var about = "about";
+  static var done = "done";
 }
