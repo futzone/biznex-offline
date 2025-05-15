@@ -2,6 +2,7 @@ import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_string.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
+import 'package:biznex/src/core/services/printer_services.dart';
 import 'package:biznex/src/providers/price_percent_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_file_image.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -292,7 +293,10 @@ class OrderDetail extends StatelessWidget {
               confirmIcon: Iconsax.printer_copy,
               confirmText: AppLocales.print.tr(),
               // onCancel: (){},
-              onConfirm: (){},
+              onConfirm: () {
+                PrinterServices printerServices = PrinterServices(order: order, model: state);
+                printerServices.printOrderCheck();
+              },
             ),
           ],
         ),
