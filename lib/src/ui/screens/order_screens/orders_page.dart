@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/order_models/order_filter_model.dart';
@@ -8,6 +9,7 @@ import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
+import 'package:biznex/src/ui/pages/waiter_pages/waiter_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
@@ -33,23 +35,31 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
     final searchController = useTextEditingController();
     return AppStateWrapper(builder: (theme, state) {
       return Scaffold(
-        floatingActionButton: Container(
-          height: 64,
-          width: 64,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Color(0xff5CF6A9), width: 2),
-            color: theme.mainColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.2),
-                spreadRadius: 3,
-                blurRadius: 5,
-                offset: Offset(3, 3),
-              )
-            ],
+        floatingActionButton: WebButton(
+          onPressed: () {
+            AppRouter.go(context, WaiterPage(haveBack: true));
+          },
+          builder: (focused) => AnimatedContainer(
+            duration: theme.animationDuration,
+            height: focused ? 80 : 64,
+            width: focused ? 80 : 64,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Color(0xff5CF6A9), width: 2),
+              color: theme.mainColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  spreadRadius: 3,
+                  blurRadius: 5,
+                  offset: Offset(3, 3),
+                )
+              ],
+            ),
+            child: Center(
+              child: Icon(Iconsax.add_copy, color: Colors.white, size: focused ? 40 : 32),
+            ),
           ),
-          child: Center(child: Icon(Iconsax.add_copy, color: Colors.white, size: 32)),
         ),
         body: ref.watch(ordersFilterProvider(orderFilter.value)).when(
               loading: () => AppLoadingScreen(),
@@ -346,7 +356,6 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                               theme: theme,
                               suffixIcon: Icon(Iconsax.search_normal_1_copy),
                               onChanged: (char) {
-
                                 OrderFilterModel filterModel = orderFilter.value;
                                 filterModel.query = char;
                                 orderFilter.value = filterModel;

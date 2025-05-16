@@ -68,7 +68,7 @@ class OrderCard extends StatelessWidget {
                     Text(
                       "ID: ${order.orderNumber}",
                       style: TextStyle(
-                        fontSize: context.s(12),
+                        fontSize: context.s(14),
                         fontWeight: FontWeight.w500,
                         fontFamily: regularFamily,
                         color: theme.secondaryTextColor,
@@ -89,10 +89,12 @@ class OrderCard extends StatelessWidget {
                 child: Text(
                   order.status.toString().tr(),
                   style: TextStyle(
-                    fontSize: context.s(12),
+                    fontSize: context.s(14),
                     color: colorFromStatus(order.status.toString()),
                     fontFamily: mediumFamily,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -152,7 +154,7 @@ class OrderCard extends StatelessWidget {
                   child: Text(
                     order.products[i].product.name,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       fontFamily: mediumFamily,
                       color: Colors.blueGrey.shade400,
                     ),
@@ -161,7 +163,7 @@ class OrderCard extends StatelessWidget {
                 Text(
                   "${order.products[i].amount.toMeasure} x ${order.products[i].product.price.priceUZS}",
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontFamily: mediumFamily,
                     color: Colors.blueGrey.shade400,
                   ),
@@ -196,33 +198,31 @@ class OrderCard extends StatelessWidget {
             children: [
               Expanded(
                 flex: 2,
-                child: WebButton(
-                    onPressed: () {
-                      OrderDetail.show(context, order);
-                    },
-                    builder: (focused) {
-                      return Container(
-                        padding: Dis.tb(context.h(12)),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(12),
-                          color: focused ? theme.mainColor.withValues(alpha: 0.2) : null,
+                child: WebButton(onPressed: () {
+                  OrderDetail.show(context, order);
+                }, builder: (focused) {
+                  return Container(
+                    padding: Dis.tb(context.h(12)),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(12),
+                      color: focused ? theme.mainColor.withValues(alpha: 0.2) : null,
+                    ),
+                    child: Center(
+                      child: Text(
+                        AppLocales.about.tr(),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                          fontFamily: mediumFamily,
                         ),
-                        child: Center(
-                          child: Text(
-                            AppLocales.about.tr(),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                              fontFamily: mediumFamily,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      );
-                    }),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  );
+                }),
               ),
 
               if (order.status != Order.completed)

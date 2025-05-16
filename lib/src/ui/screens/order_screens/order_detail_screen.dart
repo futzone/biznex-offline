@@ -136,7 +136,7 @@ class OrderDetail extends StatelessWidget {
             Text(
               AppLocales.orderProducts.tr(),
               style: TextStyle(
-                fontSize: context.s(16),
+                fontSize: context.s(18),
                 fontFamily: mediumFamily,
                 color: Colors.black,
               ),
@@ -168,7 +168,7 @@ class OrderDetail extends StatelessWidget {
                           Text(
                             item.product.name,
                             style: TextStyle(
-                              fontSize: context.s(16),
+                              fontSize: context.s(18),
                               fontFamily: mediumFamily,
                               color: Colors.black,
                             ),
@@ -176,7 +176,7 @@ class OrderDetail extends StatelessWidget {
                           Text(
                             "${item.amount.toMeasure} x ${item.product.price.priceUZS}",
                             style: TextStyle(
-                              fontSize: context.s(12),
+                              fontSize: context.s(16),
                               fontFamily: mediumFamily,
                               color: theme.secondaryTextColor,
                             ),
@@ -185,7 +185,7 @@ class OrderDetail extends StatelessWidget {
                             Text(
                               item.product.category!.name,
                               style: TextStyle(
-                                fontSize: context.s(12),
+                                fontSize: context.s(16),
                                 fontFamily: mediumFamily,
                                 color: theme.mainColor,
                               ),
@@ -196,7 +196,7 @@ class OrderDetail extends StatelessWidget {
                     Center(
                       child: Text(
                         item.customPrice == null ? (item.amount * item.product.price).priceUZS : item.customPrice!.priceUZS,
-                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16, color: Colors.black),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 18, color: Colors.black),
                       ),
                     )
                   ],
@@ -212,7 +212,7 @@ class OrderDetail extends StatelessWidget {
                 Text(
                   AppLocales.total.tr(),
                   style: TextStyle(
-                    fontSize: context.s(16),
+                    fontSize: context.s(18),
                     fontFamily: mediumFamily,
                     color: theme.secondaryTextColor,
                   ),

@@ -1,4 +1,5 @@
 import 'package:biznex/src/core/database/place_database/place_database.dart';
+import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/server/app_response.dart';
 import 'package:biznex/src/server/constants/api_endpoints.dart';
 import 'package:biznex/src/server/constants/response_messages.dart';
@@ -21,6 +22,13 @@ class PlacesRouter {
     if (employee == null) return AppResponse(statusCode: 403, error: ResponseMessages.unauthorized);
     final box = await databaseMiddleware.openBox();
     return AppResponse(statusCode: 200, data: box.values.toList());
+  }
+
+  Future<AppResponse> getAuthorizationResponse () {
+    return jwtAuth(() async {
+
+      return AppResponse(statusCode: 200);
+    });
   }
 
   static ApiRequest docs() => ApiRequest(
@@ -48,4 +56,9 @@ class PlacesRouter {
           }
         ],
       );
+
+  Future<AppResponse> jwtAuth(Future<dynamic> Function() param0) async  {
+    // if((await productsProvider.future).read(node))
+    return AppResponse(statusCode: 200);
+  }
 }

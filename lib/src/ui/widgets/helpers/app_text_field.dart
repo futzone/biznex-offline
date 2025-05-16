@@ -75,6 +75,7 @@ class AppTextField extends StatelessWidget {
       ),
       cursorColor: theme.mainColor,
       decoration: InputDecoration(
+        // constraints: BoxConstraints(maxWidth: 100),
         hintText: title,
         hintStyle: TextStyle(
           color: theme.secondaryTextColor,
