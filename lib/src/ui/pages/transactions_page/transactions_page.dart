@@ -1,4 +1,5 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/transaction_controller.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/providers/transaction_provider.dart';
 import 'package:biznex/src/ui/pages/transactions_page/add_transaction_page.dart';
@@ -243,7 +244,13 @@ class TransactionsPage extends HookConsumerWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SimpleButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showDesktopModal(
+                                        context: context,
+                                        body: AddTransactionPage(transaction: item),
+                                        width: 600,
+                                      );
+                                    },
                                     child: Container(
                                       height: context.s(36),
                                       width: context.s(36),
@@ -260,7 +267,10 @@ class TransactionsPage extends HookConsumerWidget {
                                     ),
                                   ),
                                   SimpleButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      TransactionController tc = TransactionController(context: context, state: state);
+                                      tc.delete(item.id);
+                                    },
                                     child: Container(
                                       height: context.s(36),
                                       width: context.s(36),

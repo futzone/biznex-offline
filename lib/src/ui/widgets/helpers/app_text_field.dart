@@ -128,6 +128,7 @@ class AppTextField extends StatelessWidget {
                     size: 20,
                   ),
         suffix: suffix,
+        prefixIcon: prefixIcon,
       ),
     );
   }

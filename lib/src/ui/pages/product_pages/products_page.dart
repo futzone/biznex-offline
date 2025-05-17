@@ -1,17 +1,15 @@
-import 'dart:io';
 import 'package:biznex/biznex.dart';
-import 'package:biznex/src/controllers/product_controller.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
+import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/pages/product_pages/add_product_page.dart';
-import 'package:biznex/src/ui/screens/products_screens/product_card_screen.dart';
-import 'package:biznex/src/ui/screens/products_screens/products_table_header.dart';
-import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
-import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
-import '../../screens/products_screens/product_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class ProductsPage extends HookConsumerWidget {
   final ValueNotifier<AppBar> appbar;
@@ -28,12 +26,17 @@ class ProductsPage extends HookConsumerWidget {
     final searchController = useTextEditingController();
     final searchResultList = useState(<Product>[]);
     final filterResultList = useState(<Product>[]);
+    final providerListener = ref.watch(productsProvider).value ?? [];
 
     void onSearchChanges(String char) {
-      final providerListener = ref.watch(productsProvider).value ?? [];
       searchResultList.value = providerListener.where((item) {
         return item.name.toLowerCase().contains(char.toLowerCase());
       }).toList();
+    }
+
+    int getProductCount(ctg) {
+      if (ctg == 0) return providerListener.length;
+      return providerListener.where((el) => ctg == el.category?.id).length;
     }
 
     void onFilterChanged(String filter) {
@@ -43,7 +46,6 @@ class ProductsPage extends HookConsumerWidget {
         return;
       }
 
-      // Filterni toggle qilish (bor bo‘lsa olib tashla, yo‘q bo‘lsa qo‘sh)
       if (filterList.value.contains(filter)) {
         filterList.value.remove(filter);
       } else {
@@ -81,7 +83,6 @@ class ProductsPage extends HookConsumerWidget {
       filterResultList.value = sorted;
     }
 
-
     return AppStateWrapper(builder: (theme, state) {
       if (isAddProduct.value) {
         return AddProductPage(
@@ -103,142 +104,199 @@ class ProductsPage extends HookConsumerWidget {
         );
       }
 
-      return AppScaffold(
-        appbar: appbar,
-        state: state,
-        title: AppLocales.products.tr(),
-        floatingActionButton: null,
-        floatingActionButtonNotifier: floatingActionButton,
-        actions: [
-          if (state.isDesktop)
-            Expanded(
-              child: AppTextField(
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Icon(Ionicons.search_outline),
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: Dis.only(lr: context.w(24), top: context.h(24)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: context.w(16),
+                  children: [
+                    Expanded(
+                      child: Text(
+                        AppLocales.products.tr(),
+                        style: TextStyle(
+                          fontSize: context.s(24),
+                          fontFamily: mediumFamily,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    0.w,
+                    SizedBox(
+                      width: context.w(400),
+                      child: AppTextField(
+                        prefixIcon: Icon(Iconsax.search_normal_copy),
+                        title: AppLocales.search.tr(),
+                        controller: TextEditingController(),
+                        theme: theme,
+                        fillColor: Colors.white,
+                        // useBorder: false,
+                      ),
+                    ),
+                  ],
                 ),
-                suffixIcon: Padding(
-                  padding: 8.lr,
-                  child: CustomPopupMenu(
-                    theme: theme,
-                    children: [
-                      CustomPopupItem(
-                        title: AppLocales.all.tr(),
-                        icon: Ionicons.list_outline,
-                        onPressed: () => onFilterChanged(''),
-                        iconColor: filterList.value.isEmpty ? Colors.green : null,
-                      ),
-                      CustomPopupItem(
-                        onPressed: () => onFilterChanged('price'),
-                        title: AppLocales.priceFilterText.tr(),
-                        icon: Ionicons.logo_usd,
-                        iconColor: filterList.value.contains('price') ? Colors.green : null,
-                      ),
-                      CustomPopupItem(
-                        onPressed: () => onFilterChanged('amount'),
-                        title: AppLocales.amountFilterText.tr(),
-                        icon: Icons.storefront_outlined,
-                        iconColor: filterList.value.contains('amount') ? Colors.green : null,
-                      ),
-                      CustomPopupItem(
-                        onPressed: () => onFilterChanged('created'),
-                        title: AppLocales.createdDateFilter.tr(),
-                        icon: Icons.calendar_month,
-                        iconColor: filterList.value.contains('created') ? Colors.green : null,
-                      ),
-                      CustomPopupItem(
-                        title: AppLocales.updatedDateFilter.tr(),
-                        icon: Icons.calendar_month,
-                        onPressed: () => onFilterChanged('updated'),
-                        iconColor: filterList.value.contains('updated') ? Colors.green : null,
-                      ),
-                    ],
-                    child: Icon(Ionicons.filter_outline),
-                  ),
-                ),
-                onChanged: onSearchChanges,
-                title: AppLocales.searchBarHint.tr(),
-                controller: searchController,
-                theme: theme,
-                enabledColor: theme.secondaryTextColor,
               ),
             ),
-          if (!state.isDesktop)
-            AppSimpleButton(
-              text: AppLocales.search.tr(),
-              icon: Icons.search,
-              onPressed: () {},
+            state.whenProviderDataSliver(
+              provider: categoryProvider,
+              builder: (categories) {
+                categories as List<Category>;
+                return SliverPinnedHeader(
+                  child: Container(
+                    color: theme.scaffoldBgColor,
+                    child: SingleChildScrollView(
+                      padding: Dis.only(lr: context.w(24), tb: context.h(24)),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        spacing: context.w(16),
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: Dis.all(context.s(12)),
+                            decoration: BoxDecoration(
+                              color: filterList.value.isEmpty ? theme.mainColor : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              spacing: context.s(12),
+                              children: [
+                                Container(
+                                  padding: Dis.all(context.s(8)),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(4),
+                                    color: filterList.value.isEmpty ? theme.white : theme.scaffoldBgColor,
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Ionicons.grid_outline,
+                                      size: context.s(32),
+                                      color: filterList.value.isEmpty ? theme.mainColor : theme.secondaryTextColor,
+                                    ),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocales.all.tr(),
+                                      style: TextStyle(
+                                        fontSize: context.s(16),
+                                        fontFamily: mediumFamily,
+                                        color: filterList.value.isEmpty ? Colors.white : theme.textColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${'productCount'.tr()}: ${getProductCount(0)}",
+                                      style: TextStyle(
+                                        fontSize: context.s(14),
+                                        fontFamily: regularFamily,
+                                        color: filterList.value.isEmpty ? Colors.white : theme.secondaryTextColor,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          for (final item in categories)
+                            Container(
+                              padding: Dis.all(context.s(12)),
+                              decoration: BoxDecoration(
+                                color: filterList.value.contains(item.id) ? theme.mainColor : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                spacing: context.s(12),
+                                children: [
+                                  Container(
+                                    height: context.s(48),
+                                    width: context.s(48),
+                                    padding: Dis.all(context.s(8)),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: filterList.value.contains(item.id) ? theme.white : theme.scaffoldBgColor,
+                                    ),
+                                    child: Center(
+                                      child: item.icon == null
+                                          ? Text(
+                                              item.name.trim().isNotEmpty ? item.name.trim()[0] : "🍜",
+                                              style: TextStyle(
+                                                fontSize: context.s(24),
+                                                fontFamily: boldFamily,
+                                              ),
+                                            )
+                                          : SvgPicture.asset(
+                                              item.icon ?? '',
+                                              width: context.s(32),
+                                              height: context.s(32),
+                                              color: filterList.value.contains(item.id) ? theme.mainColor : theme.secondaryTextColor,
+                                            ),
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        item.name,
+                                        style: TextStyle(
+                                          fontSize: context.s(16),
+                                          fontFamily: mediumFamily,
+                                          color: filterList.value.contains(item.id) ? Colors.white : theme.textColor,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${'productCount'.tr()}: ${getProductCount(item.id)}",
+                                        style: TextStyle(
+                                          fontSize: context.s(14),
+                                          fontFamily: regularFamily,
+                                          color: filterList.value.contains(item.id) ? Colors.white : theme.secondaryTextColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          0.w,
-          AppSimpleButton(
-            text: AppLocales.add.tr(),
-            icon: Icons.add,
-            onPressed: () => isAddProduct.value = true,
-          ),
-        ],
-        body: Padding(
-          padding: 24.lr,
-          child: Column(
-            children: [
-              ProductsTableHeader(),
-              Expanded(
-                child: state.whenProviderData(
-                  provider: productsProvider,
-                  builder: (products) {
-                    if (searchResultList.value.isEmpty && searchController.text.isNotEmpty) {
-                      return AppEmptyWidget();
-                    }
-
-                    if (filterResultList.value.isEmpty && filterList.value.isNotEmpty) {
-                      return AppEmptyWidget();
-                    }
-
-                    if (filterResultList.value.isNotEmpty && filterList.value.isNotEmpty) {
-                      return ListView.builder(
-                        padding: Dis.only(top: 16, bottom: 24),
-                        itemCount: filterResultList.value.length,
-                        itemBuilder: (context, index) {
-                          Product product = filterResultList.value[index];
-
-                          return ProductCardScreen(
-                            theme: theme,
-                            state: state,
-                            product: product,
-                            onPressedEdit: () async {
-                              currentProduct.value = product;
-                              await Future.delayed(Duration(milliseconds: 100));
-                              isUpdateProduct.value = true;
-                            },
-                          );
-                        },
-                      );
-                    }
-
-                    products as List<Product>;
-                    if (products.isEmpty) return AppEmptyWidget();
-                    return ListView.builder(
-                      padding: Dis.only(top: 16, bottom: 24),
-                      itemCount: searchResultList.value.isNotEmpty ? searchResultList.value.length : products.length,
-                      itemBuilder: (context, index) {
-                        Product product = searchResultList.value.isNotEmpty ? searchResultList.value[index] : products[index];
-
-                        return ProductCardScreen(
-                          theme: theme,
-                          state: state,
-                          product: product,
-                          onPressedEdit: () async {
-                            currentProduct.value = product;
-                            await Future.delayed(Duration(milliseconds: 100));
-                            isUpdateProduct.value = true;
-                          },
-                        );
-                      },
+            SliverPadding(
+              padding: Dis.only(lr: context.w(24), tb: context.h(24)),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  mainAxisSpacing: context.s(16),
+                  crossAxisSpacing: context.s(16),
+                  childAspectRatio: 261 / 321,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return Container(
+                      padding: Dis.all(context.s(8)),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     );
                   },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     });
