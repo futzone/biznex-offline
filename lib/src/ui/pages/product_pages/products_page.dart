@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
@@ -10,6 +12,8 @@ import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+
+import '../../screens/products_screens/product_card.dart';
 
 class ProductsPage extends HookConsumerWidget {
   final ValueNotifier<AppBar> appbar;
@@ -27,6 +31,15 @@ class ProductsPage extends HookConsumerWidget {
     final searchResultList = useState(<Product>[]);
     final filterResultList = useState(<Product>[]);
     final providerListener = ref.watch(productsProvider).value ?? [];
+    final controller = useScrollController();
+    final pinned = useState(false);
+
+    useEffect(() {
+      controller.addListener(() {
+        pinned.value = controller.offset > 100;
+      });
+      return () {};
+    });
 
     void onSearchChanges(String char) {
       searchResultList.value = providerListener.where((item) {
@@ -105,7 +118,34 @@ class ProductsPage extends HookConsumerWidget {
       }
 
       return Scaffold(
+        floatingActionButton: WebButton(
+          onPressed: () {
+            isAddProduct.value = true;
+          },
+          builder: (focused) => AnimatedContainer(
+            duration: theme.animationDuration,
+            height: focused ? 80 : 64,
+            width: focused ? 80 : 64,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Color(0xff5CF6A9), width: 2),
+              color: theme.mainColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  spreadRadius: 3,
+                  blurRadius: 5,
+                  offset: Offset(3, 3),
+                )
+              ],
+            ),
+            child: Center(
+              child: Icon(Iconsax.add_copy, color: Colors.white, size: focused ? 40 : 32),
+            ),
+          ),
+        ),
         body: CustomScrollView(
+          controller: controller,
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
@@ -146,7 +186,17 @@ class ProductsPage extends HookConsumerWidget {
                 categories as List<Category>;
                 return SliverPinnedHeader(
                   child: Container(
-                    color: theme.scaffoldBgColor,
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBgColor,
+                      boxShadow: [
+                        BoxShadow(
+                          offset: Offset(0, 2),
+                          color: !pinned.value ? Colors.transparent : theme.secondaryTextColor.withValues(alpha: 0.5),
+                          spreadRadius: 5,
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
                     child: SingleChildScrollView(
                       padding: Dis.only(lr: context.w(24), tb: context.h(24)),
                       scrollDirection: Axis.horizontal,
@@ -284,14 +334,10 @@ class ProductsPage extends HookConsumerWidget {
                   childAspectRatio: 261 / 321,
                 ),
                 delegate: SliverChildBuilderDelegate(
+                  childCount: providerListener.length,
                   (context, index) {
-                    return Container(
-                      padding: Dis.all(context.s(8)),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    );
+                    final product = providerListener[index];
+                    return ProductCardNew(product: product, colors: theme);
                   },
                 ),
               ),

@@ -80,4 +80,6 @@ class AppColors {
   Color get pink => Colors.pink;
 
   get white => Colors.white;
+
+  get black => Colors.black;
 }

@@ -2,12 +2,16 @@ import 'dart:io';
 
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/product_controller.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/ui/screens/products_screens/product_screen.dart';
+import 'package:biznex/src/ui/widgets/custom/app_file_image.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class ProductCard extends HookConsumerWidget {
   final Product product;
@@ -101,5 +105,157 @@ class ProductCard extends HookConsumerWidget {
         ),
       );
     });
+  }
+}
+
+class ProductCardNew extends StatelessWidget {
+  final Product product;
+  final AppColors colors;
+
+  const ProductCardNew({super.key, required this.product, required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(context.s(8)),
+      decoration: BoxDecoration(
+        color: colors.white,
+        borderRadius: BorderRadius.circular(context.s(12)),
+      ),
+      child: Column(
+        spacing: context.h(8),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                AppFileImage(
+                  name: product.name,
+                  path: product.images?.firstOrNull,
+                  color: colors.scaffoldBgColor,
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    padding: context.s(8).all,
+                    margin: context.s(8).all,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.black.withValues(alpha: 0.36),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: context.w(8),
+                      children: [
+                        Icon(Iconsax.reserve_copy, color: Colors.white, size: context.s(24)),
+                        Text(
+                          "${product.amount.toMeasure} ${product.measure ?? ''}",
+                          style: TextStyle(
+                            fontSize: context.s(16),
+                            fontFamily: mediumFamily,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  product.name,
+                  style: TextStyle(
+                    fontSize: context.s(16),
+                    fontFamily: mediumFamily,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              12.w,
+              Text(
+                product.price.priceUZS,
+                style: TextStyle(
+                  fontSize: context.s(16),
+                  fontFamily: mediumFamily,
+                  color: colors.mainColor,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          if (product.description != null && (product.description ?? '').isNotEmpty)
+            Text(
+              product.description ?? '',
+              style: TextStyle(
+                fontSize: context.s(12),
+                fontFamily: regularFamily,
+                color: colors.secondaryTextColor,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          Row(
+            spacing: context.w(8),
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colors.scaffoldBgColor,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: context.s(8).all,
+                  child: Row(
+                    spacing: context.w(4),
+                    children: [
+                      Icon(Icons.numbers, size: context.s(18), color: Colors.black),
+                      Expanded(
+                        child: Text(
+                          product.barcode.toString(),
+                          style: TextStyle(
+                            fontFamily: mediumFamily,
+                            color: Colors.black,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: colors.scaffoldBgColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: context.s(8).all,
+                child: Row(
+                  spacing: context.w(4),
+                  children: [
+                    Icon(Ionicons.receipt_outline, size: 18, color: Colors.black),
+                    Text(
+                      product.tagnumber.toString(),
+                      style: TextStyle(
+                        fontFamily: mediumFamily,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
