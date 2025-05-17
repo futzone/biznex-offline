@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
@@ -12,7 +10,6 @@ import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-
 import '../../screens/products_screens/product_card.dart';
 
 class ProductsPage extends HookConsumerWidget {
@@ -29,7 +26,7 @@ class ProductsPage extends HookConsumerWidget {
     final currentProduct = useState<Product?>(null);
     final searchController = useTextEditingController();
     final searchResultList = useState(<Product>[]);
-    final filterResultList = useState(<Product>[]);
+    // final filterResultList = useState(<Product>[]);
     final providerListener = ref.watch(productsProvider).value ?? [];
     final controller = useScrollController();
     final pinned = useState(false);
@@ -52,49 +49,49 @@ class ProductsPage extends HookConsumerWidget {
       return providerListener.where((el) => ctg == el.category?.id).length;
     }
 
-    void onFilterChanged(String filter) {
-      if (filter.isEmpty) {
-        filterList.value = [];
-        filterResultList.value = [];
-        return;
-      }
-
-      if (filterList.value.contains(filter)) {
-        filterList.value.remove(filter);
-      } else {
-        filterList.value.add(filter);
-      }
-
-      final products = ref.watch(productsProvider).value ?? [];
-
-      List<Product> sorted = List.from(products);
-
-      if (filterList.value.contains("price")) {
-        sorted.sort((a, b) => b.price.compareTo(a.price));
-      }
-
-      if (filterList.value.contains("updated")) {
-        sorted.sort((a, b) {
-          final dateA = DateTime.tryParse(a.updatedDate ?? '') ?? DateTime(2025);
-          final dateB = DateTime.tryParse(b.updatedDate ?? '') ?? DateTime(2025);
-          return dateB.compareTo(dateA);
-        });
-      }
-
-      if (filterList.value.contains("created")) {
-        sorted.sort((a, b) {
-          final dateA = DateTime.tryParse(a.cratedDate ?? '') ?? DateTime(2025);
-          final dateB = DateTime.tryParse(b.cratedDate ?? '') ?? DateTime(2025);
-          return dateB.compareTo(dateA);
-        });
-      }
-
-      if (filterList.value.contains("amount")) {
-        sorted.sort((a, b) => b.amount.compareTo(a.amount));
-      }
-
-      filterResultList.value = sorted;
-    }
+    // void onFilterChanged(String filter) {
+    //   if (filter.isEmpty) {
+    //     filterList.value = [];
+    //     filterResultList.value = [];
+    //     return;
+    //   }
+    //
+    //   if (filterList.value.contains(filter)) {
+    //     filterList.value.remove(filter);
+    //   } else {
+    //     filterList.value.add(filter);
+    //   }
+    //
+    //   final products = ref.watch(productsProvider).value ?? [];
+    //
+    //   List<Product> sorted = List.from(products);
+    //
+    //   if (filterList.value.contains("price")) {
+    //     sorted.sort((a, b) => b.price.compareTo(a.price));
+    //   }
+    //
+    //   if (filterList.value.contains("updated")) {
+    //     sorted.sort((a, b) {
+    //       final dateA = DateTime.tryParse(a.updatedDate ?? '') ?? DateTime(2025);
+    //       final dateB = DateTime.tryParse(b.updatedDate ?? '') ?? DateTime(2025);
+    //       return dateB.compareTo(dateA);
+    //     });
+    //   }
+    //
+    //   if (filterList.value.contains("created")) {
+    //     sorted.sort((a, b) {
+    //       final dateA = DateTime.tryParse(a.cratedDate ?? '') ?? DateTime(2025);
+    //       final dateB = DateTime.tryParse(b.cratedDate ?? '') ?? DateTime(2025);
+    //       return dateB.compareTo(dateA);
+    //     });
+    //   }
+    //
+    //   if (filterList.value.contains("amount")) {
+    //     sorted.sort((a, b) => b.amount.compareTo(a.amount));
+    //   }
+    //
+    //   filterResultList.value = sorted;
+    // }
 
     return AppStateWrapper(builder: (theme, state) {
       if (isAddProduct.value) {
@@ -170,7 +167,8 @@ class ProductsPage extends HookConsumerWidget {
                       child: AppTextField(
                         prefixIcon: Icon(Iconsax.search_normal_copy),
                         title: AppLocales.search.tr(),
-                        controller: TextEditingController(),
+                        controller: searchController,
+                        onChanged: onSearchChanges,
                         theme: theme,
                         fillColor: Colors.white,
                         // useBorder: false,
@@ -288,7 +286,10 @@ class ProductsPage extends HookConsumerWidget {
                                               item.icon ?? '',
                                               width: context.s(32),
                                               height: context.s(32),
-                                              color: filterList.value.contains(item.id) ? theme.mainColor : theme.secondaryTextColor,
+                                              colorFilter: ColorFilter.mode(
+                                                filterList.value.contains(item.id) ? theme.mainColor : theme.secondaryTextColor,
+                                                BlendMode.color,
+                                              ),
                                             ),
                                     ),
                                   ),
