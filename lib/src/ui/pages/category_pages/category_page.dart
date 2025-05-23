@@ -66,8 +66,8 @@ class CategoryPage extends HookConsumerWidget {
     final searchController = useTextEditingController();
     final controller = useScrollController();
     final list = useState(<Category>[]);
-    final pinned = useState(false);
     final providerListener = ref.watch(productsProvider).value ?? [];
+    final pinned = useState(false);
 
     useEffect(() {
       controller.addListener(() {

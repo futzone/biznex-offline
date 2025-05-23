@@ -142,7 +142,7 @@ class AppSidebar extends HookConsumerWidget {
                     sidebarItemBuilder(Iconsax.grid_3, AppLocales.categories.tr(), 3),
                     // sidebarItemBuilder("assets/icons/verified.svg", AppLocales.promos.tr(), 3),
                     sidebarItemBuilder("assets/icons/dining-table.svg", AppLocales.places.tr(), 10),
-                    sidebarItemBuilder(Iconsax.info_circle, AppLocales.productInformation.tr(), 5),
+                    // sidebarItemBuilder(Iconsax.info_circle, AppLocales.productInformation.tr(), 5),
                     sidebarItemBuilder(Iconsax.setting_4, AppLocales.productParams.tr(), 6),
                     // sidebarItemBuilder("assets/icons/hanger.svg", AppLocales.productSizes.tr(), 6),
                     sidebarItemBuilder(Iconsax.chart_square, AppLocales.reports.tr(), 7),

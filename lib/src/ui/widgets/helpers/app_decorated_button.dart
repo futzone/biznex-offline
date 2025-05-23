@@ -100,7 +100,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
       children: [
         Expanded(
           child: AppPrimaryButton(
-            cancelColor: cancelColor,
+            cancelColor: cancelColor ?? theme.white,
             padding: padding,
             border: Border.all(color: Colors.black),
             theme: theme,
@@ -114,7 +114,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
             },
             title: cancelText ?? AppLocales.close.tr(),
             textColor: theme.textColor,
-            color: cancelColor ?? theme.accentColor,
+            color: cancelColor ?? theme.white,
             child: Row(
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.center,

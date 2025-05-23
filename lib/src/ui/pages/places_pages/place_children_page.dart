@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/place_controller.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/ui/pages/places_pages/add_place.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
@@ -8,6 +9,8 @@ import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class PlaceChildrenPage extends ConsumerWidget {
   final Place place;
@@ -49,20 +52,97 @@ class PlaceChildrenPage extends ConsumerWidget {
                     itemCount: place.children == null ? 0 : place.children?.length,
                     itemBuilder: (context, index) {
                       final category = place.children![index];
-                      return AppListTile(
-                        title: category.name,
-                        theme: theme,
-                        onEdit: () {
-                          showDesktopModal(context: context, body: AddPlace(editCategory: place));
-                        },
-                        trailingIcon: Ionicons.add_circle_outline,
-                        onDelete: () {
-                          PlaceController pc = PlaceController(context: context, state: state);
-                          pc.delete(category.id);
-                        },
+                      return WebButton(
                         onPressed: () {
                           showDesktopModal(context: context, body: PlaceChildrenPage(category));
                         },
+                        builder: (focused) => Container(
+                          margin: Dis.only(tb: 8),
+                          padding: 12.all,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: focused ? theme.mainColor.withValues(alpha: 0.1) : theme.scaffoldBgColor,
+                          ),
+                          child: Row(
+                            spacing: 16,
+                            children: [
+                              Container(
+                                height: 48,
+                                width: 48,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: theme.white,
+                                ),
+                                padding: 8.all,
+                                child: SvgPicture.asset(
+                                  "assets/icons/dining-table.svg",
+                                  color: theme.secondaryTextColor,
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  spacing: 2,
+                                  children: [
+                                    Text(
+                                      category.name,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: mediumFamily,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${AppLocales.places.tr()}: ${category.children == null ? 0 : category.children?.length}",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: regularFamily,
+                                        color: theme.secondaryTextColor,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SimpleButton(
+                                onPressed: () {
+                                  showDesktopModal(context: context, body: AddPlace(editCategory: category));
+                                },
+                                child: Container(
+                                  height: 36,
+                                  width: 36,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: theme.white,
+                                  ),
+                                  child: Icon(
+                                    Iconsax.edit_copy,
+                                    color: theme.secondaryTextColor,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                              SimpleButton(
+                                onPressed: () {
+                                  PlaceController placeController = PlaceController(context: context, state: state);
+                                  placeController.delete(category.id);
+                                },
+                                child: Container(
+                                  height: 36,
+                                  width: 36,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: theme.white,
+                                  ),
+                                  child: Icon(
+                                    Iconsax.trash_copy,
+                                    color: theme.red,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   ),

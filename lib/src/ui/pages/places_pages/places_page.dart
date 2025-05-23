@@ -1,15 +1,18 @@
 import 'package:biznex/biznex.dart';
-import 'package:biznex/src/controllers/place_controller.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/places_provider.dart';
-import 'package:biznex/src/ui/pages/places_pages/add_place.dart';
 import 'package:biznex/src/ui/pages/places_pages/place_children_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
-import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
-import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:sliver_tools/sliver_tools.dart';
+
+import '../../../controllers/place_controller.dart';
+import '../../widgets/dialogs/app_custom_dialog.dart';
+import 'add_place.dart';
 
 class PlacesPage extends HookConsumerWidget {
   final ValueNotifier<AppBar> appbar;
@@ -17,51 +20,20 @@ class PlacesPage extends HookConsumerWidget {
 
   const PlacesPage(this.floatingActionButton, {super.key, required this.appbar});
 
-  // static void onShowSubcategories(BuildContext context, Category category) {
-  //   showDesktopModal(
-  //     width: MediaQuery.of(context).size.width * 0.8,
-  //     context: context,
-  //     body: CategorySubcategories(category: category),
-  //   );
-  // }
-
-  // static void onAddSubcategory(BuildContext context, Category category) {
-  //   showDesktopModal(
-  //     context: context,
-  //     body: AddCategoryScreen(addSubcategoryTo: category),
-  //   );
-  // }
-  //
-  // static void onEditCategory(BuildContext context, Category category) {
-  //   showDesktopModal(
-  //     context: context,
-  //     body: AddCategoryScreen(editCategory: category),
-  //   );
-  // }
-
-  // static void onDeleteCategory(BuildContext context, Category category, AppModel state) {
-  //   CategoryController controller = CategoryController(context: context, state: state);
-  //   controller.delete(category.id);
-  // }
-  //
-  // static void onAddProduct(BuildContext context, Category category) {
-  //   showDesktopModal(
-  //     context: context,
-  //     body: AppEmptyWidget(),
-  //   );
-  // }
-  //
-  // static void onShowProducts(BuildContext context, Category category) {
-  //   showDesktopModal(
-  //     context: context,
-  //     body: AppEmptyWidget(),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context, ref) {
     final filteredCategories = useState([]);
     final searchController = useTextEditingController();
+    final controller = useScrollController();
+    final pinned = useState(false);
+
+    useEffect(() {
+      controller.addListener(() {
+        pinned.value = controller.offset > 50;
+      });
+      return () {};
+    });
+
     return AppStateWrapper(
       builder: (theme, state) {
         return state.whenProviderData(
@@ -69,93 +41,98 @@ class PlacesPage extends HookConsumerWidget {
           builder: (categories) {
             categories as List<Place>;
 
-            return AppScaffold(
-              appbar: appbar,
-              state: state,
-              title: AppLocales.places.tr(),
-              floatingActionButton: FloatingActionButton(
+            return Scaffold(
+              floatingActionButton: WebButton(
                 onPressed: () {
                   showDesktopModal(context: context, body: AddPlace());
                 },
-                backgroundColor: theme.mainColor,
-                child: Icon(Icons.add, color: Colors.white),
+                builder: (focused) => AnimatedContainer(
+                  duration: theme.animationDuration,
+                  height: focused ? 80 : 64,
+                  width: focused ? 80 : 64,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Color(0xff5CF6A9), width: 2),
+                    color: theme.mainColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        spreadRadius: 3,
+                        blurRadius: 5,
+                        offset: Offset(3, 3),
+                      )
+                    ],
+                  ),
+                  child: Center(
+                    child: Icon(Iconsax.add_copy, color: Colors.white, size: focused ? 40 : 32),
+                  ),
+                ),
               ),
-              floatingActionButtonNotifier: floatingActionButton,
-              actions: [
-                24.w,
-                if (state.isDesktop)
-                  Expanded(
-                    child: AppTextField(
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Icon(Ionicons.search_outline),
+              body: CustomScrollView(
+                controller: controller,
+                slivers: [
+                  SliverPinnedHeader(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: theme.scaffoldBgColor,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: Offset(0, 2),
+                            color: !pinned.value ? Colors.transparent : theme.secondaryTextColor.withValues(alpha: 0.5),
+                            spreadRadius: 5,
+                            blurRadius: 5,
+                          ),
+                        ],
                       ),
-                      suffixIcon: Padding(
-                        padding: 8.lr,
-                        child: IconButton(
-                          icon: Icon(Ionicons.close),
-                          onPressed: () {
-                            filteredCategories.value.clear();
-                          },
-                        ),
-                      ),
-                      title: AppLocales.searchBarHint.tr(),
-                      controller: searchController,
-                      theme: theme,
-                      enabledColor: theme.secondaryTextColor,
-                      onChanged: (str) {
-                        filteredCategories.value = categories.where((ctg) {
-                          return (ctg.name.toLowerCase().contains(str.toLowerCase()));
-                        }).toList();
-                      },
-                    ),
-                  ),
-                if (!state.isDesktop)
-                  AppSimpleButton(
-                    text: AppLocales.search.tr(),
-                    icon: Icons.search,
-                    onPressed: () {},
-                  ),
-                if (state.isDesktop)
-                  WebButton(
-                    onPressed: () {
-                      showDesktopModal(context: context, body: AddPlace());
-                    },
-                    builder: (focused) {
-                      return AnimatedContainer(
-                        duration: theme.animationDuration,
-                        decoration: BoxDecoration(
-                          color: focused ? theme.mainColor : null,
-                          border: Border.all(color: theme.mainColor),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: Dis.all(10),
-                        child: Row(
-                          spacing: 8,
-                          children: [
-                            Icon(Icons.add, color: focused ? Colors.white : theme.mainColor),
-                            AppText.$16Bold(
-                              AppLocales.add.tr(),
+                      padding: Dis.only(lr: context.w(24), tb: context.h(24)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: context.w(16),
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocales.places.tr(),
                               style: TextStyle(
-                                color: focused ? Colors.white : theme.mainColor,
+                                fontSize: context.s(24),
                                 fontFamily: mediumFamily,
-                                fontSize: 16,
+                                color: Colors.black,
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    },
+                          ),
+                          0.w,
+                          SizedBox(
+                            width: context.w(400),
+                            child: AppTextField(
+                              prefixIcon: Icon(Iconsax.search_normal_copy),
+                              title: AppLocales.search.tr(),
+                              controller: searchController,
+                              onChanged: (str) {
+                                filteredCategories.value = categories.where((ctg) {
+                                  return (ctg.name.toLowerCase().contains(str.toLowerCase()));
+                                }).toList();
+                              },
+                              theme: theme,
+                              fillColor: Colors.white,
+                              // useBorder: false,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-              ],
-              body: categories.isEmpty
-                  ? AppEmptyWidget()
-                  : ListView.builder(
-                      itemCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : categories.length,
-                      padding: Dis.only(lr: 24),
-                      itemBuilder: (context, index) {
+                  if (filteredCategories.value.isEmpty && searchController.text.trim().isNotEmpty)
+                    SliverPadding(
+                      padding: 80.all,
+                      sliver: SliverToBoxAdapter(
+                        child: Center(child: AppEmptyWidget()),
+                      ),
+                    ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : categories.length,
+                      (context, index) {
                         Place category = (filteredCategories.value.isNotEmpty ? filteredCategories.value : categories)[index];
-                        return AppListTile(
+                        /*  return AppListTile(
                           title: category.name,
                           theme: theme,
                           onEdit: () {
@@ -169,9 +146,105 @@ class PlacesPage extends HookConsumerWidget {
                           onPressed: () {
                             showDesktopModal(context: context, body: PlaceChildrenPage(category));
                           },
+                        );*/
+
+                        return WebButton(
+                          onPressed: () {
+                            showDesktopModal(context: context, body: PlaceChildrenPage(category));
+                          },
+                          builder: (focused) => Container(
+                            margin: Dis.only(lr: context.w(24), tb: 8),
+                            padding: 12.all,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: focused ? theme.mainColor.withValues(alpha: 0.1) : Colors.white,
+                            ),
+                            child: Row(
+                              spacing: 16,
+                              children: [
+                                Container(
+                                  height: 48,
+                                  width: 48,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: theme.scaffoldBgColor,
+                                  ),
+                                  padding: 8.all,
+                                  child: SvgPicture.asset(
+                                    "assets/icons/dining-table.svg",
+                                    color: theme.secondaryTextColor,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    spacing: 2,
+                                    children: [
+                                      Text(
+                                        category.name,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: mediumFamily,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${AppLocales.places.tr()}: ${category.children == null ? 0 : category.children?.length}",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontFamily: regularFamily,
+                                          color: theme.secondaryTextColor,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                SimpleButton(
+                                  onPressed: () {
+                                    showDesktopModal(context: context, body: AddPlace(editCategory: category));
+                                  },
+                                  child: Container(
+                                    height: 36,
+                                    width: 36,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: theme.scaffoldBgColor,
+                                    ),
+                                    child: Icon(
+                                      Iconsax.edit_copy,
+                                      color: theme.secondaryTextColor,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                                SimpleButton(
+                                  onPressed: () {
+                                    PlaceController placeController = PlaceController(context: context, state: state);
+                                    placeController.delete(category.id);
+                                  },
+                                  child: Container(
+                                    height: 36,
+                                    width: 36,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: theme.scaffoldBgColor,
+                                    ),
+                                    child: Icon(
+                                      Iconsax.trash_copy,
+                                      color: theme.red,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       },
                     ),
+                  ),
+                ],
+              ),
             );
           },
         );

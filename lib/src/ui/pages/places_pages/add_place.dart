@@ -35,6 +35,7 @@ class AddPlace extends HookWidget {
               ),
               24.h,
               ConfirmCancelButton(
+                cancelColor: Colors.white,
                 onConfirm: () async {
                   PlaceController controller = PlaceController(context: context, state: state);
                   if (addSubcategoryTo != null) {

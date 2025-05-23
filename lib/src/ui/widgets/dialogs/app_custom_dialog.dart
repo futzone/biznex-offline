@@ -46,7 +46,7 @@ class AppCustomDialog extends StatelessWidget {
               ? MediaQuery.of(context).size.width
               : width ??
                   (app.isDesktop
-                      ? MediaQuery.of(context).size.width * 0.3
+                      ? MediaQuery.of(context).size.width * 0.5
                       : app.isTablet
                           ? MediaQuery.of(context).size.width * 0.6
                           : MediaQuery.of(context).size.width),

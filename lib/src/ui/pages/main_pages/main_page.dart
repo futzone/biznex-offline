@@ -8,6 +8,7 @@ import 'package:biznex/src/ui/pages/transactions_page/transactions_page.dart';
 import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
 import 'package:biznex/src/ui/screens/order_screens/orders_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import '../../screens/product_info_screen/product_measure_reponsive.dart';
 import '../employee_pages/employee_page.dart';
 import '../monitoring_pages/monitoring_page.dart';
 import '../product_pages/product_information_page.dart';
@@ -47,8 +48,8 @@ class MainPage extends HookConsumerWidget {
                 if (pageValue.value == 2) return OrdersPage();
                 if (pageValue.value == 3) return CategoryPage(appbar: appbar, fab);
                 if (pageValue.value == 10) return PlacesPage(appbar: appbar, fab);
-                if (pageValue.value == 5) return ProductInformationsPage(appbar: appbar, fab);
-                if (pageValue.value == 6) return ProductParamsPage(appbar: appbar, fab);
+                // if (pageValue.value == 5) return ProductInformationsPage(appbar: appbar, fab);
+                if (pageValue.value == 6) return ProductMeasureReponsive();
                 if (pageValue.value == 8) return EmployeePage(appbar: appbar, fab);
                 if (pageValue.value == 7) return MonitoringPage();
                 if (pageValue.value == 9) return TransactionsPage(fab, appbar: appbar);
