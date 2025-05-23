@@ -1,5 +1,6 @@
 import 'package:biznex/src/core/config/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class AppTextField extends StatelessWidget {
   final bool hideBorder;
@@ -84,32 +85,24 @@ class AppTextField extends StatelessWidget {
         ),
         hintMaxLines: 1,
         filled: true,
-        fillColor: fillColor,
+        fillColor: fillColor == Colors.transparent ? theme.scaffoldBgColor : fillColor,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(color: Colors.transparent),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(radius),
+          borderSide: BorderSide(color: Colors.transparent),
+        ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
-          borderSide: BorderSide(
-            color: !useBorder ? Colors.transparent : theme.mainColor,
-          ),
+          borderSide: BorderSide(color: Colors.transparent),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radius),
           borderSide: BorderSide(
             color: !useBorder ? Colors.transparent : theme.mainColor,
           ),
-        ),
-        // border: InputBorder.none,
-        border: hideBorder
-            ? InputBorder.none
-            : OutlineInputBorder(
-                borderRadius: BorderRadius.circular(radius),
-                borderSide: BorderSide(
-                  color: !useBorder ? Colors.transparent : theme.secondaryTextColor,
-                ),
-              ),
-
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(radius),
-          borderSide: BorderSide(color: !useBorder ? Colors.transparent : (enabledColor ?? theme.secondaryTextColor)),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16.0,
@@ -119,7 +112,7 @@ class AppTextField extends StatelessWidget {
             ? suffixIcon
             : controller.text.isEmpty
                 ? Icon(
-                    Icons.expand_circle_down_outlined,
+                    Iconsax.arrow_down_1_copy,
                     color: theme.textColor,
                   )
                 : Icon(

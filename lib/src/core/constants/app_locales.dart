@@ -484,4 +484,5 @@ abstract class AppLocales {
   static var enterOrderId = "enterOrderId";
   static var about = "about";
   static var done = "done";
+  static var supportedImageFormats = "supportedImageFormats";
 }

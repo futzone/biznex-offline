@@ -18,7 +18,11 @@ class MainPage extends HookConsumerWidget {
 
   Widget buildBody({required AppModel state, required Widget child, required Widget sidebar}) {
     if (!state.isDesktop) return child;
-    return Row(children: [sidebar, Expanded(child: child)]);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [sidebar, Expanded(child: child)],
+    );
   }
 
   @override

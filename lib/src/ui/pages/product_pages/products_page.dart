@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
@@ -20,16 +22,15 @@ class ProductsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final filterList = useState([]);
     final isAddProduct = useState(false);
     final isUpdateProduct = useState(false);
     final currentProduct = useState<Product?>(null);
     final searchController = useTextEditingController();
     final searchResultList = useState(<Product>[]);
-    // final filterResultList = useState(<Product>[]);
     final providerListener = ref.watch(productsProvider).value ?? [];
     final controller = useScrollController();
     final pinned = useState(false);
+    final selectedCategory = useState('');
 
     useEffect(() {
       controller.addListener(() {
@@ -49,6 +50,12 @@ class ProductsPage extends HookConsumerWidget {
       return providerListener.where((el) => ctg == el.category?.id).length;
     }
 
+    List<Product> buildFilterResult() {
+      if (selectedCategory.value.isEmpty) return providerListener;
+      return providerListener.where((e) {
+        return e.category?.id == selectedCategory.value;
+      }).toList();
+    }
     // void onFilterChanged(String filter) {
     //   if (filter.isEmpty) {
     //     filterList.value = [];
@@ -203,62 +210,20 @@ class ProductsPage extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: Dis.all(context.s(12)),
-                            decoration: BoxDecoration(
-                              color: filterList.value.isEmpty ? theme.mainColor : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              spacing: context.s(12),
-                              children: [
-                                Container(
-                                  padding: Dis.all(context.s(8)),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: filterList.value.isEmpty ? theme.white : theme.scaffoldBgColor,
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      Ionicons.grid_outline,
-                                      size: context.s(32),
-                                      color: filterList.value.isEmpty ? theme.mainColor : theme.secondaryTextColor,
-                                    ),
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      AppLocales.all.tr(),
-                                      style: TextStyle(
-                                        fontSize: context.s(16),
-                                        fontFamily: mediumFamily,
-                                        color: filterList.value.isEmpty ? Colors.white : theme.textColor,
-                                      ),
-                                    ),
-                                    Text(
-                                      "${'productCount'.tr()}: ${getProductCount(0)}",
-                                      style: TextStyle(
-                                        fontSize: context.s(14),
-                                        fontFamily: regularFamily,
-                                        color: filterList.value.isEmpty ? Colors.white : theme.secondaryTextColor,
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                          for (final item in categories)
-                            Container(
+                          WebButton(
+                            onPressed: () {
+                              selectedCategory.value = '';
+                            },
+                            builder: (focused) => Container(
                               padding: Dis.all(context.s(12)),
                               decoration: BoxDecoration(
-                                color: filterList.value.contains(item.id) ? theme.mainColor : Colors.white,
+                                color: selectedCategory.value.isEmpty ? theme.mainColor : Colors.white,
                                 borderRadius: BorderRadius.circular(12),
+                                border: focused
+                                    ? Border.all(color: theme.mainColor)
+                                    : Border.all(
+                                        color: selectedCategory.value.isEmpty ? theme.mainColor : Colors.white,
+                                      ),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -266,56 +231,118 @@ class ProductsPage extends HookConsumerWidget {
                                 spacing: context.s(12),
                                 children: [
                                   Container(
-                                    height: context.s(48),
-                                    width: context.s(48),
                                     padding: Dis.all(context.s(8)),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(4),
-                                      color: filterList.value.contains(item.id) ? theme.white : theme.scaffoldBgColor,
+                                      color: selectedCategory.value.isEmpty ? theme.white : theme.scaffoldBgColor,
                                     ),
                                     child: Center(
-                                      child: item.icon == null
-                                          ? Text(
-                                              item.name.trim().isNotEmpty ? item.name.trim()[0] : "🍜",
-                                              style: TextStyle(
-                                                fontSize: context.s(24),
-                                                fontFamily: boldFamily,
-                                              ),
-                                            )
-                                          : SvgPicture.asset(
-                                              item.icon ?? '',
-                                              width: context.s(32),
-                                              height: context.s(32),
-                                              colorFilter: ColorFilter.mode(
-                                                filterList.value.contains(item.id) ? theme.mainColor : theme.secondaryTextColor,
-                                                BlendMode.color,
-                                              ),
-                                            ),
+                                      child: Icon(
+                                        Ionicons.grid_outline,
+                                        size: context.s(32),
+                                        color: selectedCategory.value.isEmpty ? theme.mainColor : theme.secondaryTextColor,
+                                      ),
                                     ),
                                   ),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item.name,
+                                        AppLocales.all.tr(),
                                         style: TextStyle(
                                           fontSize: context.s(16),
                                           fontFamily: mediumFamily,
-                                          color: filterList.value.contains(item.id) ? Colors.white : theme.textColor,
+                                          color: selectedCategory.value.isEmpty ? Colors.white : theme.textColor,
                                         ),
                                       ),
                                       Text(
-                                        "${'productCount'.tr()}: ${getProductCount(item.id)}",
+                                        "${'productCount'.tr()}: ${getProductCount(0)}",
                                         style: TextStyle(
                                           fontSize: context.s(14),
                                           fontFamily: regularFamily,
-                                          color: filterList.value.contains(item.id) ? Colors.white : theme.secondaryTextColor,
+                                          color: selectedCategory.value.isEmpty ? Colors.white : theme.secondaryTextColor,
                                         ),
-                                      ),
+                                      )
                                     ],
-                                  ),
+                                  )
                                 ],
+                              ),
+                            ),
+                          ),
+                          for (final item in categories)
+                            WebButton(
+                              onPressed: () {
+                                selectedCategory.value = item.id;
+                              },
+                              builder: (focused) => Container(
+                                padding: Dis.all(context.s(12)),
+                                decoration: BoxDecoration(
+                                  color: selectedCategory.value.contains(item.id) ? theme.mainColor : Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: focused
+                                      ? Border.all(color: theme.mainColor)
+                                      : Border.all(
+                                          color: selectedCategory.value.contains(item.id) ? theme.mainColor : Colors.white,
+                                        ),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  spacing: context.s(12),
+                                  children: [
+                                    Container(
+                                      height: context.s(48),
+                                      width: context.s(48),
+                                      padding: Dis.all(context.s(8)),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: selectedCategory.value.contains(item.id) ? theme.white : theme.scaffoldBgColor,
+                                      ),
+                                      child: Center(
+                                        child: item.icon == null
+                                            ? Text(
+                                                item.name.trim().isNotEmpty ? item.name.trim()[0] : "🍜",
+                                                style: TextStyle(
+                                                  fontSize: context.s(24),
+                                                  fontFamily: boldFamily,
+                                                ),
+                                              )
+                                            : SvgPicture.asset(
+                                                item.icon ?? '',
+                                                width: context.s(32),
+                                                height: context.s(32),
+                                                colorFilter: ColorFilter.mode(
+                                                  selectedCategory.value.contains(item.id) ? theme.mainColor : theme.secondaryTextColor,
+                                                  BlendMode.color,
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          item.name,
+                                          style: TextStyle(
+                                            fontSize: context.s(16),
+                                            fontFamily: mediumFamily,
+                                            color: selectedCategory.value.contains(item.id) ? Colors.white : theme.textColor,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${'productCount'.tr()}: ${getProductCount(item.id)}",
+                                          style: TextStyle(
+                                            fontSize: context.s(14),
+                                            fontFamily: regularFamily,
+                                            color: selectedCategory.value.contains(item.id) ? Colors.white : theme.secondaryTextColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                         ],
@@ -335,9 +362,9 @@ class ProductsPage extends HookConsumerWidget {
                   childAspectRatio: 261 / 321,
                 ),
                 delegate: SliverChildBuilderDelegate(
-                  childCount: providerListener.length,
+                  childCount: buildFilterResult().length,
                   (context, index) {
-                    final product = providerListener[index];
+                    final product = buildFilterResult()[index];
                     return ProductCardNew(product: product, colors: theme);
                   },
                 ),

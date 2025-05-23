@@ -18,6 +18,7 @@ class AppPrimaryButton extends StatelessWidget {
   final IconData? icon;
   final Widget? child;
   final BorderRadius? borderRadius;
+  final Border? border;
 
   const AppPrimaryButton({
     super.key,
@@ -32,6 +33,7 @@ class AppPrimaryButton extends StatelessWidget {
     this.textColor,
     this.icon,
     this.borderRadius,
+    this.border,
   });
 
   @override
@@ -43,6 +45,7 @@ class AppPrimaryButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: borderRadius ?? BorderRadius.circular(radius),
           color: color ?? theme.mainColor,
+          border: border ?? Border.all(color: theme.mainColor),
         ),
         child: Center(
           child: child ??
@@ -99,6 +102,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
           child: AppPrimaryButton(
             cancelColor: cancelColor,
             padding: padding,
+            border: Border.all(color: Colors.black),
             theme: theme,
             onPressed: () {
               if (onCancel == null) {
@@ -127,44 +131,44 @@ class ConfirmCancelButton extends AppStatelessWidget {
             ),
           ),
         ),
+        if (!onlyClose)
+          if (spacing == null) state.getSpacing.w else spacing!.w,
+        if (!onlyClose)
+          Expanded(
+            child: AppPrimaryButton(
+              border: Border.all(color: theme.mainColor),
+              padding: padding,
+              theme: theme,
+              onPressed: () {
+                if (onConfirm == null) {
+                  AppRouter.close(context);
+                  return;
+                }
 
-        if(!onlyClose)
-        if (spacing == null) state.getSpacing.w else spacing!.w,
-        if(!onlyClose)
-        Expanded(
-          child: AppPrimaryButton(
-            padding: padding,
-            theme: theme,
-            onPressed: () {
-              if (onConfirm == null) {
-                AppRouter.close(context);
-                return;
-              }
-
-              onConfirm!();
-            },
-            title: confirmText ?? AppLocales.add.tr(),
-            child: Row(
-              spacing: 8,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (confirmIcon != null)
-                  Icon(
-                    confirmIcon,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                Text(
-                  confirmText ?? AppLocales.add.tr(),
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                )
-              ],
+                onConfirm!();
+              },
+              title: confirmText ?? AppLocales.add.tr(),
+              child: Row(
+                spacing: 8,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (confirmIcon != null)
+                    Icon(
+                      confirmIcon,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                  Text(
+                    confirmText ?? AppLocales.add.tr(),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
       ],
     );
   }

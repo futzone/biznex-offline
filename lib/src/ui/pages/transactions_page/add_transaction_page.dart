@@ -74,38 +74,37 @@ class AddTransactionPage extends HookConsumerWidget {
                   ),
                 ),
               ),
-              Expanded(
-                child: AppPrimaryButton(
-                  theme: theme,
-                  onPressed: () {
-                    TransactionController transactionController = TransactionController(context: context, state: state);
-                    Transaction kTransaction = Transaction(
-                      value: double.tryParse(priceController.text.trim()) ?? 0.0,
-                      paymentType: selectedMethod.value,
-                      note: noteController.text.trim(),
-                      employee: ref.watch(currentEmployeeProvider),
-                    );
-
-                    if (transaction == null) {
-                      transactionController.create(kTransaction).then((_) {
-                        AppRouter.close(context);
-                      });
-
-                      return;
-                    }
-
-                    kTransaction.paymentType = selectedMethod.value;
-                    kTransaction.note = noteController.text.trim();
-                    kTransaction.value = double.tryParse(priceController.text.trim()) ?? 0.0;
-                    kTransaction.createdDate = DateTime.now().toIso8601String();
-                    transactionController.update(kTransaction, transaction?.id).then((_) {
-                      AppRouter.close(context);
-                    });
-                  },
-                  title: AppLocales.add.tr(),
-                ),
-              ),
             ],
+          ),
+          Spacer(),
+          ConfirmCancelButton(
+            cancelColor: Colors.white,
+            confirmText: AppLocales.add.tr(),
+            onConfirm: () {
+              TransactionController transactionController = TransactionController(context: context, state: state);
+              Transaction kTransaction = Transaction(
+                value: double.tryParse(priceController.text.trim()) ?? 0.0,
+                paymentType: selectedMethod.value,
+                note: noteController.text.trim(),
+                employee: ref.watch(currentEmployeeProvider),
+              );
+
+              if (transaction == null) {
+                transactionController.create(kTransaction).then((_) {
+                  AppRouter.close(context);
+                });
+
+                return;
+              }
+
+              kTransaction.paymentType = selectedMethod.value;
+              kTransaction.note = noteController.text.trim();
+              kTransaction.value = double.tryParse(priceController.text.trim()) ?? 0.0;
+              kTransaction.createdDate = DateTime.now().toIso8601String();
+              transactionController.update(kTransaction, transaction?.id).then((_) {
+                AppRouter.close(context);
+              });
+            },
           ),
         ],
       );

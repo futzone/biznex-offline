@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/product_controller.dart';
-import 'package:biznex/src/core/extensions/for_double.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/core/model/product_params_models/product_color.dart';
@@ -16,13 +16,13 @@ import 'package:biznex/src/providers/product_size_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_custom_padding.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:ionicons/ionicons.dart';
+import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 
 class AddProductPage extends StatefulWidget {
   final AppModel state;
@@ -133,97 +133,36 @@ class _AddProductPageState extends State<AddProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (state.isDesktop) return _notDesktopScreen();
-
-    ///
-    ///
-    return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24),
-      child: Column(
-        spacing: 24,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          0.h,
-          if (state.isDesktop)
-            Row(
-              spacing: 16,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                AppSimpleButton(
-                  icon: Icons.arrow_back_ios_new,
-                  onPressed: widget.onBackPressed,
-                ),
-                Text(
-                  AppLocales.addProductAppbarTitle.tr(),
-                  style: TextStyle(fontSize: 20, fontFamily: boldFamily),
-                ),
-              ],
-            ),
-          if (state.isDesktop)
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: _buildMainInformationsWidget(),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: 24.lr,
-                    height: double.infinity,
-                    width: 1,
-                    color: theme.secondaryTextColor,
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: _buildSecondaryInformationsWidget(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
+    return _notDesktopScreen();
   }
 
   Widget _notDesktopScreen() {
     return SingleChildScrollView(
-      padding: Dis.only(lr: 16, tb: 16),
+      padding: Dis.only(lr: 16, tb: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             spacing: 16,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               AppSimpleButton(
                 icon: Icons.arrow_back_ios_new,
                 onPressed: widget.onBackPressed,
+                radius: 48,
+                padding: 12.all,
               ),
               Text(
                 AppLocales.addProductAppbarTitle.tr(),
-                style: TextStyle(fontSize: 20, fontFamily: boldFamily),
+                style: TextStyle(fontSize: 24, fontFamily: boldFamily),
               ),
             ],
           ),
           24.h,
           ..._buildMainInformationsWidget(),
-          ..._buildSecondaryInformationsWidget(),
+          // ..._buildSecondaryInformationsWidget(),
         ],
       ),
     );
@@ -231,144 +170,216 @@ class _AddProductPageState extends State<AddProductPage> {
 
   List<Widget> _buildMainInformationsWidget() {
     return [
-      AppText.$18Bold("${AppLocales.productName.tr()} *"),
-      8.h,
-      AppTextField(
-        title: AppLocales.addProductNameHint.tr(),
-        controller: nameController,
-        theme: theme,
-        prefixIcon: Icon(Icons.text_fields),
-      ),
-      24.h,
-      AppText.$18Bold("${AppLocales.addProductPrice.tr()} *"),
-      8.h,
-      Row(
-        spacing: 16,
-        children: [
-          Expanded(
-            child: AppTextField(
-              title: AppLocales.oldPriceHint.tr(),
-              controller: priceController,
+      Container(
+        padding: context.s(24).all,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AppText.$18Bold("${AppLocales.productName.tr()} *"),
+            8.h,
+            AppTextField(
+              title: AppLocales.addProductNameHint.tr(),
+              controller: nameController,
               theme: theme,
-              prefixIcon: !state.isDesktop ? null : Icon(Icons.attach_money),
-              onChanged: (char) {
-                if (num.tryParse(percentController.text.trim()) != null && num.tryParse(char) != null) {
-                  final percent = num.parse(percentController.text.trim());
-                  final price = num.parse(char.trim());
-                  resultPriceController.text = (price * (1 + (percent / 100))).toStringAsFixed(1);
-                  setState(() {});
-                }
-              },
+              // prefixIcon: Icon(Icons.text_fields),
             ),
-          ),
-          Expanded(
-            child: AppTextField(
-              title: AppLocales.pricePercentHint.tr(),
-              controller: percentController,
-              theme: theme,
-              prefixIcon: !state.isDesktop ? null : Icon(Icons.percent),
-              onChanged: (char) {
-                if (num.tryParse(priceController.text.trim()) != null && num.tryParse(char) != null) {
-                  final price = num.parse(priceController.text.trim());
-                  final percent = num.parse(char.trim());
-                  resultPriceController.text = (price * (1 + (percent / 100))).toStringAsFixed(1);
-                  setState(() {});
-                }
-              },
+            24.h,
+            AppText.$18Bold("${AppLocales.addProductPrice.tr()} *"),
+            8.h,
+            Row(
+              spacing: 16,
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    title: AppLocales.oldPriceHint.tr(),
+                    controller: priceController,
+                    theme: theme,
+                    // prefixIcon: !state.isDesktop ? null : Icon(Icons.attach_money),
+                    onChanged: (char) {
+                      if (num.tryParse(percentController.text.trim()) != null && num.tryParse(char) != null) {
+                        final percent = num.parse(percentController.text.trim());
+                        final price = num.parse(char.trim());
+                        resultPriceController.text = (price * (1 + (percent / 100))).toStringAsFixed(1);
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: AppTextField(
+                    title: AppLocales.pricePercentHint.tr(),
+                    controller: percentController,
+                    theme: theme,
+                    // prefixIcon: !state.isDesktop ? null : Icon(Icons.percent),
+                    onChanged: (char) {
+                      if (num.tryParse(priceController.text.trim()) != null && num.tryParse(char) != null) {
+                        final price = num.parse(priceController.text.trim());
+                        final percent = num.parse(char.trim());
+                        resultPriceController.text = (price * (1 + (percent / 100))).toStringAsFixed(1);
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: AppTextField(
+                    title: AppLocales.addProductPrice.tr(),
+                    controller: resultPriceController,
+                    theme: theme,
+                    // prefixIcon: !state.isDesktop ? null : Icon(Icons.calculate_outlined),
+                    onChanged: (char) {
+                      if (num.tryParse(priceController.text.trim()) != null && num.tryParse(char) != null) {
+                        final price = num.parse(priceController.text.trim());
+                        final resultPrice = num.parse(char.trim());
+                        percentController.text = (((resultPrice - price) * 100) / price).toStringAsFixed(1);
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: AppTextField(
-              title: AppLocales.addProductPrice.tr(),
-              controller: resultPriceController,
-              theme: theme,
-              prefixIcon: !state.isDesktop ? null : Icon(Icons.calculate_outlined),
-              onChanged: (char) {
-                if (num.tryParse(priceController.text.trim()) != null && num.tryParse(char) != null) {
-                  final price = num.parse(priceController.text.trim());
-                  final resultPrice = num.parse(char.trim());
-                  percentController.text = (((resultPrice - price) * 100) / price).toStringAsFixed(1);
-                  setState(() {});
-                }
-              },
+            24.h,
+            AppText.$18Bold("${AppLocales.amountLabel.tr()} *"),
+            8.h,
+            Row(
+              spacing: 16,
+              children: [
+                Expanded(
+                  child: AppTextField(
+                    title: AppLocales.amountHint.tr(),
+                    controller: amountController,
+                    theme: theme,
+                    // prefixIcon: Icon(Icons.warehouse_outlined),
+                  ),
+                ),
+                Expanded(
+                  child: state.whenProviderData(
+                    provider: productMeasureProvider,
+                    builder: (measures) {
+                      measures as List<ProductMeasure>;
+                      return CustomPopupMenu(
+                        theme: theme,
+                        children: [
+                          for (final item in measures)
+                            CustomPopupItem(
+                              title: item.name,
+                              onPressed: () => setState(() => _productMeasure = item),
+                            ),
+                        ],
+                        child: IgnorePointer(
+                          ignoring: true,
+                          child: AppTextField(
+                            onlyRead: true,
+                            title: AppLocales.measures.tr(),
+                            controller: TextEditingController(text: _productMeasure?.name),
+                            theme: theme,
+                            // prefixIcon: Icon(Icons.scale_outlined),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-      24.h,
-      AppText.$18Bold("${AppLocales.amountLabel.tr()} *"),
-      8.h,
-      Row(
-        spacing: 16,
-        children: [
-          Expanded(
-            child: AppTextField(
-              title: AppLocales.amountHint.tr(),
-              controller: amountController,
-              theme: theme,
-              prefixIcon: Icon(Icons.warehouse_outlined),
-            ),
-          ),
-          Expanded(
-            child: state.whenProviderData(
-              provider: productMeasureProvider,
+            24.h,
+            AppText.$18Bold("${AppLocales.addProductCategoryHint.tr()} *"),
+            8.h,
+            state.whenProviderData(
+              provider: categoryProvider,
               builder: (measures) {
-                measures as List<ProductMeasure>;
+                measures as List<Category>;
                 return CustomPopupMenu(
                   theme: theme,
                   children: [
                     for (final item in measures)
                       CustomPopupItem(
                         title: item.name,
-                        onPressed: () => setState(() => _productMeasure = item),
+                        onPressed: () => setState(() => _category = item),
                       ),
                   ],
                   child: IgnorePointer(
                     ignoring: true,
                     child: AppTextField(
                       onlyRead: true,
-                      title: AppLocales.measures.tr(),
-                      controller: TextEditingController(text: _productMeasure?.name),
+                      title: AppLocales.categories.tr(),
+                      controller: TextEditingController(text: _category?.name),
                       theme: theme,
-                      prefixIcon: Icon(Icons.scale_outlined),
+                      // prefixIcon: Icon(Icons.category_outlined),
                     ),
                   ),
                 );
               },
             ),
-          ),
-        ],
-      ),
-      24.h,
-      AppText.$18Bold("${AppLocales.addProductCategoryHint.tr()} *"),
-      8.h,
-      state.whenProviderData(
-        provider: categoryProvider,
-        builder: (measures) {
-          measures as List<Category>;
-          return CustomPopupMenu(
-            theme: theme,
-            children: [
-              for (final item in measures)
-                CustomPopupItem(
-                  title: item.name,
-                  onPressed: () => setState(() => _category = item),
+            24.h,
+            AppText.$18Bold(AppLocales.productImageLabel.tr()),
+            8.h,
+            Container(
+              width: double.infinity,
+              padding: Dis.all(24),
+              decoration: BoxDecoration(
+                border: DashedBorder.fromBorderSide(
+                  dashLength: 8,
+                  side: BorderSide(color: theme.secondaryTextColor, width: 1),
                 ),
-            ],
-            child: IgnorePointer(
-              ignoring: true,
-              child: AppTextField(
-                onlyRead: true,
-                title: AppLocales.categories.tr(),
-                controller: TextEditingController(text: _category?.name),
-                theme: theme,
-                prefixIcon: Icon(Icons.category_outlined),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(14),
+                ),
+                color: theme.scaffoldBgColor,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset('assets/icons/frame.svg'),
+                  Text(
+                    AppLocales.uploadImage.tr(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: mediumFamily,
+                    ),
+                  ),
+                  Text(
+                    AppLocales.supportedImageFormats.tr(),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: regularFamily,
+                      color: theme.secondaryTextColor,
+                    ),
+                  ),
+                ],
               ),
             ),
-          );
-        },
+            24.h,
+            AppText.$18Bold(AppLocales.productDescriptionLabel.tr()),
+            8.h,
+            AppTextField(
+              title: AppLocales.productDescriptionHint.tr(),
+              controller: _descriptionController,
+              theme: theme,
+              minLines: 4,
+              // prefixIcon: Icon(Icons.text_fields),
+            ),
+            32.h,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                AppPrimaryButton(
+                  theme: theme,
+                  onPressed:_onConfirmPressed,
+                  title: AppLocales.add.tr(),
+                  padding: Dis.only(lr: 60, tb: 16),
+                ),
+              ],
+            ),
+            32.h,
+          ],
+        ),
       ),
-      32.h,
     ];
   }
 
