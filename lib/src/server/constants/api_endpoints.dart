@@ -1,5 +1,5 @@
 class ApiEndpoints {
-  static var docs = '/docs';
+  static var docs = '/api/v1/docs';
   static var places = '/api/v1/places';
   static var orders = '/api/v1/orders';
   static var placeOrders = '/api/v1/place/orders/<id>';

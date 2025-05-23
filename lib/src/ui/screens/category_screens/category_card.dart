@@ -1,27 +1,32 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/category_controller.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
+import 'package:biznex/src/core/extensions/for_string.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
 import 'package:biznex/src/providers/printer_devices_provider.dart';
 import 'package:biznex/src/ui/pages/category_pages/category_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_custom_padding.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:printing/printing.dart';
 
 class CategoryCard extends AppStatelessWidget {
   final Category category;
+  final int? count;
 
-  const CategoryCard(this.category, {super.key});
+  const CategoryCard(this.category, {super.key, this.count});
 
   @override
   Widget builder(BuildContext context, AppColors theme, WidgetRef ref, AppModel state) {
     return Container(
-      padding: Dis.only(left: 12, right: 12, tb: 8),
-      margin: Dis.only(tb: 8),
+      padding: Dis.only(left: 12, right: 12, tb: 12),
+      margin: Dis.only(tb: 8, lr: context.w(24)),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: theme.accentColor,
+        borderRadius: BorderRadius.circular(12),
+        color: theme.white,
       ),
       child: Row(
         spacing: 12,
@@ -29,139 +34,128 @@ class CategoryCard extends AppStatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(child: Text(category.name, style: TextStyle(fontSize: 16, fontFamily: boldFamily))),
-          if (!state.isMobile) ...[
-            SimpleButton(
-              onPressed: () => CategoryPage.onShowSubcategories(context, category),
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.list, size: 20, color: theme.textColor),
+          Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: theme.scaffoldBgColor,
               ),
-            ),
-            // SimpleButton(
-            //   onPressed: () => CategoryPage.onAddSubcategory(context, category),
-            //   child: Container(
-            //     padding: 8.all,
-            //     decoration: BoxDecoration(
-            //       border: Border.all(color: theme.secondaryTextColor),
-            //       borderRadius: BorderRadius.circular(32),
-            //     ),
-            //     child: Icon(Icons.add, size: 20, color: theme.textColor),
-            //   ),
-            // ),
-            SimpleButton(
-              onPressed: () => CategoryPage.onEditCategory(context, category),
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.edit, size: 20, color: theme.textColor),
-              ),
-            ),
-            SimpleButton(
-              onPressed: () => CategoryPage.onDeleteCategory(context, category, state),
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.delete_outline, size: 20, color: theme.textColor),
-              ),
-            ),
-            // SimpleButton(
-            //   onPressed: () => CategoryPage.onShowProducts(context, category),
-            //   child: Container(
-            //     padding: 8.all,
-            //     decoration: BoxDecoration(
-            //       border: Border.all(color: theme.secondaryTextColor),
-            //       borderRadius: BorderRadius.circular(32),
-            //     ),
-            //     child: Icon(Icons.shopping_bag_outlined, size: 20, color: theme.textColor),
-            //   ),
-            // ),
-            state.whenProviderData(
-              provider: printerDevicesProvider,
-              builder: (devices) {
-                devices as List<Printer>;
-                return CustomPopupMenu(
-                  theme: theme,
-                  children: [
-                    for (final item in devices)
-                      CustomPopupItem(
-                        icon: Ionicons.print_outline,
-                        title: item.name,
-                        onPressed: () {
-                          CategoryController cController = CategoryController(context: context, state: state);
-                          Category cCategory = category;
-                          cCategory.printerParams = {
-                            "name": item.name,
-                            "model": item.model,
-                            "url": item.url,
-                          };
-
-                          cController.forceUpdate(cCategory, cCategory.id);
-                        },
+              child: category.icon == null
+                  ? Center(
+                      child: Text(
+                        category.name.initials,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: boldFamily,
+                        ),
                       ),
-                  ],
-                  child: Container(
-                    padding: 8.all,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: theme.secondaryTextColor),
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: Icon(Ionicons.print_outline, size: 20, color: theme.textColor),
-                  ),
-                );
-              },
-            ),
-          ],
-          if (state.isMobile)
-            CustomPopupMenu(
-              theme: theme,
+                    )
+                  : Center(
+                      child: SvgPicture.asset(
+                        category.icon ?? "",
+                      ),
+                    )),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              spacing: 2,
               children: [
-                CustomPopupItem(
-                  title: AppLocales.subcategories.tr(),
-                  icon: Icons.list,
-                  onPressed: () => CategoryPage.onShowSubcategories(context, category),
+                Text(
+                  category.name,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: mediumFamily,
+                  ),
                 ),
-
-                CustomPopupItem(
-                  title: AppLocales.edit.tr(),
-                  icon: Icons.edit,
-                  onPressed: () => CategoryPage.onEditCategory(context, category),
-                ),
-                CustomPopupItem(
-                  title: AppLocales.delete.tr(),
-                  icon: Icons.delete_outline,
-                  onPressed: () => CategoryPage.onDeleteCategory(context, category, state),
-                ),
-                // CustomPopupItem(
-                //   title: AppLocales.showProducts.tr(),
-                //   icon: Icons.shopping_bag_outlined,
-                //   onPressed: () => CategoryPage.onShowProducts(context, category),
-                // ),
-                // CustomPopupItem(
-                //   title: AppLocales.addProduct.tr(),
-                //   icon: Icons.add_shopping_cart,
-                //   onPressed: () => CategoryPage.onAddProduct(context, category),
-                // ),
+                Text(
+                  "${'productCount'.tr()}: $count",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: regularFamily,
+                    color: theme.secondaryTextColor,
+                  ),
+                )
               ],
-              child: Container(
-                padding: 8.all,
-                decoration: BoxDecoration(
-                  border: Border.all(color: theme.secondaryTextColor),
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Icon(Icons.more_vert, size: 20, color: theme.textColor),
+            ),
+          ),
+          SimpleButton(
+            onPressed: () {
+              CategoryPage.onEditCategory(context, category);
+            },
+            child: Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: theme.scaffoldBgColor,
+              ),
+              child: Icon(
+                Iconsax.edit_copy,
+                color: theme.secondaryTextColor,
+                size: 20,
               ),
             ),
+          ),
+          SimpleButton(
+            onPressed: () {
+              CategoryPage.onDeleteCategory(context, category, state);
+            },
+            child: Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: theme.scaffoldBgColor,
+              ),
+              child: Icon(
+                Iconsax.trash_copy,
+                color: theme.red,
+                size: 20,
+              ),
+            ),
+          ),
+          state.whenProviderData(
+            provider: printerDevicesProvider,
+            builder: (devices) {
+              devices as List<Printer>;
+              return CustomPopupMenu(
+                theme: theme,
+                children: [
+                  for (final item in devices)
+                    CustomPopupItem(
+                      icon: Ionicons.print_outline,
+                      title: item.name,
+                      onPressed: () {
+                        CategoryController cController = CategoryController(context: context, state: state);
+                        Category cCategory = category;
+                        cCategory.printerParams = {
+                          "name": item.name,
+                          "model": item.model,
+                          "url": item.url,
+                        };
+
+                        cController.forceUpdate(cCategory, cCategory.id);
+                      },
+                    ),
+                ],
+                child: Container(
+                  height: 36,
+                  width: 36,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: theme.scaffoldBgColor,
+                  ),
+                  child: Icon(
+                    Iconsax.printer_copy,
+                    color: theme.secondaryTextColor,
+                    size: 20,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

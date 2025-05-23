@@ -33,6 +33,7 @@ class AddCategoryScreen extends HookWidget {
               ),
               24.h,
               ConfirmCancelButton(
+                cancelColor: Colors.white,
                 onConfirm: () async {
                   CategoryController controller = CategoryController(context: context, state: state);
                   if (editCategory == null) {
