@@ -1,25 +1,14 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/product_measure_controller.dart';
-import 'package:biznex/src/controllers/product_size_controller.dart';
-import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
-import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/product_params_models/product_measure.dart';
 import 'package:biznex/src/providers/product_measure_provider.dart';
-import 'package:biznex/src/ui/screens/other_screens/header_screen.dart';
 import 'package:biznex/src/ui/screens/product_info_screen/add_product_measure.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
-import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
-import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
-import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-
-import '../../pages/places_pages/add_place.dart';
 import '../../widgets/helpers/app_text_field.dart';
 
 class ProductMeasureReponsive extends HookConsumerWidget {
@@ -137,21 +126,6 @@ class ProductMeasureReponsive extends HookConsumerWidget {
                       childCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : measures.length,
                       (context, index) {
                         ProductMeasure category = (filteredCategories.value.isNotEmpty ? filteredCategories.value : measures)[index];
-                        /*  return AppListTile(
-                          title: category.name,
-                          theme: theme,
-                          onEdit: () {
-                            showDesktopModal(context: context, body: AddPlace(editCategory: category));
-                          },
-                          trailingIcon: Ionicons.add_circle_outline,
-                          onDelete: () {
-                            PlaceController placeController = PlaceController(context: context, state: state);
-                            placeController.delete(category.id);
-                          },
-                          onPressed: () {
-                            showDesktopModal(context: context, body: PlaceChildrenPage(category));
-                          },
-                        );*/
 
                         return Container(
                           margin: Dis.only(lr: context.w(24), tb: 8),
