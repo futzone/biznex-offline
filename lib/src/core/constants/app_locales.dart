@@ -485,4 +485,5 @@ abstract class AppLocales {
   static var about = "about";
   static var done = "done";
   static var supportedImageFormats = "supportedImageFormats";
+  static var ta = 'ta';
 }

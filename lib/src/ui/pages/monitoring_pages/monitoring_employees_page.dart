@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/excel_models/employee_excel_model.dart';
 import 'package:biznex/src/core/model/order_models/order_filter_model.dart';
@@ -11,6 +12,9 @@ import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+
+import '../../widgets/helpers/app_back_button.dart';
 
 class MonitoringEmployeesPage extends HookConsumerWidget {
   MonitoringEmployeesPage({super.key});
@@ -27,12 +31,16 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
         children: [
           Row(
             children: [
-              SimpleButton(
-                child: Icon(Icons.arrow_back_ios_new),
-                onPressed: () => AppRouter.close(context),
-              ),
+              AppBackButton(),
               16.w,
-              AppText.$18Bold(AppLocales.employees.tr()),
+              Text(
+                AppLocales.employees.tr(),
+                style: TextStyle(
+                  fontSize: context.s(24),
+                  fontFamily: mediumFamily,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
               Spacer(),
               CustomPopupMenu(
                 theme: theme,
@@ -47,16 +55,16 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                     ),
                 ],
                 child: Container(
-                  padding: Dis.only(lr: 24, tb: 12),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: theme.accentColor),
+                  padding: Dis.only(lr: context.w(16), tb: context.h(13)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: theme.accentColor),
                   child: Row(
                     children: [
                       Text(
                         filterType.value.tr(),
-                        style: TextStyle(fontFamily: boldFamily, fontSize: 16),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16),
                       ),
                       8.w,
-                      Icon(Icons.arrow_drop_down_circle_outlined, size: 20)
+                      Icon(Iconsax.arrow_down_1_copy, size: 20)
                     ],
                   ),
                 ),
@@ -69,18 +77,15 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                   });
                 },
                 child: Container(
-                  padding: Dis.only(lr: 24, tb: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: theme.accentColor,
-                  ),
+                  padding: Dis.only(lr: context.w(16), tb: context.h(13)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: theme.accentColor),
                   child: Row(
                     children: [
                       Text(
                         selectedDate.value == null
                             ? 'all'.tr()
                             : DateFormat(filterType.value == 'monthly' ? 'MMMM' : 'd-MMMM', context.locale.languageCode).format(selectedDate.value!),
-                        style: TextStyle(fontFamily: boldFamily, fontSize: 16),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16),
                       ),
                       8.w,
                       Icon(Ionicons.calendar_outline, size: 20)
@@ -158,19 +163,16 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                   EmployeeExcel.saveFileDialog(list);
                 },
                 child: Container(
-                  padding: Dis.only(lr: 24, tb: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: theme.mainColor,
-                  ),
+                  padding: Dis.only(lr: context.w(16), tb: context.h(13)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: theme.mainColor),
                   child: Row(
                     children: [
                       Text(
                         AppLocales.export.tr(),
-                        style: TextStyle(fontFamily: boldFamily, fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16, color: Colors.white),
                       ),
                       8.w,
-                      Icon(Icons.upload_file, size: 20, color: Colors.white)
+                      Icon(Iconsax.document_download, size: 20, color: Colors.white)
                     ],
                   ),
                 ),
@@ -238,17 +240,17 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                         return Container(
                           margin: 16.bottom,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(12),
                             color: theme.accentColor,
                           ),
-                          padding: 16.all,
+                          padding: 18.all,
                           child: Row(
                             children: [
                               Expanded(
                                 child: Row(
                                   spacing: 8,
                                   children: [
-                                    Icon(Icons.person_outline),
+                                    Icon(Iconsax.user, color: theme.mainColor),
                                     Text(employees[index].fullname, style: TextStyle(fontSize: 16, fontFamily: boldFamily))
                                   ],
                                 ),
@@ -259,6 +261,7 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 8,
                                   children: [
+                                    Icon(Iconsax.briefcase, color: theme.mainColor),
                                     Text(employees[index].roleName, style: TextStyle(fontSize: 16, fontFamily: boldFamily)),
                                   ],
                                 ),
@@ -269,6 +272,7 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 8,
                                   children: [
+                                    Icon(Iconsax.bag, color: theme.mainColor),
                                     Text("${AppLocales.orders.tr()}: $ordersCount", style: TextStyle(fontSize: 16, fontFamily: boldFamily)),
                                   ],
                                 ),
@@ -279,7 +283,7 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   spacing: 8,
                                   children: [
-                                    Icon(Ionicons.cash_outline),
+                                    Icon(Iconsax.wallet, color: theme.mainColor),
                                     Text(ordersSumm.priceUZS, style: TextStyle(fontSize: 16, fontFamily: boldFamily))
                                   ],
                                 ),

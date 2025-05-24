@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/excel_models/orders_excel_model.dart';
 import 'package:biznex/src/core/model/order_models/order_filter_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
@@ -8,7 +9,9 @@ import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import '../../widgets/helpers/app_back_button.dart';
 
 class MonitoringOrdersPage extends HookConsumerWidget {
   MonitoringOrdersPage({super.key});
@@ -25,12 +28,12 @@ class MonitoringOrdersPage extends HookConsumerWidget {
         children: [
           Row(
             children: [
-              SimpleButton(
-                child: Icon(Icons.arrow_back_ios_new),
-                onPressed: () => AppRouter.close(context),
-              ),
+              AppBackButton(),
               16.w,
-              AppText.$18Bold(AppLocales.orders.tr()),
+              Text(
+                AppLocales.orders.tr(),
+                style: TextStyle(fontSize: context.s(24), fontFamily: mediumFamily, fontWeight: FontWeight.bold),
+              ),
               Spacer(),
               CustomPopupMenu(
                 theme: theme,
@@ -44,16 +47,16 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                     ),
                 ],
                 child: Container(
-                  padding: Dis.only(lr: 24, tb: 12),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: theme.accentColor),
+                  padding: Dis.only(lr: context.w(16), tb: context.h(13)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: theme.accentColor),
                   child: Row(
                     children: [
                       Text(
                         filterType.value.toString(),
-                        style: TextStyle(fontFamily: boldFamily, fontSize: 16),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16),
                       ),
                       8.w,
-                      Icon(Icons.arrow_drop_down_circle_outlined, size: 20)
+                      Icon(Iconsax.arrow_down_1_copy, size: 20)
                     ],
                   ),
                 ),
@@ -71,16 +74,16 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                     ),
                 ],
                 child: Container(
-                  padding: Dis.only(lr: 24, tb: 12),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: theme.accentColor),
+                  padding: Dis.only(lr: context.w(16), tb: context.h(13)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: theme.accentColor),
                   child: Row(
                     children: [
                       Text(
                         AppDateUtils.getMonth(selectedMonth.value),
-                        style: TextStyle(fontFamily: boldFamily, fontSize: 16),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16),
                       ),
                       8.w,
-                      Icon(Icons.arrow_drop_down_circle_outlined, size: 20)
+                      Icon(Iconsax.arrow_down_1_copy, size: 20)
                     ],
                   ),
                 ),
@@ -120,19 +123,16 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                   OrdersExcelModel.saveFileDialog(list);
                 },
                 child: Container(
-                  padding: Dis.only(lr: 24, tb: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: theme.mainColor,
-                  ),
+                  padding: Dis.only(lr: context.w(16), tb: context.h(13)),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: theme.mainColor),
                   child: Row(
                     children: [
                       Text(
                         AppLocales.export.tr(),
-                        style: TextStyle(fontFamily: boldFamily, fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontFamily: mediumFamily, fontSize: 16, color: Colors.white),
                       ),
                       8.w,
-                      Icon(Icons.upload_file, size: 20, color: Colors.white)
+                      Icon(Iconsax.document_download, size: 20, color: Colors.white)
                     ],
                   ),
                 ),
@@ -178,7 +178,7 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                             child: Row(
                               spacing: 8,
                               children: [
-                                Icon(Icons.calendar_month),
+                                Icon(Iconsax.calendar, color: theme.mainColor),
                                 Text(
                                   DateFormat('d-MMMM, yyyy', context.locale.languageCode).format(day),
                                   style: TextStyle(fontSize: 16, fontFamily: boldFamily),
@@ -192,8 +192,9 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               spacing: 8,
                               children: [
+                                Icon(Iconsax.calendar_1, color: theme.mainColor),
                                 Text(
-                                  DateFormat('EEEE', context.locale.languageCode).format(day),
+                                  DateFormat('EEEE', context.locale.languageCode).format(day).capitalize,
                                   style: TextStyle(fontSize: 16, fontFamily: boldFamily),
                                 ),
                               ],
@@ -205,6 +206,7 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               spacing: 8,
                               children: [
+                                Icon(Iconsax.bag, color: theme.mainColor),
                                 Text("${AppLocales.orders.tr()}: $ordersCount", style: TextStyle(fontSize: 16, fontFamily: boldFamily)),
                               ],
                             ),
@@ -215,7 +217,7 @@ class MonitoringOrdersPage extends HookConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               spacing: 8,
                               children: [
-                                Icon(Ionicons.cash_outline),
+                                Icon(Iconsax.wallet, color: theme.mainColor),
                                 Text(ordersSumm.priceUZS, style: TextStyle(fontSize: 16, fontFamily: boldFamily))
                               ],
                             ),
