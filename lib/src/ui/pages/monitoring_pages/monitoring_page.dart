@@ -1,18 +1,17 @@
 import 'package:biznex/biznex.dart';
-import 'package:biznex/src/core/extensions/app_responsive.dart';
-import 'package:biznex/src/core/extensions/device_type.dart';
-import 'package:biznex/src/core/model/order_models/order_filter_model.dart';
-import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/providers/transaction_provider.dart';
-import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_employees_page.dart';
-import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_orders_page.dart';
-import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_products_page.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/providers/employee_orders_provider.dart';
+import 'package:biznex/src/core/model/order_models/order_filter_model.dart';
 import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_transactions_page.dart';
+import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_employees_page.dart';
 import 'package:biznex/src/ui/screens/monitoring_screen/monitoring_card_screen.dart';
-import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_products_page.dart';
+import 'package:biznex/src/ui/pages/monitoring_pages/monitoring_orders_page.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
+import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -28,9 +27,6 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCategories = useState([]);
-    final searchController = useTextEditingController();
-
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
