@@ -10,7 +10,7 @@ final FutureProvider<List<Employee>> employeeProvider = FutureProvider<List<Empl
   return await employeeDatabase.get();
 });
 
-final FutureProvider roleProvider = FutureProvider<List<Role>>((ref) async {
+final roleProvider = FutureProvider<List<Role>>((ref) async {
   RoleDatabase roleDatabase = RoleDatabase();
   return await roleDatabase.get();
 });

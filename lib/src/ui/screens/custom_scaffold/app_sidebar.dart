@@ -1,4 +1,6 @@
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/screens/settings_screen/settings_button_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -157,6 +159,16 @@ class AppSidebar extends HookConsumerWidget {
                         child: sidebarItemBuilder("assets/icons/fullscreen.svg", AppLocales.fullScreen.tr(), -1),
                       ),
                     ),
+
+                    SimpleButton(
+                      onPressed: () async {
+                        AppRouter.open(context, OnboardPage());
+                      },
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: sidebarItemBuilder(Iconsax.logout_copy, AppLocales.logout.tr(), -1),
+                      ),
+                    ),
                     // sidebarItemBuilder("assets/icons/printer-svgrepo-com.svg", AppLocales.printing.tr(), 9),
                     // sidebarItemBuilder("assets/icons/delivery.svg", AppLocales.delivery.tr(), 10),
                   ],
@@ -164,7 +176,17 @@ class AppSidebar extends HookConsumerWidget {
               ),
             ),
             // 24.w,
-            SettingsButtonScreen(theme: theme, model: state, opened: openedValue.value),
+            SimpleButton(
+              onPressed: () {
+                pageNotifier.value = 0;
+              },
+              child: SettingsButtonScreen(
+                theme: theme,
+                model: state,
+                opened: openedValue.value,
+                selected: pageNotifier.value == 0,
+              ),
+            ),
           ],
         ),
       );

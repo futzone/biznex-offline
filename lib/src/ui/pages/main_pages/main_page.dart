@@ -9,6 +9,7 @@ import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
 import 'package:biznex/src/ui/screens/order_screens/orders_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import '../../screens/product_info_screen/product_measure_reponsive.dart';
+import '../../screens/settings_screen/settings_page_screen.dart';
 import '../employee_pages/employee_page.dart';
 import '../monitoring_pages/monitoring_page.dart';
 import '../product_pages/product_information_page.dart';
@@ -43,7 +44,7 @@ class MainPage extends HookConsumerWidget {
             sidebar: AppSidebar(pageValue),
             child: HookBuilder(
               builder: (context) {
-                if (pageValue.value == 0) return OverviewPage(appbar: appbar, floatingActionButton: fab);
+                if (pageValue.value == 0) return SettingsPageScreen();
                 if (pageValue.value == 1) return OrderSetPage();
                 if (pageValue.value == 2) return OrdersPage();
                 if (pageValue.value == 3) return CategoryPage(appbar: appbar, fab);

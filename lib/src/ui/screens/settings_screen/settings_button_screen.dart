@@ -9,8 +9,15 @@ class SettingsButtonScreen extends StatelessWidget {
   final AppColors theme;
   final AppModel model;
   final bool opened;
+  final bool selected;
 
-  const SettingsButtonScreen({super.key, required this.theme, required this.model, required this.opened});
+  const SettingsButtonScreen({
+    super.key,
+    required this.theme,
+    required this.model,
+    required this.opened,
+    required this.selected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,7 @@ class SettingsButtonScreen extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         // border: Border.all(color: theme.accentColor),
-        color: Colors.white.withValues(alpha: 0.12)
+        color: selected ? theme.mainColor : Colors.white.withValues(alpha: 0.12),
       ),
       child: !opened
           ? SettingsScreenButton(theme)
@@ -42,7 +49,7 @@ class SettingsButtonScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        model.shopName ?? 'Biznex',
+                        model.shopName == null || model.shopName!.isEmpty ? 'Biznex' : model.shopName!,
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

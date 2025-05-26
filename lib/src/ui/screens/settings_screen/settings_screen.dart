@@ -32,23 +32,7 @@ class SettingsScreenButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final overlayEntry = useState<OverlayEntry?>(null);
-    return SimpleButton(
-      onPressed: () {
-        overlayEntry.value = OverlayEntry(
-          builder: (context) => SettingsScreen(
-            theme: theme,
-            onClose: () {
-              overlayEntry.value?.remove();
-              overlayEntry.value = null;
-            },
-          ),
-        );
-
-        Overlay.of(context).insert(overlayEntry.value!);
-      },
-      child: SvgPicture.asset("assets/icons/settings.svg", color: Colors.white),
-    );
+    return SvgPicture.asset("assets/icons/settings.svg", color: Colors.white);
   }
 }
 
