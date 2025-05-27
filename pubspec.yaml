@@ -128,13 +128,13 @@ flutter:
   fonts:
     - family: Extra-Bold
       fonts:
-        - asset: assets/fonts/NunitoSans_7pt_Condensed-Black.ttf
+        - asset: assets/fonts/PlusJakartaSans-Bold.ttf
     - family: Medium
       fonts:
-        - asset: assets/fonts/NunitoSans_7pt_Condensed-Medium.ttf
+        - asset: assets/fonts/PlusJakartaSans-Medium.ttf
     - family: Regular
       fonts:
-        - asset: assets/fonts/NunitoSans_7pt_Condensed-Regular.ttf
+        - asset: assets/fonts/PlusJakartaSans-Regular.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

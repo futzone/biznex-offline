@@ -79,6 +79,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
   final EdgeInsets? padding;
   final Color? cancelColor;
   final bool onlyClose;
+  final bool onlyConfirm;
 
   const ConfirmCancelButton({
     super.key,
@@ -91,6 +92,7 @@ class ConfirmCancelButton extends AppStatelessWidget {
     this.cancelIcon,
     this.padding,
     this.onlyClose = false,
+    this.onlyConfirm = false,
     this.cancelColor,
   });
 
@@ -98,39 +100,41 @@ class ConfirmCancelButton extends AppStatelessWidget {
   Widget builder(context, theme, ref, state) {
     return Row(
       children: [
-        Expanded(
-          child: AppPrimaryButton(
-            cancelColor: cancelColor ?? theme.white,
-            padding: padding,
-            border: Border.all(color: Colors.black),
-            theme: theme,
-            onPressed: () {
-              if (onCancel == null) {
-                AppRouter.close(context);
-                return;
-              }
+        if (onlyConfirm) Expanded(child: SizedBox()),
+        if (!onlyConfirm)
+          Expanded(
+            child: AppPrimaryButton(
+              cancelColor: cancelColor ?? theme.white,
+              padding: padding,
+              border: Border.all(color: Colors.black),
+              theme: theme,
+              onPressed: () {
+                if (onCancel == null) {
+                  AppRouter.close(context);
+                  return;
+                }
 
-              onCancel!();
-            },
-            title: cancelText ?? AppLocales.close.tr(),
-            textColor: theme.textColor,
-            color: cancelColor ?? theme.white,
-            child: Row(
-              spacing: 8,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (cancelIcon != null)
-                  Icon(
-                    cancelIcon,
-                    size: 20,
-                    color: theme.textColor,
-                  ),
-                Text(cancelText ?? AppLocales.close.tr())
-              ],
+                onCancel!();
+              },
+              title: cancelText ?? AppLocales.close.tr(),
+              textColor: theme.textColor,
+              color: cancelColor ?? theme.white,
+              child: Row(
+                spacing: 8,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (cancelIcon != null)
+                    Icon(
+                      cancelIcon,
+                      size: 20,
+                      color: theme.textColor,
+                    ),
+                  Text(cancelText ?? AppLocales.close.tr())
+                ],
+              ),
             ),
           ),
-        ),
         if (!onlyClose)
           if (spacing == null) state.getSpacing.w else spacing!.w,
         if (!onlyClose)
