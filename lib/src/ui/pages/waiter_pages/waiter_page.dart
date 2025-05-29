@@ -15,6 +15,7 @@ import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:window_manager/window_manager.dart';
 import '../../screens/order_screens/order_half_page.dart';
+import '../order_pages/table_choose_screen.dart';
 
 class WaiterPage extends ConsumerStatefulWidget {
   final bool haveBack;
@@ -33,6 +34,7 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
 
   @override
   Widget build(BuildContext context) {
+    return TableChooseScreen();
     try {
       final employee = ref.watch(currentEmployeeProvider);
       return Scaffold(
