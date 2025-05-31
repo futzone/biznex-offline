@@ -46,6 +46,13 @@ class OrderDatabase {
     return boxData == null ? null : Order.fromJson(boxData);
   }
 
+  Future<void> deletePlaceOrder(String placeId) async {
+    final box = await openBox(getBoxName("${placeId}_open"));
+    await box.clear();
+    log("Deleted");
+    // return boxData == null ? null : Order.fromJson(boxData);
+  }
+
   Future<void> setPlaceOrder({required data, required String placeId}) async {
     if (data is! Order) return;
     Order productInfo = data;

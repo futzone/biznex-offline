@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
+
+import '../core/database/order_database/order_database.dart';
+import 'employee_orders_provider.dart';
 
 final orderSetProvider = StateNotifierProvider<OrderSetNotifier, List<OrderItem>>((ref) {
   return OrderSetNotifier(ref);
@@ -44,7 +49,7 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
     }
   }
 
-  void deleteItem(OrderItem item, context) {
+  void deleteItem(OrderItem item, context) async {
     final order = ref.watch(ordersProvider(item.placeId)).value;
 
     if (order != null && order.products.isNotEmpty && order.products.any((element) => element.product.id == item.product.id)) {
@@ -52,6 +57,7 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
       if (index != -1) {
         state = [...state.where((e) => !(e.product.id == item.product.id && e.placeId == item.placeId))];
       }
+      _onDeleteCache(item.placeId, ref);
       return;
     }
 
@@ -59,6 +65,8 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
     if (index != -1) {
       state = [...state.where((e) => !(e.product.id == item.product.id && e.placeId == item.placeId))];
     }
+
+    _onDeleteCache(item.placeId, ref);
     return;
   }
 
@@ -87,4 +95,17 @@ class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
   }
 
   void clear() => state = [];
+
+  void _onDeleteCache(String placeId, ref) {
+    final list = state.where((e) => e.placeId == placeId).toList();
+    if (list.isEmpty) {
+      OrderDatabase orderDatabase = OrderDatabase();
+      final notifier = ref.read(orderSetProvider.notifier);
+      notifier.clearPlaceItems(placeId);
+      ref.invalidate(ordersProvider(placeId));
+      ref.invalidate(ordersProvider);
+      ref.invalidate(employeeOrdersProvider);
+      orderDatabase.deletePlaceOrder(placeId);
+    }
+  }
 }

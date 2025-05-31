@@ -4,6 +4,7 @@ class Place {
   String? image;
   List<Place>? children;
   Place? father;
+  bool percentNull;
 
   Place({
     this.father,
@@ -11,6 +12,7 @@ class Place {
     this.image,
     this.children,
     this.id = '',
+    this.percentNull = false,
   });
 
   factory Place.fromJson(json, {dynamic fatherId}) {
@@ -19,6 +21,7 @@ class Place {
       name: json['name'] ?? '',
       id: json['id'] ?? '',
       image: json['image'],
+      percentNull: json['percentNull']??false,
       children: (json['children'] as List?)?.map((mp) => Place.fromJson(mp, fatherId: json['id'] ?? '')).toList(),
     );
   }
@@ -28,6 +31,7 @@ class Place {
       'name': name,
       'id': id,
       'image': image,
+      'percentNull': percentNull,
       'children': children != null ? children!.map((mp) => mp.toJsonWithoutChildren()).toList() : [],
       'father': father?.toJsonWithoutChildren(),
     };
@@ -38,6 +42,7 @@ class Place {
       'name': name,
       'id': id,
       'image': image,
+      'percentNull': percentNull,
       'father': father?.toJsonWithoutChildren(),
     };
   }

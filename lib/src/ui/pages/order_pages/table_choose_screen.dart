@@ -1,9 +1,11 @@
+import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_string.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
+import 'package:biznex/src/ui/pages/order_pages/menu_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -37,7 +39,7 @@ class TableChooseScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildTable({required AppColors theme, required String name, required String status}) {
+  Widget _buildTable({required AppColors theme, required String name, required String status, required BuildContext context}) {
     final cColor = status == 'free' ? theme.mainColor.withValues(alpha: 0.36) : theme.accentColor.withValues(alpha: 0.36);
     final textColor = status == 'free' ? theme.mainColor : theme.secondaryTextColor;
 
@@ -71,10 +73,12 @@ class TableChooseScreen extends HookConsumerWidget {
                       child: Text(
                         name,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: context.s(20),
                           color: textColor,
                           fontFamily: mediumFamily,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
@@ -93,8 +97,6 @@ class TableChooseScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final employee = ref.watch(currentEmployeeProvider);
     final selectedPlace = useState<Place?>(null);
-    final filteredPlaces = useState<List<Place>>([]);
-    final selectedFilter = useState<String?>(null);
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
@@ -353,12 +355,24 @@ class TableChooseScreen extends HookConsumerWidget {
                           return SimpleButton(
                             onPressed: () {
                               selectedPlace.value = place;
+                              if (place == null) {
+                                AppRouter.go(context, MenuPage(place: places[index]));
+                                return;
+                              }
+
+                              if (place.children == null || place.children!.isEmpty) {
+                                AppRouter.go(
+                                  context,
+                                  MenuPage(place: place, fatherPlace: selectedPlace.value?.id == place.id ? null : selectedPlace.value),
+                                );
+                              }
                             },
                             child: state.whenProviderData(
                               provider: ordersProvider(place?.id ?? ''),
                               builder: (order) {
                                 order as Order?;
                                 return _buildTable(
+                                  context: context,
                                   theme: theme,
                                   name: place?.name ?? '',
                                   status: order == null ? 'free' : 'bron',

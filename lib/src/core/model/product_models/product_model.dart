@@ -73,30 +73,92 @@ class Product {
   }
 
   factory Product.fromJson(json) {
-    if (json['name'].toString().contains("Kos")) log(json.toString());
+    // if (json['name'].toString().contains("Kos")) log(json.toString()); // Keep if needed for debugging
     return Product(
       name: json['name'],
-      barcode: json['barcode'] ?? '',
-      tagnumber: json['tagnumber'] ?? '',
-      cratedDate: json['cratedDate'] ?? '',
-      updatedDate: json['updatedDate'] ?? '',
-      informations: (json['informations'] as List<dynamic>?)?.map((e) => ProductInfo.fromJson(e)).toList(),
+      barcode: json['barcode'],
+      tagnumber: json['tagnumber'],
+      cratedDate: json['cratedDate'],
+      updatedDate: json['updatedDate'],
+      informations: (json['informations'] as List<dynamic>?)
+          ?.map((e) => ProductInfo.fromJson(e))
+          .toList(),
       description: json['description'],
       images: json['images'] != null
           ? List<String>.from(json['images'].map((e) => e.toString()))
-          : [],
-
+          : null,
       measure: json['measure'],
       color: json['color'],
       colorCode: json['colorCode'],
       size: json['size'],
       price: (json['price'] as num).toDouble(),
-      amount: (json['amount'] as num).toDouble(),
-      percent: (json['percent'] as num).toDouble(),
+      amount: (json['amount'] as num? ?? 1.0).toDouble(),
+      percent: (json['percent'] as num? ?? 0.0).toDouble(),
       id: json['id'] ?? '',
       productId: json['productId'],
-      category: json['category'] == null ? null : Category.fromJson(json['category']),
-      variants: (json['variants'] as List<dynamic>?)?.map((e) => Product.fromJson(e)).toList(),
+      category:
+      json['category'] == null ? null : Category.fromJson(json['category']),
+      variants: (json['variants'] as List<dynamic>?)
+          ?.map((e) => Product.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Product copyWith({
+    String? name,
+    String? barcode,
+    String? tagnumber,
+    String? cratedDate,
+    String? updatedDate,
+    List<ProductInfo>? informations,
+    String? description,
+    List<String>? images,
+    String? measure,
+    String? color,
+    String? colorCode,
+    String? size,
+    double? price,
+    double? amount,
+    double? percent,
+    String? id,
+    String? productId,
+    List<Product>? variants,
+    Category? category,
+    bool? setBarcodeToNull,
+    bool? setTagnumberToNull,
+    bool? setCratedDateToNull,
+    bool? setUpdatedDateToNull,
+    bool? setInformationsToNull,
+    bool? setDescriptionToNull,
+    bool? setImagesToNull,
+    bool? setMeasureToNull,
+    bool? setColorToNull,
+    bool? setColorCodeToNull,
+    bool? setSizeToNull,
+    bool? setProductIdToNull,
+    bool? setVariantsToNull,
+    bool? setCategoryToNull,
+  }) {
+    return Product(
+      name: name ?? this.name,
+      price: price ?? this.price,
+      barcode: setBarcodeToNull == true ? null : barcode ?? this.barcode,
+      tagnumber: setTagnumberToNull == true ? null : tagnumber ?? this.tagnumber,
+      cratedDate: setCratedDateToNull == true ? null : cratedDate ?? this.cratedDate,
+      updatedDate: setUpdatedDateToNull == true ? null : updatedDate ?? this.updatedDate,
+      informations: setInformationsToNull == true ? null : informations ?? this.informations,
+      description: setDescriptionToNull == true ? null : description ?? this.description,
+      images: setImagesToNull == true ? null : images ?? this.images,
+      measure: setMeasureToNull == true ? null : measure ?? this.measure,
+      color: setColorToNull == true ? null : color ?? this.color,
+      colorCode: setColorCodeToNull == true ? null : colorCode ?? this.colorCode,
+      size: setSizeToNull == true ? null : size ?? this.size,
+      id: id ?? this.id,
+      percent: percent ?? this.percent,
+      productId: setProductIdToNull == true ? null : productId ?? this.productId,
+      amount: amount ?? this.amount,
+      variants: setVariantsToNull == true ? null : variants ?? this.variants,
+      category: setCategoryToNull == true ? null : category ?? this.category,
     );
   }
 }

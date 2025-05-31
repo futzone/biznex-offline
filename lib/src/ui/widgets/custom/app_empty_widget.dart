@@ -1,5 +1,6 @@
 
 import 'package:biznex/src/core/constants/app_locales.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/app_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +21,13 @@ class AppEmptyWidget extends StatelessWidget {
         children: [
           Image.asset(
             'assets/images/out-of-stock.png',
-            height: size ?? 100,
-            width: size ?? 100,
+            height: size ?? context.s(100),
+            width: size ?? context.s(100),
             fit: BoxFit.cover,
           ),
           Text(
             text ?? AppLocales.dataNotFound.tr(),
-            style: TextStyle(fontFamily: boldFamily, fontSize: (size ?? 100) * 0.25),
+            style: TextStyle(fontFamily: boldFamily, fontSize: context.s((size ?? 80) * 0.25)),
           ),
         ],
       ),

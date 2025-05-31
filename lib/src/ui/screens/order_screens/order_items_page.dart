@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/order_controller.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
@@ -73,136 +76,179 @@ class OrderItemsPage extends HookConsumerWidget {
     }
 
     return Expanded(
+      flex: 4,
       child: placeOrderItems.isEmpty
           ? AppEmptyWidget()
           : Container(
-              margin: 16.all,
+              margin: Dis.only(right: context.w(32), top: context.h(24)),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: theme.accentColor,
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
               ),
               padding: 16.tb,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: 16.lr,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: ListView.builder(
-                          padding: 8.tb,
-                          itemCount: placeOrderItems.length + 2,
-                          itemBuilder: (context, index) {
-                            if (index == placeOrderItems.length) {
-                              return OrderDetailsScreen(
-                                theme: theme,
-                                noteController: noteController,
-                                customerNotifier: customerNotifier,
-                              );
-                            }
-
-                            if (index == placeOrderItems.length + 1) {
-                              return OrderParamButtons(
-                                scheduleNotifier: scheduledTime,
-                                theme: theme,
-                                state: state,
-                                onScheduleOrder: onSchedule,
-                                onOpenSettings: () {
-                                  showDesktopModal(context: context, body: OrderSettingsScreen(state));
-                                },
-                                onClearAll: order != null ? null : () => orderNotifier.clear(),
-                              );
-                            }
-
-                            final item = placeOrderItems[index];
-                            return OrderItemCardNew(item: item, theme: theme, order: order);
-                          },
-                        ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    for (final item in placeOrderItems)
+                      OrderItemCardNew(
+                        item: item,
+                        theme: theme,
+                        order: order,
                       ),
-                    ),
-                  ),
-                  Container(
-                    margin: 16.tb,
-                    color: theme.scaffoldBgColor,
-                    width: double.infinity,
-                    height: 4,
-                  ),
-                  Row(
-                    children: [
-                      16.w,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("${AppLocales.total.tr()}:"),
-                          Text(
-                            totalPrice.priceUZS,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontFamily: boldFamily,
+                    // OrderDetailsScreen(
+                    //   theme: theme,
+                    //   noteController: noteController,
+                    //   customerNotifier: customerNotifier,
+                    // ),
+                    // OrderParamButtons(
+                    //   scheduleNotifier: scheduledTime,
+                    //   theme: theme,
+                    //   state: state,
+                    //   onScheduleOrder: onSchedule,
+                    //   onOpenSettings: () {
+                    //     showDesktopModal(context: context, body: OrderSettingsScreen(state));
+                    //   },
+                    //   onClearAll: order != null ? null : () => orderNotifier.clear(),
+                    // ),
+                    Container(
+                      margin: Dis.only(top: 16),
+                      padding: Dis.only(tb: 24, lr: 16),
+                      decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              color: theme.scaffoldBgColor,
+                              width: 2,
                             ),
                           ),
-                        ],
-                      ),
-                      16.w,
-                      Expanded(
-                        child: ConfirmCancelButton(
-                          cancelColor: theme.scaffoldBgColor,
-                          padding: Dis.only(tb: 20),
-                          spacing: 16,
-                          onConfirm: () async {
-                            OrderController orderController = OrderController(
-                              model: state,
-                              context: context,
-                              place: place,
-                              employee: ref.watch(currentEmployeeProvider),
-                            );
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
+                          )),
+                      child: Column(
+                        spacing: 24,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${AppLocales.total.tr()}:",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: mediumFamily,
+                                ),
+                              ),
+                              Text(
+                                totalPrice.priceUZS,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: boldFamily,
+                                ),
+                              ),
+                            ],
+                          ),
+                          AppPrimaryButton(
+                            theme: theme,
+                            onPressed: () async {
+                              OrderController orderController = OrderController(
+                                model: state,
+                                place: place,
+                                employee: ref.watch(currentEmployeeProvider),
+                              );
 
-                            if (order == null) {
-                              orderController.openOrder(
+                              log((place.father == null).toString());
+
+                              if (order == null) {
+                                orderController.openOrder(
+                                  context,
+                                  ref,
+                                  placeOrderItems,
+                                  note: noteController.text.trim(),
+                                  customer: customerNotifier.value,
+                                  scheduledDate: scheduledTime.value,
+                                );
+                                return;
+                              }
+
+                              orderController.addItems(
+                                context,
+                                ref,
                                 placeOrderItems,
+                                order!,
                                 note: noteController.text.trim(),
                                 customer: customerNotifier.value,
                                 scheduledDate: scheduledTime.value,
                               );
-                              return;
-                            }
 
-                            orderController.addItems(
-                              placeOrderItems,
-                              order!,
-                              note: noteController.text.trim(),
-                              customer: customerNotifier.value,
-                              scheduledDate: scheduledTime.value,
-                            );
-
-                            ///
-                            ///
-                          },
-                          onCancel: () async {
-                            OrderController orderController = OrderController(
-                              model: state,
-                              context: context,
-                              place: place,
-                              employee: ref.watch(currentEmployeeProvider),
-                            );
-
-                            await orderController.closeOrder(
-                              note: noteController.text.trim(),
-                              customer: customerNotifier.value,
-                              scheduledDate: scheduledTime.value,
-                            );
-
-                            noteController.clear();
-                            customerNotifier.value = null;
-                          },
-                        ),
+                              ///
+                              ///
+                            },
+                            title: AppLocales.add.tr(),
+                          ),
+                          // ConfirmCancelButton(
+                          //   onlyConfirm: true,
+                          //   cancelColor: theme.scaffoldBgColor,
+                          //   padding: Dis.only(tb: 20),
+                          //   spacing: 16,
+                          //   onConfirm: () async {
+                          //     OrderController orderController = OrderController(
+                          //       model: state,
+                          //       place: place,
+                          //       employee: ref.watch(currentEmployeeProvider),
+                          //     );
+                          //
+                          //     log((place.father == null).toString());
+                          //
+                          //     if (order == null) {
+                          //       orderController.openOrder(
+                          //         context,
+                          //         ref,
+                          //         placeOrderItems,
+                          //         note: noteController.text.trim(),
+                          //         customer: customerNotifier.value,
+                          //         scheduledDate: scheduledTime.value,
+                          //       );
+                          //       return;
+                          //     }
+                          //
+                          //     orderController.addItems(
+                          //       context,
+                          //       ref,
+                          //       placeOrderItems,
+                          //       order!,
+                          //       note: noteController.text.trim(),
+                          //       customer: customerNotifier.value,
+                          //       scheduledDate: scheduledTime.value,
+                          //     );
+                          //
+                          //     ///
+                          //     ///
+                          //   },
+                          //   onCancel: () async {
+                          //     OrderController orderController = OrderController(
+                          //       model: state,
+                          //       place: place,
+                          //       employee: ref.watch(currentEmployeeProvider),
+                          //     );
+                          //
+                          //     await orderController.closeOrder(
+                          //       context,
+                          //       ref,
+                          //       note: noteController.text.trim(),
+                          //       customer: customerNotifier.value,
+                          //       scheduledDate: scheduledTime.value,
+                          //     );
+                          //
+                          //     noteController.clear();
+                          //     customerNotifier.value = null;
+                          //   },
+                          // ),
+                        ],
                       ),
-                      16.w,
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
     );
