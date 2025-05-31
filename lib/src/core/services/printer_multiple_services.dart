@@ -90,7 +90,7 @@ class PrinterMultipleServices {
                 ),
                 pw.SizedBox(width: 8),
                 pw.Text(
-                  "${item.amount.price} ${item.product.measure} * ${item.product.price.price} UZS",
+                  "${item.amount.toMeasure} ${item.product.measure} * ${item.product.price.price} UZS",
                   style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
                 ),
               ],
@@ -147,7 +147,7 @@ class PrinterMultipleServices {
             ),
             pw.SizedBox(width: 8),
             pw.Text(
-              "${order.place.father != null ? '${order.place.father!.name}, ' : ''}${order.place.name}",
+              "${order.place.father != null ? order.place.father?.name == null ? '' : order.place.father!.name : ''}${order.place.name}",
               style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, font: ttf),
             ),
           ],

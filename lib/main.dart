@@ -94,6 +94,9 @@ void main() async {
     fullScreen: true,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setAsFrameless();
+    await windowManager.setPreventClose(true);
+    await windowManager.setSkipTaskbar(false);
     await windowManager.show();
     await windowManager.focus();
   });

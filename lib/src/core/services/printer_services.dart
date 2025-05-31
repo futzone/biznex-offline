@@ -72,13 +72,13 @@ class PrinterServices {
                 ),
                 pw.SizedBox(width: 8),
                 pw.Text(
-                  "${item.amount.price} ${item.product.measure} * ${item.product.price.price} UZS",
+                  "${item.amount.toMeasure} ${item.product.measure} * ${item.product.price.price} UZS",
                   style: boldStyle,
                 ),
               ],
             ),
           ),
-        if (percents.isNotEmpty) ...[
+        if (percents.isNotEmpty && !order.place.percentNull) ...[
           pw.SizedBox(height: 4),
           pw.Container(color: PdfColor.fromHex("#000000"), height: 1),
           pw.SizedBox(height: 4),
@@ -125,6 +125,23 @@ class PrinterServices {
           ],
         ),
         pw.SizedBox(height: 4),
+        pw.Row(
+          children: [
+            pw.Expanded(
+              child: pw.Text(
+                "${AppLocales.placeNameLabel.tr()}:",
+                style: pdfTheme,
+                overflow: pw.TextOverflow.clip,
+                maxLines: 2,
+              ),
+            ),
+            pw.SizedBox(width: 8),
+            pw.Text(
+              "${order.place.name}${order.place.father?.name != null ? ", ${order.place.father!.name}" : ''}",
+              style: boldStyle,
+            ),
+          ],
+        ),
         if (model.printPhone != null)
           pw.Row(
             children: [
@@ -172,7 +189,7 @@ class PrinterServices {
       ],
     );
 
-    final pageHeight = (order.products.length * 20.0) + 1100.0;
+    final pageHeight = (order.products.length * 20.0) + 1200.0;
 
     doc.addPage(
       pw.Page(
