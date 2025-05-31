@@ -186,6 +186,33 @@ class OrderItemsPage extends HookConsumerWidget {
                             },
                             title: AppLocales.add.tr(),
                           ),
+
+                          AppPrimaryButton(
+                            theme: theme,
+                            onPressed: () async {
+                                  OrderController orderController = OrderController(
+                                    model: state,
+                                    place: place,
+                                    employee: ref.watch(currentEmployeeProvider),
+                                  );
+
+                                  await orderController.closeOrder(
+                                    context,
+                                    ref,
+                                    note: noteController.text.trim(),
+                                    customer: customerNotifier.value,
+                                    scheduledDate: scheduledTime.value,
+                                  );
+
+                                  noteController.clear();
+                                  customerNotifier.value = null;
+                            },
+                            textColor: theme.mainColor,
+                            border: Border.all(color: theme.mainColor),
+                            color: theme.white,
+                            title: AppLocales.close.tr(),
+                            // icon: Icons.close,
+                          ),
                           // ConfirmCancelButton(
                           //   onlyConfirm: true,
                           //   cancelColor: theme.scaffoldBgColor,

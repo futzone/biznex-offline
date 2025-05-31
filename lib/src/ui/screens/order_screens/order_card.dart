@@ -10,15 +10,16 @@ import '../../../core/model/order_models/order_model.dart';
 class OrderCard extends StatelessWidget {
   final Order order;
   final AppColors theme;
+  final Color? color;
 
-  const OrderCard({super.key, required this.order, required this.theme});
+  const OrderCard({super.key, this.color, required this.order, required this.theme});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: color ?? Colors.white,
       ),
       padding: Dis.all(context.s(16)),
       child: Column(

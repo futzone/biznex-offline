@@ -5,6 +5,7 @@ import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
+import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/menu_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
@@ -13,6 +14,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../../../biznex.dart';
 import '../../../core/model/order_models/order_model.dart';
+import '../../widgets/dialogs/app_custom_dialog.dart';
+import '../../widgets/helpers/app_back_button.dart';
+import 'employee_orders_page.dart';
 
 class TableChooseScreen extends HookConsumerWidget {
   const TableChooseScreen({super.key});
@@ -118,13 +122,23 @@ class TableChooseScreen extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        AppBackButton(
+                          onPressed: () => AppRouter.open(context, OnboardPage()),
+                        ),
+                        0.w,
                         SvgPicture.asset(
                           'assets/images/Vector.svg',
                           height: 36,
                         ),
                         Spacer(),
                         WebButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDesktopModal(
+                              context: context,
+                              body: EmployeeOrdersPage(),
+                              width: MediaQuery.of(context).size.width * 0.8,
+                            );
+                          },
                           builder: (focused) {
                             return Container(
                               height: 48,
@@ -134,7 +148,7 @@ class TableChooseScreen extends HookConsumerWidget {
                                 borderRadius: BorderRadius.circular(24),
                                 border: Border.all(color: theme.secondaryTextColor),
                               ),
-                              child: Icon(Iconsax.notification_copy),
+                              child: Icon(Ionicons.list_outline),
                             );
                           },
                         ),

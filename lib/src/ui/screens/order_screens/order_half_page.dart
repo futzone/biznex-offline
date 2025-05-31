@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/category_model/category_model.dart';
@@ -7,7 +9,9 @@ import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../widgets/custom/app_toast.dart';
 import '../products_screens/product_card.dart';
 
@@ -22,6 +26,11 @@ class OrderHalfPage extends ConsumerStatefulWidget {
 
 class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
   Category? _selectedCategory;
+  final controller = ScrollController();
+  bool pinned = false;
+  final _searchController = TextEditingController();
+  bool _searchExpand = false;
+
   final TextEditingController _textEditingController = TextEditingController();
   List<Product> _searchResultList = [];
 
@@ -42,6 +51,11 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
 
   List<Product> buildFilterResult() {
     final providerListener = ref.watch(productsProvider).value ?? [];
+    if (_searchController.text.trim().isNotEmpty) {
+      final query = _searchController.text.trim();
+      return [...providerListener.where((el) => el.name.toLowerCase().contains(query.toLowerCase()))];
+    }
+
     if (_selectedCategory == null) return providerListener;
     return providerListener.where((e) {
       return e.category?.id == _selectedCategory?.id;
@@ -49,22 +63,32 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
   }
 
   void _onSearchQuery(String char) {
-    final providerValue = ref.watch(productsProvider).value ?? [];
-    if (_selectedCategory != null) {
-      _searchResultList = providerValue.where((element) {
-        return ((element.name.toLowerCase().contains(char.toLowerCase())) ||
-                (element.size != null && element.size!.toLowerCase().contains(char.toLowerCase()))) &&
-            element.category?.id == _selectedCategory?.id;
-      }).toList();
-      setState(() {});
-      return;
-    }
-
-    _searchResultList = providerValue.where((element) {
-      return (element.name.toLowerCase().contains(char.toLowerCase())) ||
-          (element.size != null && element.size!.toLowerCase().contains(char.toLowerCase()));
-    }).toList();
+    // final providerValue = ref.watch(productsProvider).value ?? [];
+    // if (_selectedCategory != null) {
+    //   _searchResultList = providerValue.where((element) {
+    //     return ((element.name.toLowerCase().contains(char.toLowerCase())) ||
+    //             (element.size != null && element.size!.toLowerCase().contains(char.toLowerCase()))) &&
+    //         element.category?.id == _selectedCategory?.id;
+    //   }).toList();
+    //   setState(() {});
+    //   return;
+    // }
+    //
+    // _searchResultList = providerValue.where((element) {
+    //   return (element.name.toLowerCase().contains(char.toLowerCase())) ||
+    //       (element.size != null && element.size!.toLowerCase().contains(char.toLowerCase()));
+    // }).toList();
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.addListener(() {
+      pinned = controller.offset > 100;
+      setState(() {});
+    });
   }
 
   @override
@@ -87,7 +111,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SingleChildScrollView(
-                padding: Dis.only(lr: context.w(32), top: context.h(24)),
+                padding: Dis.only(left: context.w(24), top: context.h(24)),
                 scrollDirection: Axis.horizontal,
                 child: state.whenProviderData(
                   provider: categoryProvider,
@@ -98,6 +122,65 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       spacing: 16,
                       children: [
+                        WebButton(
+                          onPressed: () {
+                            _searchExpand = !_searchExpand;
+                            setState(() {});
+                          },
+                          builder: (focused) => Container(
+                            padding: Dis.all(context.s(12)),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: focused
+                                  ? Border.all(color: theme.mainColor)
+                                  : Border.all(
+                                      color: Colors.white,
+                                    ),
+                            ),
+                            child: _searchExpand
+                                ? Container(
+                                    height: context.s(48),
+                                    width: context.s(320),
+                                    child: Row(
+                                      spacing: 16,
+                                      children: [
+                                        Expanded(
+                                          child: AppTextField(
+                                            prefixIcon: Icon(Iconsax.search_normal_copy),
+                                            onChanged: _onSearchQuery,
+                                            autofocus: true,
+                                            radius: 8,
+                                            title: AppLocales.searchBarHint.tr(),
+                                            controller: _searchController,
+                                            theme: theme,
+                                          ),
+                                        ),
+                                        Container(
+                                          height: context.s(48),
+                                          width: context.s(48),
+                                          padding: Dis.all(context.s(8)),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(4),
+                                            color: theme.scaffoldBgColor,
+                                          ),
+                                          child: Center(child: Icon(Ionicons.close_outline)),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Container(
+                                    height: context.s(48),
+                                    width: context.s(48),
+                                    padding: Dis.all(context.s(8)),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: theme.scaffoldBgColor,
+                                    ),
+                                    child: Center(child: Icon(Iconsax.search_normal_copy)),
+                                  ),
+                          ),
+                        ),
                         for (final category in categories)
                           WebButton(
                             onPressed: () {
@@ -185,7 +268,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                 ),
               ),
               Padding(
-                padding: context.w(32).lr,
+                padding: Dis.only(left: context.w(24)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -206,39 +289,47 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                 ),
               ),
               Expanded(
-                child: state.whenProviderData(
-                  provider: productsProvider,
-                  builder: (products) {
-                    if (_searchResultList.isEmpty && _textEditingController.text.isNotEmpty) return AppEmptyWidget();
+                child: Container(
+                  margin: Dis.only(left: context.w(24)),
+                  decoration: BoxDecoration(
+                    border: pinned
+                        ? Border(
+                            top: BorderSide(color: theme.white, width: 2),
+                          )
+                        : null,
+                  ),
+                  child: state.whenProviderData(
+                    provider: productsProvider,
+                    builder: (products) {
+                      if (buildFilterResult().isEmpty && _searchController.text.isNotEmpty) return AppEmptyWidget();
 
-                    products as List<Product>;
+                      products as List<Product>;
 
-                    return GridView.builder(
-                      padding: Dis.only(lr: context.w(32)),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: context.s(16),
-                        crossAxisSpacing: context.s(16),
-                        childAspectRatio: 261 / 321,
-                      ),
-                      itemCount: ((_searchResultList.isNotEmpty && _textEditingController.text.isNotEmpty) || _selectedCategory != null)
-                          ? _searchResultList.length
-                          : products.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final product = buildFilterResult()[index];
-                        return SimpleButton(
-                          onPressed: () {
-                            if (product.amount != -1) {
-                              orderNotifier.addItem(OrderItem(product: product, amount: 1, placeId: widget.place.id), context);
-                            } else {
-                              ShowToast.error(context, AppLocales.productStockError.tr());
-                            }
-                          },
-                          child: ProductCardNew(product: product, colors: theme),
-                        );
-                      },
-                    );
-                  },
+                      return GridView.builder(
+                        controller: controller,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: context.s(16),
+                          crossAxisSpacing: context.s(16),
+                          childAspectRatio: 261 / 321,
+                        ),
+                        itemCount:  buildFilterResult().length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final product = buildFilterResult()[index];
+                          return SimpleButton(
+                            onPressed: () {
+                              if (product.amount != -1) {
+                                orderNotifier.addItem(OrderItem(product: product, amount: 1, placeId: widget.place.id), context);
+                              } else {
+                                ShowToast.error(context, AppLocales.productStockError.tr());
+                              }
+                            },
+                            child: ProductCardNew(product: product, colors: theme),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

@@ -355,6 +355,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                               controller: searchController,
                               theme: theme,
                               suffixIcon: Icon(Iconsax.search_normal_1_copy),
+                              fillColor: Colors.white,
                               onChanged: (char) {
                                 OrderFilterModel filterModel = orderFilter.value;
                                 filterModel.query = char;

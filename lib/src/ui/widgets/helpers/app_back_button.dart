@@ -5,13 +5,21 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../../../biznex.dart';
 
 class AppBackButton extends StatelessWidget {
-  const AppBackButton({super.key});
+  final void Function()? onPressed;
+
+  const AppBackButton({super.key, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     final theme = AppColors(isDark: false);
     return SimpleButton(
-      onPressed: () => AppRouter.close(context),
+      onPressed: () {
+        if (onPressed != null) {
+          onPressed!();
+        } else {
+          AppRouter.close(context);
+        }
+      },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(48),
