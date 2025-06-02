@@ -313,7 +313,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                           crossAxisSpacing: context.s(16),
                           childAspectRatio: 261 / 321,
                         ),
-                        itemCount:  buildFilterResult().length,
+                        itemCount: buildFilterResult().length,
                         itemBuilder: (BuildContext context, int index) {
                           final product = buildFilterResult()[index];
                           return SimpleButton(
@@ -324,7 +324,11 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                 ShowToast.error(context, AppLocales.productStockError.tr());
                               }
                             },
-                            child: ProductCardNew(product: product, colors: theme),
+                            child: ProductCardNew(
+                              product: product,
+                              colors: theme,
+                              onPressed: () {},
+                            ),
                           );
                         },
                       );

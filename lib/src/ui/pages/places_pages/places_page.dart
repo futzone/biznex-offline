@@ -126,13 +126,14 @@ class PlacesPage extends HookConsumerWidget {
                       sliver: SliverToBoxAdapter(
                         child: Center(child: AppEmptyWidget()),
                       ),
-                    ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : categories.length,
-                      (context, index) {
-                        Place category = (filteredCategories.value.isNotEmpty ? filteredCategories.value : categories)[index];
-                        /*  return AppListTile(
+                    )
+                  else
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : categories.length,
+                        (context, index) {
+                          Place category = (filteredCategories.value.isNotEmpty ? filteredCategories.value : categories)[index];
+                          /*  return AppListTile(
                           title: category.name,
                           theme: theme,
                           onEdit: () {
@@ -148,101 +149,101 @@ class PlacesPage extends HookConsumerWidget {
                           },
                         );*/
 
-                        return WebButton(
-                          onPressed: () {
-                            showDesktopModal(context: context, body: PlaceChildrenPage(category));
-                          },
-                          builder: (focused) => Container(
-                            margin: Dis.only(lr: context.w(24), tb: 8),
-                            padding: 12.all,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: focused ? theme.mainColor.withValues(alpha: 0.1) : Colors.white,
-                            ),
-                            child: Row(
-                              spacing: 16,
-                              children: [
-                                Container(
-                                  height: 48,
-                                  width: 48,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: theme.scaffoldBgColor,
-                                  ),
-                                  padding: 8.all,
-                                  child: SvgPicture.asset(
-                                    "assets/icons/dining-table.svg",
-                                    color: theme.secondaryTextColor,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    spacing: 2,
-                                    children: [
-                                      Text(
-                                        category.name,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontFamily: mediumFamily,
-                                        ),
-                                      ),
-                                      Text(
-                                        "${AppLocales.places.tr()}: ${category.children == null ? 0 : category.children?.length}",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: regularFamily,
-                                          color: theme.secondaryTextColor,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                SimpleButton(
-                                  onPressed: () {
-                                    showDesktopModal(context: context, body: AddPlace(editCategory: category));
-                                  },
-                                  child: Container(
-                                    height: 36,
-                                    width: 36,
+                          return WebButton(
+                            onPressed: () {
+                              showDesktopModal(context: context, body: PlaceChildrenPage(category));
+                            },
+                            builder: (focused) => Container(
+                              margin: Dis.only(lr: context.w(24), tb: 8),
+                              padding: 12.all,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: focused ? theme.mainColor.withValues(alpha: 0.1) : Colors.white,
+                              ),
+                              child: Row(
+                                spacing: 16,
+                                children: [
+                                  Container(
+                                    height: 48,
+                                    width: 48,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
                                       color: theme.scaffoldBgColor,
                                     ),
-                                    child: Icon(
-                                      Iconsax.edit_copy,
+                                    padding: 8.all,
+                                    child: SvgPicture.asset(
+                                      "assets/icons/dining-table.svg",
                                       color: theme.secondaryTextColor,
-                                      size: 20,
                                     ),
                                   ),
-                                ),
-                                SimpleButton(
-                                  onPressed: () {
-                                    PlaceController placeController = PlaceController(context: context, state: state);
-                                    placeController.delete(category.id);
-                                  },
-                                  child: Container(
-                                    height: 36,
-                                    width: 36,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: theme.scaffoldBgColor,
-                                    ),
-                                    child: Icon(
-                                      Iconsax.trash_copy,
-                                      color: theme.red,
-                                      size: 20,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      spacing: 2,
+                                      children: [
+                                        Text(
+                                          category.name,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: mediumFamily,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${AppLocales.places.tr()}: ${category.children == null ? 0 : category.children?.length}",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: regularFamily,
+                                            color: theme.secondaryTextColor,
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SimpleButton(
+                                    onPressed: () {
+                                      showDesktopModal(context: context, body: AddPlace(editCategory: category));
+                                    },
+                                    child: Container(
+                                      height: 36,
+                                      width: 36,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: theme.scaffoldBgColor,
+                                      ),
+                                      child: Icon(
+                                        Iconsax.edit_copy,
+                                        color: theme.secondaryTextColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                  SimpleButton(
+                                    onPressed: () {
+                                      PlaceController placeController = PlaceController(context: context, state: state);
+                                      placeController.delete(category.id);
+                                    },
+                                    child: Container(
+                                      height: 36,
+                                      width: 36,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: theme.scaffoldBgColor,
+                                      ),
+                                      child: Icon(
+                                        Iconsax.trash_copy,
+                                        color: theme.red,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
                 ],
               ),
             );

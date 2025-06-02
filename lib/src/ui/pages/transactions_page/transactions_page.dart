@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/transaction_controller.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
@@ -20,6 +22,59 @@ class TransactionsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final providerListener = ref.watch(transactionProvider).value ?? [];
+    final searchController = useTextEditingController();
+    final searchResultList = useState(<Transaction>[]);
+    final selectedDate = useState<DateTime?>(null);
+
+    List<Transaction> buildList() {
+      if (selectedDate.value != null) {
+        return searchResultList.value;
+      }
+
+      if (searchController.text.trim().isNotEmpty) {
+        return searchResultList.value;
+      }
+
+      return providerListener;
+    }
+
+    void onSearchChanged(dynamic query) {
+      if (query is DateTime) {
+        log('date filter working');
+        searchResultList.value = [
+          ...providerListener.where((element) {
+            final date = DateTime.parse(element.createdDate);
+            return query.day == date.day && query.month == date.month && query.year == date.year;
+          }),
+        ];
+
+        log(searchResultList.value.length.toString());
+
+        return;
+      }
+
+      selectedDate.value = null;
+
+      if (query.trim().isEmpty) {
+        searchResultList.value.clear();
+        return;
+      }
+
+      searchResultList.value = [
+        ...providerListener.where((element) {
+          final dayQuery = DateFormat('yyyy, d-MMMM, HH:mm', context.locale.languageCode).format(DateTime.parse(element.createdDate)).toLowerCase();
+          final payQuery = element.paymentType.tr().toLowerCase();
+          final elementQuery = (element.employee?.fullname.toLowerCase()) ?? '';
+
+          return (element.note.toLowerCase().contains(query.toLowerCase()) ||
+              dayQuery.contains(query.toLowerCase()) ||
+              payQuery.contains(query.toLowerCase()) ||
+              elementQuery.contains(query.toLowerCase()));
+        })
+      ];
+    }
+
     return AppStateWrapper(builder: (theme, state) {
       return Scaffold(
         floatingActionButton: WebButton(
@@ -72,9 +127,10 @@ class TransactionsPage extends HookConsumerWidget {
                       width: context.w(400),
                       child: AppTextField(
                         title: AppLocales.search.tr(),
-                        controller: TextEditingController(),
+                        controller: searchController,
                         theme: theme,
                         fillColor: Colors.white,
+                        onChanged: onSearchChanged,
                         // useBorder: false,
                       ),
                     ),
@@ -87,30 +143,52 @@ class TransactionsPage extends HookConsumerWidget {
                         color: Colors.black,
                       ),
                     ),
-                    Container(
-                      padding: Dis.only(lr: 16),
-                      height: 52,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            AppLocales.all.tr(),
-                            style: TextStyle(
-                              color: theme.secondaryTextColor,
-                            ),
-                          ),
-                          16.w,
-                          Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            size: 16,
-                            color: theme.secondaryTextColor,
-                          )
-                        ],
+                    SimpleButton(
+                      onPressed: () {
+                        showDatePicker(
+                          context: context,
+                          firstDate: DateTime(2025),
+                          lastDate: DateTime.now(),
+                        ).then((date) {
+                          selectedDate.value = date;
+                          if (date == null) return;
+                          onSearchChanged(date);
+                        });
+                      },
+                      child: Container(
+                        padding: Dis.only(lr: 16),
+                        height: 52,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (selectedDate.value == null)
+                              Text(
+                                AppLocales.all.tr(),
+                                style: TextStyle(
+                                  color: theme.secondaryTextColor,
+                                ),
+                              ),
+                            if (selectedDate.value == null) 16.w,
+                            if (selectedDate.value == null)
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                size: 16,
+                                color: theme.secondaryTextColor,
+                              ),
+                            if (selectedDate.value != null)
+                              Text(
+                                DateFormat('yyyy, d-MMMM', context.locale.languageCode).format(selectedDate.value!).toLowerCase(),
+                                style: TextStyle(
+                                  color: theme.secondaryTextColor,
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -147,11 +225,19 @@ class TransactionsPage extends HookConsumerWidget {
                   );
                 }
 
+                final list = buildList();
+
+                if (list.isEmpty) {
+                  return SliverToBoxAdapter(
+                    child: Padding(padding: Dis.all(100), child: AppEmptyWidget()),
+                  );
+                }
+
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    childCount: transactions.length,
+                    childCount: list.length,
                     (context, index) {
-                      final item = transactions[index];
+                      final item = list[index];
                       return Container(
                         margin: Dis.only(lr: context.s(24)),
                         padding: Dis.only(lr: context.w(20), tb: context.h(20)),
@@ -165,7 +251,9 @@ class TransactionsPage extends HookConsumerWidget {
                               flex: 3,
                               child: Center(
                                 child: Text(
-                                  DateFormat('yyyy, d-MMMM, HH:mm').format(DateTime.parse(item.createdDate)).toLowerCase(),
+                                  DateFormat('yyyy, d-MMMM, HH:mm', context.locale.languageCode)
+                                      .format(DateTime.parse(item.createdDate))
+                                      .toLowerCase(),
                                   style: TextStyle(
                                     fontFamily: mediumFamily,
                                     fontSize: context.s(16),

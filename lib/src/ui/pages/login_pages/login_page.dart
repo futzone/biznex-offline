@@ -52,10 +52,16 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
         final app = model..pincode = enteredPin;
         await AppStateDatabase().updateApp(app);
         model.ref!.invalidate(appStateProvider);
+        ref.read(currentEmployeeProvider.notifier).update((e) {
+          return Employee(fullname: 'Admin', roleId: '-1', roleName: 'admin');
+        });
         return AppRouter.open(context, MainPage());
       }
 
       if (widget.fromAdmin && model.pincode == enteredPin) {
+        ref.read(currentEmployeeProvider.notifier).update((e) {
+          return Employee(fullname: 'Admin', roleId: '-1', roleName: 'admin');
+        });
         return AppRouter.open(context, MainPage());
       }
 
@@ -83,8 +89,10 @@ class _LoginPageState extends ConsumerState<LoginPageHarom> {
         return AppRouter.close(context);
       }
 
-
-      if(employee.roleName.toLowerCase() == 'admin' && pincode == enteredPin) {
+      if (employee.roleName.toLowerCase() == 'admin' && pincode == enteredPin) {
+        ref.read(currentEmployeeProvider.notifier).update((e) {
+          return Employee(fullname: 'Admin', roleId: '-1', roleName: 'admin');
+        });
         return AppRouter.open(context, MainPage());
       }
 

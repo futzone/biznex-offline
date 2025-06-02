@@ -7,6 +7,7 @@ import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/providers/category_provider.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:biznex/src/ui/pages/product_pages/add_product_page.dart';
+import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,6 +52,16 @@ class ProductsPage extends HookConsumerWidget {
     }
 
     List<Product> buildFilterResult() {
+      if (searchController.text.trim().isNotEmpty && selectedCategory.value.isEmpty) {
+        return searchResultList.value;
+      }
+
+      if (searchController.text.trim().isNotEmpty && selectedCategory.value.isNotEmpty) {
+        return searchResultList.value.where((e) {
+          return e.category?.id == selectedCategory.value;
+        }).toList();
+      }
+
       if (selectedCategory.value.isEmpty) return providerListener;
       return providerListener.where((e) {
         return e.category?.id == selectedCategory.value;
@@ -352,6 +363,11 @@ class ProductsPage extends HookConsumerWidget {
                 );
               },
             ),
+            if (buildFilterResult().isEmpty)
+              SliverPadding(
+                padding: Dis.all(100),
+                sliver: SliverToBoxAdapter(child: AppEmptyWidget()),
+              ),
             SliverPadding(
               padding: Dis.only(lr: context.w(24), tb: context.h(24)),
               sliver: SliverGrid(
@@ -365,7 +381,15 @@ class ProductsPage extends HookConsumerWidget {
                   childCount: buildFilterResult().length,
                   (context, index) {
                     final product = buildFilterResult()[index];
-                    return ProductCardNew(product: product, colors: theme);
+                    return ProductCardNew(
+                      product: product,
+                      colors: theme,
+                      onPressed: () {
+                        currentProduct.value = product;
+                        Future.delayed(Duration(milliseconds: 100));
+                        isUpdateProduct.value = true;
+                      },
+                    );
                   },
                 ),
               ),

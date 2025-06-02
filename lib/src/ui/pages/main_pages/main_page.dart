@@ -1,9 +1,7 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/ui/pages/category_pages/category_page.dart';
-import 'package:biznex/src/ui/pages/main_pages/overview_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/order_set_page.dart';
 import 'package:biznex/src/ui/pages/places_pages/places_page.dart';
-import 'package:biznex/src/ui/pages/product_pages/product_params_page.dart';
 import 'package:biznex/src/ui/pages/transactions_page/transactions_page.dart';
 import 'package:biznex/src/ui/screens/custom_scaffold/app_sidebar.dart';
 import 'package:biznex/src/ui/screens/order_screens/orders_page.dart';
@@ -12,7 +10,6 @@ import '../../screens/product_info_screen/product_measure_reponsive.dart';
 import '../../screens/settings_screen/settings_page_screen.dart';
 import '../employee_pages/employee_page.dart';
 import '../monitoring_pages/monitoring_page.dart';
-import '../product_pages/product_information_page.dart';
 import '../product_pages/products_page.dart';
 
 class MainPage extends HookConsumerWidget {

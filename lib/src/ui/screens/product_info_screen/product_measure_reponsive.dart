@@ -120,24 +120,25 @@ class ProductMeasureReponsive extends HookConsumerWidget {
                       sliver: SliverToBoxAdapter(
                         child: Center(child: AppEmptyWidget()),
                       ),
-                    ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : measures.length,
-                      (context, index) {
-                        ProductMeasure category = (filteredCategories.value.isNotEmpty ? filteredCategories.value : measures)[index];
+                    )
+                  else
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: filteredCategories.value.isNotEmpty ? filteredCategories.value.length : measures.length,
+                        (context, index) {
+                          ProductMeasure category = (filteredCategories.value.isNotEmpty ? filteredCategories.value : measures)[index];
 
-                        return Container(
-                          margin: Dis.only(lr: context.w(24), tb: 8),
-                          padding: 12.all,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white,
-                          ),
-                          child: Row(
-                            spacing: 16,
-                            children: [
-                              Container(
+                          return Container(
+                            margin: Dis.only(lr: context.w(24), tb: 8),
+                            padding: 12.all,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              spacing: 16,
+                              children: [
+                                Container(
                                   height: 48,
                                   width: 48,
                                   decoration: BoxDecoration(
@@ -145,64 +146,68 @@ class ProductMeasureReponsive extends HookConsumerWidget {
                                     color: theme.scaffoldBgColor,
                                   ),
                                   padding: 8.all,
-                                  child: Icon(Iconsax.reserve_copy)),
-                              Expanded(
-                                child: Text(
-                                  category.name,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: mediumFamily,
-                                  ),
+                                  child: Icon(Iconsax.reserve_copy),
                                 ),
-                              ),
-                              SimpleButton(
-                                onPressed: () {
-                                  showDesktopModal(
-                                    context: context,
-                                    body: AddProductMeasure(
-                                      productMeasure: measures[index],
+                                Expanded(
+                                  child: Text(
+                                    category.name,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: mediumFamily,
                                     ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 36,
-                                  width: 36,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: theme.scaffoldBgColor,
-                                  ),
-                                  child: Icon(
-                                    Iconsax.edit_copy,
-                                    color: theme.secondaryTextColor,
-                                    size: 20,
                                   ),
                                 ),
-                              ),
-                              SimpleButton(
-                                onPressed: () {
-                                  ProductMeasureController mc = ProductMeasureController(context: context, state: state);
-                                  mc.delete(measures[index].id);
-                                },
-                                child: Container(
-                                  height: 36,
-                                  width: 36,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: theme.scaffoldBgColor,
-                                  ),
-                                  child: Icon(
-                                    Iconsax.trash_copy,
-                                    color: theme.red,
-                                    size: 20,
+                                SimpleButton(
+                                  onPressed: () {
+                                    showDesktopModal(
+                                      context: context,
+                                      body: AddProductMeasure(
+                                        productMeasure: measures[index],
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 36,
+                                    width: 36,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: theme.scaffoldBgColor,
+                                    ),
+                                    child: Icon(
+                                      Iconsax.edit_copy,
+                                      color: theme.secondaryTextColor,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                                SimpleButton(
+                                  onPressed: () {
+                                    ProductMeasureController mc = ProductMeasureController(
+                                      context: context,
+                                      state: state,
+                                    );
+                                    mc.delete(measures[index].id);
+                                  },
+                                  child: Container(
+                                    height: 36,
+                                    width: 36,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: theme.scaffoldBgColor,
+                                    ),
+                                    child: Icon(
+                                      Iconsax.trash_copy,
+                                      color: theme.red,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
                 ],
               ),
             );
