@@ -32,7 +32,11 @@ class PrinterMultipleServices {
       log(params.toString());
       if (params == null) continue;
 
-      _printCheck(item, order, params['url'], params['name']);
+      try {
+        _printCheck(item, order, params['url'], params['name']);
+      } catch (e) {
+        ///
+      }
     }
   }
 

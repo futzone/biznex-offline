@@ -360,14 +360,14 @@ class OrderItemCardNew extends HookConsumerWidget {
                         filled: true,
                         fillColor: Colors.grey.shade100,
                         isDense: true,
-                        hintText: "Umumiy narx",
+                        hintText: "Miqdor",
                         contentPadding: Dis.only(tb: 8, lr: 12),
                         suffixIcon: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'UZS',
+                              product.measure ?? '',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: regularFamily,

@@ -13,6 +13,6 @@ class Role {
 
   static List<String> permissionList = [
     "ofitsant",
-    "admin",
+    // "admin",
   ];
 }

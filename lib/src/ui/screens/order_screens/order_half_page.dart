@@ -324,10 +324,12 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                 ShowToast.error(context, AppLocales.productStockError.tr());
                               }
                             },
-                            child: ProductCardNew(
-                              product: product,
-                              colors: theme,
-                              onPressed: () {},
+                            child: IgnorePointer(
+                              child: ProductCardNew(
+                                product: product,
+                                colors: theme,
+                                onPressed: () {},
+                              ),
                             ),
                           );
                         },

@@ -18,6 +18,7 @@ import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -317,40 +318,71 @@ class _AddProductPageState extends State<AddProductPage> {
             24.h,
             AppText.$18Bold(AppLocales.productImageLabel.tr()),
             8.h,
-            Container(
-              width: double.infinity,
-              padding: Dis.all(24),
-              decoration: BoxDecoration(
-                border: DashedBorder.fromBorderSide(
-                  dashLength: 8,
-                  side: BorderSide(color: theme.secondaryTextColor, width: 1),
-                ),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(14),
-                ),
-                color: theme.scaffoldBgColor,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset('assets/icons/frame.svg'),
-                  Text(
-                    AppLocales.uploadImage.tr(),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: mediumFamily,
-                    ),
+            SimpleButton(
+              onPressed: () {
+                FilePicker.platform.pickFiles().then((file) {
+                  if (file != null && file.files.firstOrNull?.path != null) {
+                    _imagesList.add(file.files.first.path!);
+                    setState(() {});
+                  }
+                });
+              },
+              child: Container(
+                height: 200,
+                width: _imagesList.isNotEmpty ? 200 : double.infinity,
+                padding: !_imagesList.isNotEmpty ? Dis.all(24) : null,
+                decoration: BoxDecoration(
+                  border: DashedBorder.fromBorderSide(
+                    dashLength: 8,
+                    side: BorderSide(color: theme.secondaryTextColor, width: 1),
                   ),
-                  Text(
-                    AppLocales.supportedImageFormats.tr(),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: regularFamily,
-                      color: theme.secondaryTextColor,
-                    ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(14),
                   ),
-                ],
+                  color: theme.scaffoldBgColor,
+                  image: _imagesList.isNotEmpty
+                      ? DecorationImage(
+                          image: FileImage(File(_imagesList.first)),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: _imagesList.isEmpty
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset('assets/icons/frame.svg'),
+                          Text(
+                            AppLocales.uploadImage.tr(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: mediumFamily,
+                            ),
+                          ),
+                          Text(
+                            AppLocales.supportedImageFormats.tr(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: regularFamily,
+                              color: theme.secondaryTextColor,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: () {
+                            _imagesList.clear();
+                            setState(() {});
+                          },
+                          icon: Icon(
+                            Ionicons.close_circle_outline,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
               ),
             ),
             24.h,
@@ -370,7 +402,7 @@ class _AddProductPageState extends State<AddProductPage> {
               children: [
                 AppPrimaryButton(
                   theme: theme,
-                  onPressed:_onConfirmPressed,
+                  onPressed: _onConfirmPressed,
                   title: AppLocales.add.tr(),
                   padding: Dis.only(lr: 60, tb: 16),
                 ),

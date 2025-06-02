@@ -33,6 +33,17 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
     final orderFilter = useState(OrderFilterModel());
     final placeFather = useState<Place?>(null);
     final searchController = useTextEditingController();
+
+    final controller = useScrollController();
+    final pinned = useState(false);
+
+    useEffect(() {
+      controller.addListener(() {
+        pinned.value = controller.offset > 40;
+      });
+      return () {};
+    });
+
     return AppStateWrapper(builder: (theme, state) {
       return Scaffold(
         floatingActionButton: WebButton(
@@ -69,7 +80,6 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                   padding: Dis.only(lr: context.w(24), top: context.h(24)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: context.h(16),
                     children: [
                       Container(
                         padding: Dis.only(tb: context.h(4), lr: context.w(4)),
@@ -336,6 +346,7 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                           ],
                         ),
                       ),
+                      16.h,
                       Row(
                         children: [
                           Expanded(
@@ -367,10 +378,23 @@ class _OrdersPageState extends ConsumerState<OrdersPage> {
                           )
                         ],
                       ),
+                      16.h,
+                      if (pinned.value)
+                        Container(
+                          height: 8,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                          color: theme.secondaryTextColor.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                          ),
+                        ),
+
                       Expanded(
                         child: orders.isEmpty
                             ? AppEmptyWidget()
                             : GridView.builder(
+                          padding: 120.bottom,
+                                controller: controller,
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   crossAxisSpacing: context.w(16),

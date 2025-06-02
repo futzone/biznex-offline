@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
@@ -8,6 +9,7 @@ import 'package:biznex/src/ui/pages/login_pages/login_page.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../screens/onboarding_screens/onboard_card.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -30,50 +32,85 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
               data: (employees) {
                 if (employees.isEmpty) return LoginPageHarom(model: state, theme: theme, fromAdmin: true);
                 return Scaffold(
-                  appBar: AppBar(
-                    title: Text("Biznex", style: TextStyle(fontSize: 28, fontFamily: boldFamily)),
-                    actions: [
-                      IconButton(
-                        onPressed: () async {
-                          final status = await windowManager.isFullScreen();
-                          await windowManager.setFullScreen(!status);
-                        },
-                        icon: Icon(Icons.fullscreen, size: 32),
+                  body: Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/0307ca967f3a160c45813e6188ae5bf31a7a7ecf.png'),
+                        filterQuality: FilterQuality.low,
+                        fit: BoxFit.cover,
                       ),
-                      8.w,
-                    ],
-                  ),
-                  body: GridView.builder(
-                    padding: 16.all,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 2.4,
                     ),
-                    itemCount: employees.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return OnboardCard(
-                          theme: theme,
-                          roleName: "Admin",
-                          fullname: "Admin",
-                          onPressed: () {
-                            AppRouter.go(context, LoginPageHarom(model: state, theme: theme, fromAdmin: true));
-                          },
-                        );
-                      }
-                      final employee = employees[index - 1];
-                      return OnboardCard(
-                        theme: theme,
-                        roleName: employee.roleName,
-                        fullname: employee.fullname,
-                        onPressed: () {
-                          ref.read(currentEmployeeProvider.notifier).update((state) => employee);
-                          AppRouter.go(context, LoginPageHarom(model: state, theme: theme));
-                        },
-                      );
-                    },
+                    child: Container(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 56,
+                                sigmaY: 56,
+                              ),
+                              child: Container(
+                                padding: Dis.only(lr: 24, tb: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SvgPicture.asset("assets/images/Vector.svg"),
+                                    IconButton(
+                                      onPressed: () async {
+                                        final status = await windowManager.isFullScreen();
+                                        await windowManager.setFullScreen(!status);
+                                      },
+                                      icon: Icon(
+                                        Icons.fullscreen,
+                                        size: 32,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GridView.builder(
+                              padding: 16.all,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 2.4,
+                              ),
+                              itemCount: employees.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index == 0) {
+                                  return OnboardCard(
+                                    theme: theme,
+                                    roleName: "Admin",
+                                    fullname: "Admin",
+                                    onPressed: () {
+                                      AppRouter.go(context, LoginPageHarom(model: state, theme: theme, fromAdmin: true));
+                                    },
+                                  );
+                                }
+                                final employee = employees[index - 1];
+                                return OnboardCard(
+                                  theme: theme,
+                                  roleName: employee.roleName,
+                                  fullname: employee.fullname,
+                                  onPressed: () {
+                                    ref.read(currentEmployeeProvider.notifier).update((state) => employee);
+                                    AppRouter.go(context, LoginPageHarom(model: state, theme: theme));
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
