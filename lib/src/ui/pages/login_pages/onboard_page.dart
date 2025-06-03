@@ -81,7 +81,7 @@ class _OnboardPageState extends ConsumerState<OnboardPage> {
                                 crossAxisCount: 4,
                                 mainAxisSpacing: 16,
                                 crossAxisSpacing: 16,
-                                childAspectRatio: 2.4,
+                                childAspectRatio: 2.0,
                               ),
                               itemCount: employees.length + 1,
                               itemBuilder: (context, index) {

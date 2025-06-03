@@ -482,5 +482,10 @@
   "languageChangedToUzbek": "Til o‘zbek tiliga o‘zgartirildi",
   "enterOrderId": "Buyurtma raqamini kiriting",
   "about": "Batafsil",
-  "done": "Bajarildi"
+  "done": "Bajarildi",
+  "supportedImageFormats": "Qo'llab-quvvatlanadigan rasm formatlari: png, jpg",
+  "ta": "ta",
+  "freeTables": "Bo'sh o'rinlar",
+  "bronTables": "Band qilingan o'rinlar",
+  "bandTables": "Band qilingan o'rinlar"
 }

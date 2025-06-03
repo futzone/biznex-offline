@@ -384,5 +384,10 @@
   "languageChangedToUzbek": "Language changed to Uzbek",
   "enterOrderId": "Enter the order ID",
   "about": "About",
-  "done": "Done"
+  "done": "Done",
+  "supportedImageFormats": "Supported image formats: png, jpg",
+  "ta": "piece",
+  "freeTables": "Free tables",
+  "bronTables": "Reserved tables",
+  "bandTables": "Reserved tables"
 }

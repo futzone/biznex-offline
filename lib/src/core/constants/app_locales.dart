@@ -486,7 +486,6 @@ abstract class AppLocales {
   static var done = "done";
   static var supportedImageFormats = "supportedImageFormats";
   static var ta = 'ta';
-
   static String freeTables = "freeTables";
   static String bronTables = "bronTables";
   static String bandTables = "bandTables";

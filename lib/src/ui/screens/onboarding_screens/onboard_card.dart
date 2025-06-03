@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -35,7 +36,7 @@ class OnboardCard extends StatelessWidget {
                 ),
               ),
               // duration: theme.animationDuration,
-              padding: 16.all,
+              padding: 12.all,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -43,8 +44,8 @@ class OnboardCard extends StatelessWidget {
                 children: [
                   Container(
                     padding: 10.all,
-                    height: 44,
-                    width: 44,
+                    height: context.s(44),
+                    width: context.s(44),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.44),
                       borderRadius: BorderRadius.circular(12),
@@ -60,38 +61,40 @@ class OnboardCard extends StatelessWidget {
                     fullname,
                     style: TextStyle(
                       fontFamily: mediumFamily,
-                      fontSize: 20,
+                      fontSize: context.s(20),
                       color: Colors.white,
                     ),
                   ),
-                  Spacer(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 16,
-                    children: [
-                      Text(
-                        roleName,
-                        style: TextStyle(
-                          fontFamily: mediumFamily,
-                          fontSize: 16,
-                          color: Colors.white,
+
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      spacing: context.w(16),
+                      children: [
+                        Text(
+                          roleName,
+                          style: TextStyle(
+                            fontFamily: mediumFamily,
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      Text(
-                        AppLocales.login.tr(),
-                        style: TextStyle(
-                          fontFamily: mediumFamily,
-                          fontSize: 16,
+                        Spacer(),
+                        Text(
+                          AppLocales.login.tr(),
+                          style: TextStyle(
+                            fontFamily: mediumFamily,
+                            fontSize: 16,
+                            color: theme.mainColor,
+                          ),
+                        ),
+                        Icon(
+                          Iconsax.arrow_right_1_copy,
                           color: theme.mainColor,
-                        ),
-                      ),
-                      Icon(
-                        Iconsax.arrow_right_1_copy,
-                        color: theme.mainColor,
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

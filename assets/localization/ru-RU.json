@@ -478,5 +478,10 @@
   "languageChangedToUzbek": "Язык изменён на узбекский",
   "enterOrderId": "Введите номер заказа",
   "about": "Подробнее",
-  "done": "Выполнено"
+  "done": "Выполнено",
+  "supportedImageFormats": "Поддерживаемые форматы изображений: png, jpg",
+  "ta": "шт",
+  "freeTables": "Бесплатные столы",
+  "bronTables": "Зарезервированные столы",
+  "bandTables": "Зарезервированные столы"
 }
