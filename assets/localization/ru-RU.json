@@ -445,7 +445,7 @@
   "addTransactionLabel": "Добавить транзакцию",
   "opened": "Открыто",
   "other": "Другое",
-  "click": "Клик",
+  "click": "Click",
   "payme": "Payme",
   "productColorLabel": "Цвет продукта",
   "ofitsant": "Официант",
@@ -483,5 +483,7 @@
   "ta": "шт",
   "freeTables": "Бесплатные столы",
   "bronTables": "Зарезервированные столы",
-  "bandTables": "Зарезервированные столы"
+  "bandTables": "Зарезервированные столы",
+  "percentIsNullLabel": "Беспроцентная услуга",
+  "byOrder": "По заказу"
 }

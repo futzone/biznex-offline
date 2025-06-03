@@ -16,6 +16,7 @@ import '../../../providers/employee_provider.dart';
 import '../../../providers/orders_provider.dart';
 import '../../screens/order_screens/order_half_page.dart';
 import '../../screens/order_screens/order_items_page.dart';
+import '../../screens/settings_screen/employee_settings_screen.dart';
 
 class MenuPage extends HookConsumerWidget {
   final Place place;
@@ -69,7 +70,9 @@ class MenuPage extends HookConsumerWidget {
                     },
                   ),
                   WebButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showDesktopModal(context: context, body: EmployeeSettingsScreen());
+                    },
                     builder: (focused) {
                       return Container(
                         height: 48,

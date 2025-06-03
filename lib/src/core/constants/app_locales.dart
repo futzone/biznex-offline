@@ -489,4 +489,6 @@ abstract class AppLocales {
   static String freeTables = "freeTables";
   static String bronTables = "bronTables";
   static String bandTables = "bandTables";
+  static var percentIsNullLabel = "percentIsNullLabel";
+  static var byOrder = "byOrder";
 }

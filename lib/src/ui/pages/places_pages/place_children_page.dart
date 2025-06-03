@@ -54,7 +54,7 @@ class PlaceChildrenPage extends ConsumerWidget {
                       final category = place.children![index];
                       return WebButton(
                         onPressed: () {
-                          showDesktopModal(context: context, body: PlaceChildrenPage(category));
+                          // showDesktopModal(context: context, body: PlaceChildrenPage(category));
                         },
                         builder: (focused) => Container(
                           margin: Dis.only(tb: 8),

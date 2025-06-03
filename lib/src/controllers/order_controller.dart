@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:biznex/src/controllers/transaction_controller.dart';
+import 'package:biznex/src/core/model/transaction_model/transaction_model.dart';
 import 'package:biznex/src/providers/products_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +40,6 @@ import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 //   }
 // }
 
-
 class OrderController {
   final Employee employee;
   final Place place;
@@ -53,13 +54,13 @@ class OrderController {
   final OrderDatabase _database = OrderDatabase();
 
   Future<void> openOrder(
-      BuildContext context,
-      WidgetRef ref,
-      List<OrderItem> products, {
-        String? note,
-        Customer? customer,
-        DateTime? scheduledDate,
-      }) async {
+    BuildContext context,
+    WidgetRef ref,
+    List<OrderItem> products, {
+    String? note,
+    Customer? customer,
+    DateTime? scheduledDate,
+  }) async {
     if (!context.mounted) return;
     showAppLoadingDialog(context);
 
@@ -93,14 +94,14 @@ class OrderController {
   }
 
   Future<void> addItems(
-      BuildContext context,
-      WidgetRef ref,
-      List<OrderItem> newItemsList,
-      Order oldOrderState, {
-        String? note,
-        Customer? customer,
-        DateTime? scheduledDate,
-      }) async {
+    BuildContext context,
+    WidgetRef ref,
+    List<OrderItem> newItemsList,
+    Order oldOrderState, {
+    String? note,
+    Customer? customer,
+    DateTime? scheduledDate,
+  }) async {
     if (!context.mounted) return;
     showAppLoadingDialog(context);
 
@@ -146,12 +147,13 @@ class OrderController {
   }
 
   Future<void> closeOrder(
-      BuildContext context,
-      WidgetRef ref, {
-        String? note,
-        Customer? customer,
-        DateTime? scheduledDate,
-      }) async {
+    BuildContext context,
+    WidgetRef ref, {
+    String? note,
+    Customer? customer,
+    DateTime? scheduledDate,
+    String? paymentType,
+  }) async {
     if (!context.mounted) return;
     showAppLoadingDialog(context);
 
@@ -192,10 +194,7 @@ class OrderController {
     if (note != null) finalOrder = finalOrder.copyWith(note: note);
     if (scheduledDate != null) finalOrder = finalOrder.copyWith(scheduledDate: scheduledDate.toIso8601String());
 
-    finalOrder = finalOrder.copyWith(
-        status: Order.completed,
-        updatedDate: DateTime.now().toIso8601String()
-    );
+    finalOrder = finalOrder.copyWith(status: Order.completed, updatedDate: DateTime.now().toIso8601String());
 
     await _database.saveOrder(finalOrder);
     await _onUpdateAmounts(finalOrder, ref);
@@ -209,6 +208,16 @@ class OrderController {
     ref.invalidate(employeeOrdersProvider);
     final notifier = ref.read(orderSetProvider.notifier);
     notifier.clearPlaceItems(place.id);
+
+    TransactionController transactionController = TransactionController(context: context, state: model);
+    Transaction transaction = Transaction(
+      value: finalOrder.price,
+      order: finalOrder,
+      employee: finalOrder.employee,
+      paymentType: paymentType ?? Transaction.cash,
+      note: AppLocales.byOrder.tr(),
+    );
+    transactionController.create(transaction);
 
     ShowToast.success(context, AppLocales.orderClosedSuccessfully.tr());
 
@@ -232,12 +241,8 @@ class OrderController {
 
   List<OrderItem> _onGetChanges(List<OrderItem> newItemsList, Order oldOrderState) {
     final List<OrderItem> changes = [];
-    final Map<String, OrderItem> oldItemsMap = {
-      for (var item in oldOrderState.products) item.product.id: item
-    };
-    final Map<String, OrderItem> newItemsMap = {
-      for (var item in newItemsList) item.product.id: item
-    };
+    final Map<String, OrderItem> oldItemsMap = {for (var item in oldOrderState.products) item.product.id: item};
+    final Map<String, OrderItem> newItemsMap = {for (var item in newItemsList) item.product.id: item};
 
     // Check for added or modified items
     for (final newItem in newItemsList) {

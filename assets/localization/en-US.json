@@ -389,5 +389,7 @@
   "ta": "piece",
   "freeTables": "Free tables",
   "bronTables": "Reserved tables",
-  "bandTables": "Reserved tables"
+  "bandTables": "Reserved tables",
+  "percentIsNullLabel": "Percentage-free service",
+  "byOrder": "By order"
 }

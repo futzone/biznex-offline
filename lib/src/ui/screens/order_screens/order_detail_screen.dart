@@ -210,6 +210,31 @@ class OrderDetail extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
+                  AppLocales.place.tr(),
+                  style: TextStyle(
+                    fontSize: context.s(18),
+                    fontFamily: mediumFamily,
+                    color: theme.secondaryTextColor,
+                  ),
+                ),
+                Text(
+                  order.place.name + ((order.place.father?.name == null || order.place.father!.name.isEmpty) ? '' : ', ${order.place.father!.name}'),
+                  style: TextStyle(
+                    fontSize: context.s(16),
+                    fontFamily: mediumFamily,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            0.h,
+            Container(height: 1, color: Colors.grey.shade200, width: double.infinity),
+            0.h,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
                   AppLocales.total.tr(),
                   style: TextStyle(
                     fontSize: context.s(18),
@@ -229,41 +254,42 @@ class OrderDetail extends StatelessWidget {
                 ),
               ],
             ),
-            state.whenProviderData(
-              provider: orderPercentProvider,
-              builder: (percents) {
-                percents as List<Percent>;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    for (final item in percents)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            item.name,
-                            style: TextStyle(
-                              fontSize: context.s(16),
-                              fontFamily: mediumFamily,
-                              color: theme.secondaryTextColor,
+            if (!order.place.percentNull)
+              state.whenProviderData(
+                provider: orderPercentProvider,
+                builder: (percents) {
+                  percents as List<Percent>;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      for (final item in percents)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              item.name,
+                              style: TextStyle(
+                                fontSize: context.s(16),
+                                fontFamily: mediumFamily,
+                                color: theme.secondaryTextColor,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "${item.percent.toStringAsFixed(2)} %",
-                            style: TextStyle(
-                              fontSize: context.s(16),
-                              fontFamily: mediumFamily,
-                              color: Colors.black,
+                            Text(
+                              "${item.percent.toStringAsFixed(2)} %",
+                              style: TextStyle(
+                                fontSize: context.s(16),
+                                fontFamily: mediumFamily,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                  ],
-                );
-              },
-            ),
+                          ],
+                        ),
+                    ],
+                  );
+                },
+              ),
             Container(height: 1, color: Colors.grey.shade200, width: double.infinity),
             0.h,
             Row(

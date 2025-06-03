@@ -20,6 +20,7 @@ class AddPlace extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final nameController = useTextEditingController(text: editCategory?.name);
+    final percentNull = useState(editCategory?.percentNull ?? false);
     return AppStateWrapper(
       builder: (theme, state) {
         return SingleChildScrollView(
@@ -34,6 +35,12 @@ class AddPlace extends HookWidget {
                 theme: theme,
               ),
               24.h,
+              SwitchListTile(
+                title: AppText.$18Bold(AppLocales.percentIsNullLabel.tr(), padding: 8.bottom),
+                value: percentNull.value,
+                onChanged: (v) => percentNull.value = v,
+              ),
+              24.h,
               ConfirmCancelButton(
                 cancelColor: Colors.white,
                 onConfirm: () async {
@@ -41,19 +48,24 @@ class AddPlace extends HookWidget {
                   if (addSubcategoryTo != null) {
                     Place place = addSubcategoryTo!;
                     place.children ??= [];
+                    place.percentNull = percentNull.value;
                     place.children!.add(Place(name: nameController.text.tr(), id: ProductUtils.generateID));
                     await controller.update(place, place.id).then((_) => AppRouter.close(context));
                     return;
                   }
 
                   if (editCategory == null) {
-                    Place category = Place(name: nameController.text);
+                    Place category = Place(
+                      name: nameController.text,
+                      percentNull: percentNull.value,
+                    );
                     controller.create(category);
                     return;
                   }
 
                   Place category = editCategory!;
                   category.name = nameController.text;
+                  category.percentNull = percentNull.value;
                   controller.update(category, category.id);
                 },
               ),

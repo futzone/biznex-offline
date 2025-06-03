@@ -9,11 +9,7 @@ import 'package:biznex/src/core/model/place_models/place_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/screens/order_screens/order_item_card.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
-import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
-import '../settings_screen/order_settings_screen.dart';
-import 'order_details_screen.dart';
-import 'order_param_buttons.dart';
 
 class OrderItemsPage extends HookConsumerWidget {
   final Place place;
@@ -36,6 +32,8 @@ class OrderItemsPage extends HookConsumerWidget {
     final noteController = useTextEditingController(text: order?.note);
     final customerNotifier = useState<Customer?>(order?.customer);
     final scheduledTime = useState<DateTime?>(null);
+    final useCheck = useState(true);
+    final paymentType = useState(AppLocales.useCash);
 
     final placeOrderItems = useMemoized(
       () => orderItems.where((e) => e.placeId == place.id).toList(),
@@ -126,8 +124,73 @@ class OrderItemsPage extends HookConsumerWidget {
                             topRight: Radius.circular(24),
                           )),
                       child: Column(
-                        spacing: 24,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        spacing: 8,
                         children: [
+                          SwitchListTile(
+                            contentPadding: Dis.only(),
+                            value: useCheck.value,
+                            onChanged: (v) => useCheck.value,
+                            title: Text(
+                              "${AppLocales.printing.tr()}:",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: mediumFamily,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 1,
+                            margin: 8.tb,
+                            color: theme.accentColor,
+                          ),
+                          Text(
+                            "${AppLocales.paymentType.tr()}:",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: mediumFamily,
+                            ),
+                          ),
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.start,
+                            runAlignment: WrapAlignment.start,
+                            spacing: 16,
+                            runSpacing: 16,
+                            children: [
+                              ...[
+                                AppLocales.useCash,
+                                AppLocales.useDebt,
+                                AppLocales.useCard,
+                                AppLocales.payme,
+                                AppLocales.click,
+                              ].map((type) {
+                                return ChoiceChip(
+                                  backgroundColor: theme.scaffoldBgColor,
+                                  selectedColor: theme.mainColor,
+                                  padding: Dis.only(),
+                                  checkmarkColor: paymentType.value == type ? Colors.white : Colors.black,
+                                  label: Text(
+                                    type.tr(),
+                                    style: TextStyle(
+                                      color: paymentType.value == type ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                  selected: paymentType.value == type,
+                                  onSelected: (_) {
+                                    paymentType.value = type;
+                                  },
+                                );
+                              }),
+                            ],
+                          ),
+
+                          Container(
+                            height: 1,
+                            margin: 16.tb,
+                            color: theme.accentColor,
+                          ),
+
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,6 +211,7 @@ class OrderItemsPage extends HookConsumerWidget {
                               ),
                             ],
                           ),
+                          8.h,
                           AppPrimaryButton(
                             theme: theme,
                             onPressed: () async {
@@ -186,26 +250,27 @@ class OrderItemsPage extends HookConsumerWidget {
                             },
                             title: AppLocales.add.tr(),
                           ),
-
+                          8.h,
                           AppPrimaryButton(
                             theme: theme,
                             onPressed: () async {
-                                  OrderController orderController = OrderController(
-                                    model: state,
-                                    place: place,
-                                    employee: ref.watch(currentEmployeeProvider),
-                                  );
+                              OrderController orderController = OrderController(
+                                model: state,
+                                place: place,
+                                employee: ref.watch(currentEmployeeProvider),
+                              );
 
-                                  await orderController.closeOrder(
-                                    context,
-                                    ref,
-                                    note: noteController.text.trim(),
-                                    customer: customerNotifier.value,
-                                    scheduledDate: scheduledTime.value,
-                                  );
+                              await orderController.closeOrder(
+                                context,
+                                ref,
+                                note: noteController.text.trim(),
+                                customer: customerNotifier.value,
+                                scheduledDate: scheduledTime.value,
+                                paymentType: paymentType.value,
+                              );
 
-                                  noteController.clear();
-                                  customerNotifier.value = null;
+                              noteController.clear();
+                              customerNotifier.value = null;
                             },
                             textColor: theme.mainColor,
                             border: Border.all(color: theme.mainColor),

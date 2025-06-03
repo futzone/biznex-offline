@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_string.dart';
@@ -7,6 +9,7 @@ import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/menu_page.dart';
+import 'package:biznex/src/ui/screens/settings_screen/employee_settings_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -44,8 +47,8 @@ class TableChooseScreen extends HookConsumerWidget {
   }
 
   Widget _buildTable({required AppColors theme, required String name, required String status, required BuildContext context}) {
-    final cColor = status == 'free' ? theme.mainColor.withValues(alpha: 0.36) : theme.accentColor.withValues(alpha: 0.36);
-    final textColor = status == 'free' ? theme.mainColor : theme.secondaryTextColor;
+    final cColor = status == 'free' ? theme.mainColor.withValues(alpha: 0.8) : theme.secondaryTextColor;
+    final textColor = status == 'free' ? theme.mainColor : theme.textColor;
 
     return Column(
       spacing: 12,
@@ -101,6 +104,7 @@ class TableChooseScreen extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final employee = ref.watch(currentEmployeeProvider);
     final selectedPlace = useState<Place?>(null);
+    final fatherPlace = useState<Place?>(null);
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
@@ -153,7 +157,9 @@ class TableChooseScreen extends HookConsumerWidget {
                           },
                         ),
                         WebButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDesktopModal(context: context, body: EmployeeSettingsScreen());
+                          },
                           builder: (focused) {
                             return Container(
                               height: 48,
@@ -370,16 +376,23 @@ class TableChooseScreen extends HookConsumerWidget {
                             onPressed: () {
                               selectedPlace.value = place;
                               if (place == null) {
-                                AppRouter.go(context, MenuPage(place: places[index]));
+                                Place kPlace = places[index];
+                                kPlace.father = fatherPlace.value;
+                                AppRouter.go(context, MenuPage(place: kPlace, fatherPlace: fatherPlace.value));
                                 return;
                               }
 
                               if (place.children == null || place.children!.isEmpty) {
+                                Place kPlace = place;
+                                kPlace.father = fatherPlace.value;
                                 AppRouter.go(
                                   context,
-                                  MenuPage(place: place, fatherPlace: selectedPlace.value?.id == place.id ? null : selectedPlace.value),
+                                  MenuPage(place: kPlace, fatherPlace: fatherPlace.value),
                                 );
+                                return;
                               }
+
+                              fatherPlace.value = place;
                             },
                             child: state.whenProviderData(
                               provider: ordersProvider(place?.id ?? ''),

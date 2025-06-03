@@ -449,7 +449,7 @@
   "addTransactionLabel": "Tranzaksiya qo‘shish",
   "opened": "Ochilgan",
   "other": "Boshqa",
-  "click": "Bosish",
+  "click": "Click",
   "payme": "Payme",
   "productColorLabel": "Mahsulot rangi",
   "ofitsant": "Ofitsiant",
@@ -487,5 +487,7 @@
   "ta": "ta",
   "freeTables": "Bo'sh o'rinlar",
   "bronTables": "Band qilingan o'rinlar",
-  "bandTables": "Band qilingan o'rinlar"
+  "bandTables": "Band qilingan o'rinlar",
+  "percentIsNullLabel": "Foizsiz xizmat ko'rsatish",
+  "byOrder": "Buyurtmadan"
 }
