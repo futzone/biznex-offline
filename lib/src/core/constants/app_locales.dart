@@ -491,4 +491,5 @@ abstract class AppLocales {
   static String bandTables = "bandTables";
   static var percentIsNullLabel = "percentIsNullLabel";
   static var byOrder = "byOrder";
+  static var otherEmployeeOrder = "otherEmployeeOrder";
 }

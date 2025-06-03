@@ -489,5 +489,6 @@
   "bronTables": "Band qilingan o'rinlar",
   "bandTables": "Band qilingan o'rinlar",
   "percentIsNullLabel": "Foizsiz xizmat ko'rsatish",
-  "byOrder": "Buyurtmadan"
+  "byOrder": "Buyurtmadan",
+  "otherEmployeeOrder": "Bu yerda boshqa xodimning buyurtmasi bor!"
 }

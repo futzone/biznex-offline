@@ -40,12 +40,21 @@ class MenuPage extends HookConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   AppBackButton(
-                    onPressed: ()=>AppRouter.open(context, TableChooseScreen()),
+                    onPressed: () => AppRouter.open(context, TableChooseScreen()),
                   ),
                   0.w,
                   SvgPicture.asset(
                     'assets/images/Vector.svg',
                     height: 36,
+                  ),
+                  Spacer(),
+                  Text(
+                    place.name + ((place.father?.name == null || place.father!.name.isEmpty) ? '' : ', ${place.father!.name}'),
+                    style: TextStyle(
+                      fontSize: context.s(20),
+                      fontFamily: boldFamily,
+                      color: Colors.black,
+                    ),
                   ),
                   Spacer(),
                   WebButton(

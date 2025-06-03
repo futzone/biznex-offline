@@ -134,10 +134,10 @@ class EmployeeOrdersPage extends HookConsumerWidget {
                             mainAxisSpacing: context.h(16),
                             childAspectRatio: 353 / 363,
                           ),
-                          itemCount: orders.length,
+                          itemCount: dateFilter.value == null ? orders.length : filterResult.value.length,
                           itemBuilder: (context, index) {
                             return OrderCard(
-                              order: orders[index],
+                              order: (dateFilter.value == null ? orders : filterResult.value)[index],
                               theme: theme,
                               color: theme.scaffoldBgColor,
                             );

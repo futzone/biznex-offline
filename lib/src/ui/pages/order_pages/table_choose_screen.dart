@@ -13,6 +13,7 @@ import 'package:biznex/src/ui/screens/settings_screen/employee_settings_screen.d
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../../../biznex.dart';
@@ -271,6 +272,7 @@ class TableChooseScreen extends HookConsumerWidget {
                             CustomPopupMenu(
                               theme: theme,
                               children: [
+                                CustomPopupItem(title: AppLocales.all.tr(), onPressed: () => selectedPlace.value = null, icon: Icons.list),
                                 for (final item in places)
                                   CustomPopupItem(title: item.name, onPressed: () => selectedPlace.value = item, icon: Icons.present_to_all),
                               ],
@@ -372,40 +374,46 @@ class TableChooseScreen extends HookConsumerWidget {
                                   ? null
                                   : selectedPlace.value?.children![index];
 
-                          return SimpleButton(
-                            onPressed: () {
-                              selectedPlace.value = place;
-                              if (place == null) {
-                                Place kPlace = places[index];
-                                kPlace.father = fatherPlace.value;
-                                AppRouter.go(context, MenuPage(place: kPlace, fatherPlace: fatherPlace.value));
-                                return;
-                              }
+                          return state.whenProviderData(
+                            provider: ordersProvider(place?.id ?? ''),
+                            builder: (order) {
+                              order as Order?;
+                              return SimpleButton(
+                                onPressed: () {
+                                  if (order != null && order.employee.id != employee.id && employee.roleName.toLowerCase() != 'admin') {
+                                    ShowToast.error(context, AppLocales.otherEmployeeOrder.tr());
+                                    return;
+                                  }
+                                  selectedPlace.value = place;
 
-                              if (place.children == null || place.children!.isEmpty) {
-                                Place kPlace = place;
-                                kPlace.father = fatherPlace.value;
-                                AppRouter.go(
-                                  context,
-                                  MenuPage(place: kPlace, fatherPlace: fatherPlace.value),
-                                );
-                                return;
-                              }
+                                  if (place == null) {
+                                    Place kPlace = places[index];
+                                    kPlace.father = fatherPlace.value;
+                                    AppRouter.go(context, MenuPage(place: kPlace, fatherPlace: fatherPlace.value));
+                                    return;
+                                  }
 
-                              fatherPlace.value = place;
-                            },
-                            child: state.whenProviderData(
-                              provider: ordersProvider(place?.id ?? ''),
-                              builder: (order) {
-                                order as Order?;
-                                return _buildTable(
+                                  if (place.children == null || place.children!.isEmpty) {
+                                    Place kPlace = place;
+                                    kPlace.father = fatherPlace.value;
+
+                                    AppRouter.go(
+                                      context,
+                                      MenuPage(place: kPlace, fatherPlace: fatherPlace.value),
+                                    );
+                                    return;
+                                  }
+
+                                  fatherPlace.value = place;
+                                },
+                                child: _buildTable(
                                   context: context,
                                   theme: theme,
                                   name: place?.name ?? '',
                                   status: order == null ? 'free' : 'bron',
-                                );
-                              },
-                            ),
+                                ),
+                              );
+                            },
                           );
                         },
                       ),

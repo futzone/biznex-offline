@@ -153,6 +153,7 @@ class OrderController {
     Customer? customer,
     DateTime? scheduledDate,
     String? paymentType,
+    bool useCheck = true,
   }) async {
     if (!context.mounted) return;
     showAppLoadingDialog(context);
@@ -220,6 +221,8 @@ class OrderController {
     transactionController.create(transaction);
 
     ShowToast.success(context, AppLocales.orderClosedSuccessfully.tr());
+
+    if (!useCheck) return;
 
     PrinterServices printerServices = PrinterServices(order: finalOrder, model: model);
     printerServices.printOrderCheck();

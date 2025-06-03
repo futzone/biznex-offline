@@ -131,7 +131,7 @@ class OrderItemsPage extends HookConsumerWidget {
                           SwitchListTile(
                             contentPadding: Dis.only(),
                             value: useCheck.value,
-                            onChanged: (v) => useCheck.value,
+                            onChanged: (v) => useCheck.value = v,
                             title: Text(
                               "${AppLocales.printing.tr()}:",
                               style: TextStyle(
@@ -267,6 +267,7 @@ class OrderItemsPage extends HookConsumerWidget {
                                 customer: customerNotifier.value,
                                 scheduledDate: scheduledTime.value,
                                 paymentType: paymentType.value,
+                                useCheck: useCheck.value,
                               );
 
                               noteController.clear();

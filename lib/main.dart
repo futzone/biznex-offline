@@ -91,7 +91,7 @@ void main() async {
     center: true,
     backgroundColor: Colors.transparent,
     titleBarStyle: TitleBarStyle.normal,
-    fullScreen: true,
+    // fullScreen: true,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     // await windowManager.setAsFrameless();

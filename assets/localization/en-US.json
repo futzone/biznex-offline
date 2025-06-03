@@ -391,5 +391,6 @@
   "bronTables": "Reserved tables",
   "bandTables": "Reserved tables",
   "percentIsNullLabel": "Percentage-free service",
-  "byOrder": "By order"
+  "byOrder": "By order",
+  "otherEmployeeOrder": "There is another employee's order here!"
 }
