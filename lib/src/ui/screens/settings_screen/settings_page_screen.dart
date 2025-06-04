@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:biznex/src/controllers/orcer_percent_controller.dart';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/model/order_models/percent_model.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
+import 'package:biznex/src/providers/price_percent_provider.dart';
 import 'package:biznex/src/providers/printer_devices_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_file_image.dart';
+import 'package:biznex/src/ui/widgets/custom/app_list_tile.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
@@ -29,6 +33,8 @@ class SettingsPageScreen extends HookConsumerWidget {
     final printer = useState(Printer(url: appState.token, name: appState.refresh));
     final oldPincodeController = useTextEditingController();
     final newPincodeController = useTextEditingController();
+    final percentController = useTextEditingController();
+    final percentNameController = useTextEditingController();
 
     return AppStateWrapper(
       builder: (theme, state) {
@@ -383,11 +389,227 @@ class SettingsPageScreen extends HookConsumerWidget {
                     ],
                   ),
                 ),
+                24.h,
+                state.whenProviderData(
+                  provider: orderPercentProvider,
+                  builder: (percents) {
+                    percents as List<Percent>;
+
+                    return Container(
+                      padding: context.s(20).all,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
+                        color: Colors.white,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        spacing: 24,
+                        children: [
+                          Text(
+                            AppLocales.percentsForOrder.tr(),
+                            style: TextStyle(
+                              fontSize: context.s(24),
+                              fontFamily: mediumFamily,
+                              color: Colors.black,
+                            ),
+                          ),
+                          for (final item in percents)
+                            AppListTile(
+                              title: item.name,
+                              subtitle: "${item.percent.toMeasure} %",
+                              theme: theme,
+                              margin: Dis.only(),
+                              onDelete: () {
+                                OrderPercentController apc = OrderPercentController(context: context, state: state);
+                                apc.delete(item.id);
+                              },
+                              // onEdit: () {
+
+                              // },/
+                            ),
+                          Row(
+                            spacing: 24,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: AppTextField(
+                                  title: AppLocales.enterPercentName.tr(),
+                                  controller: percentNameController,
+                                  theme: theme,
+                                ),
+                              ),
+                              Expanded(
+                                child: AppTextField(
+                                  textInputType: TextInputType.number,
+                                  title: AppLocales.pricePercentHint.tr(),
+                                  controller: percentController,
+                                  theme: theme,
+                                  suffixIcon: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "%",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: theme.secondaryTextColor,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              AppPrimaryButton(
+                                theme: theme,
+                                onPressed: () {
+                                  if (percentNameController.text.trim().isEmpty) {
+                                    ShowToast.error(context, AppLocales.percentNameInputError.tr());
+                                    return;
+                                  }
+
+                                  final percent = double.tryParse(percentController.text.trim());
+                                  if (percent == null || percent == 0.0) {
+                                    ShowToast.error(context, AppLocales.percentInputError.tr());
+                                    return;
+                                  }
+
+                                  OrderPercentController opc = OrderPercentController(context: context, state: state);
+                                  Percent percentModel = Percent(name: percentNameController.text.trim(), percent: percent);
+                                  opc.create(percentModel).then((_) {
+                                    percentNameController.clear();
+                                    percentController.clear();
+                                  });
+                                },
+                                icon: Ionicons.add,
+                                padding: Dis.only(lr: 12, tb: 12),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                24.h,
+                AppLanguageBar(),
+                24.h,
               ],
             ),
           ),
         );
       },
     );
+  }
+}
+
+class AppLanguageBar extends StatefulWidget {
+  const AppLanguageBar({super.key});
+
+  @override
+  State<AppLanguageBar> createState() => _AppLanguageBarState();
+}
+
+class _AppLanguageBarState extends State<AppLanguageBar> {
+  @override
+  Widget build(BuildContext context) {
+    return AppStateWrapper(builder: (theme, state) {
+      return Container(
+        padding: context.s(20).all,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+          color: Colors.white,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          spacing: 24,
+          children: [
+            Text(
+              AppLocales.changeLanguage.tr(),
+              style: TextStyle(
+                fontSize: context.s(24),
+                fontFamily: mediumFamily,
+                color: Colors.black,
+              ),
+            ),
+            Row(
+              spacing: 24,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: SimpleButton(
+                    onPressed: () {
+                      context.setLocale(Locale('uz', 'UZ')).then((_) {
+                        setState(() {});
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: theme.scaffoldBgColor,
+                      ),
+                      padding: Dis.only(lr: 12, tb: 12),
+                      child: Row(
+                        spacing: 12,
+                        children: [
+                          Icon(
+                            context.locale.languageCode == 'uz' ? Icons.check_circle_outline : Icons.circle_outlined,
+                            color: theme.mainColor,
+                          ),
+                          Text(
+                            "O'zbekcha",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: mediumFamily,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: SimpleButton(
+                    onPressed: () {
+                      context.setLocale(Locale('ru', 'RU')).then((_) {
+                        setState(() {});
+                      });
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: theme.scaffoldBgColor,
+                      ),
+                      padding: Dis.only(lr: 12, tb: 12),
+                      child: Row(
+                        spacing: 12,
+                        children: [
+                          Icon(
+                            context.locale.languageCode == 'ru' ? Icons.check_circle_outline : Icons.circle_outlined,
+                            color: theme.mainColor,
+                          ),
+                          Text(
+                            "Русский",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: mediumFamily,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

@@ -1,6 +1,8 @@
+import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/theme.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_simple_button.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../widgets/helpers/app_custom_padding.dart';
 
 class AppListTile extends StatelessWidget {
@@ -43,11 +45,11 @@ class AppListTile extends StatelessWidget {
       onPressed: onPressed,
       child: Container(
         height: height,
-        padding: Dis.only(left: 8, right: 12, tb: 8),
+        padding: Dis.only(left: 12, right: 12, tb: 12),
         margin: margin ?? Dis.only(tb: 8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          color: theme.accentColor,
+          borderRadius: BorderRadius.circular(12),
+          color: theme.scaffoldBgColor,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -69,6 +71,7 @@ class AppListTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(title, style: TextStyle(color: theme.textColor, fontSize: 15)),
+                  if (subtitle != null) 8.h,
                   if (subtitle != null)
                     Text(
                       subtitle!,
@@ -88,7 +91,14 @@ class AppListTile extends StatelessWidget {
               Center(
                 child: SimpleButton(
                   onPressed: onDelete,
-                  child: Icon(Icons.delete_outline, color: theme.textColor, size: 20),
+                  child: Container(
+                    padding: 8.all,
+                    decoration: BoxDecoration(
+                      color: theme.red.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(Iconsax.trash_copy, color: theme.red, size: 20),
+                  ),
                 ),
               ),
             if (onEdit != null) const SizedBox(width: 16),
@@ -96,7 +106,14 @@ class AppListTile extends StatelessWidget {
               Center(
                 child: SimpleButton(
                   onPressed: onEdit,
-                  child: Icon(Icons.edit, color: theme.textColor, size: 20),
+                  child: Container(
+                    padding: 8.all,
+                    decoration: BoxDecoration(
+                      color: theme.secondaryTextColor.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(Icons.edit, color: theme.textColor, size: 20),
+                  ),
                 ),
               ),
             if (trailingIcon != null) const SizedBox(width: 16),

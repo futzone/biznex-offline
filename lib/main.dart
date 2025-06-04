@@ -13,7 +13,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as path;
 
 bool debugMode = true;
-const appVersion = 'v1.0.2';
+const appVersion = '1.1.21';
 
 void main() async {
   // runZonedGuarded(() async {
