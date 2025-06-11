@@ -1,13 +1,22 @@
+import 'dart:developer';
+
 import 'package:biznex/src/core/database/app_database/app_database.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
- 
+
 class PlaceDatabase extends AppDatabase {
   final String boxName = 'places';
 
   @override
-  Future delete({required String key}) async {
+  Future delete({required String key, Place? father}) async {
     final box = await openBox(boxName);
     await box.delete(key);
+
+    if (father != null) {
+      Place kFather = father;
+      kFather.children = [...(father.children ?? []).where((el) => el.id != key)];
+      update(key: kFather.id, data: kFather);
+      log('deleted');
+    }
   }
 
   @override
@@ -31,6 +40,16 @@ class PlaceDatabase extends AppDatabase {
     productInfo.id = generateID;
 
     final box = await openBox(boxName);
+    if (productInfo.father != null) {
+      Place father = productInfo.father!;
+      father.children = [
+        ...father.children ?? [],
+        productInfo,
+      ];
+
+      await update(key: father.id, data: father);
+      return;
+    }
     await box.put(productInfo.id, productInfo.toJson());
   }
 

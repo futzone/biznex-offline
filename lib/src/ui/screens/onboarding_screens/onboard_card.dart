@@ -43,7 +43,7 @@ class OnboardCard extends StatelessWidget {
                 spacing: 16,
                 children: [
                   Container(
-                    padding: 10.all,
+                    // padding: 10.all,
                     height: context.s(44),
                     width: context.s(44),
                     decoration: BoxDecoration(

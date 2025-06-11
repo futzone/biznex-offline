@@ -35,7 +35,9 @@ class PrinterMultipleServices {
       try {
         _printCheck(item, order, params['url'], params['name']);
       } catch (e) {
-        ///
+        for (final item in products) {
+          log("${item.product.name} -> ${item.amount}");
+        }
       }
     }
   }
@@ -59,6 +61,9 @@ class PrinterMultipleServices {
   }
 
   Future<void> _printCheck(List<OrderItem> products, Order order, String url, String name) async {
+    for (final item in products) {
+      log("${item.product.name} -> ${item.amount}");
+    }
     final fontData = await rootBundle.load('assets/fonts/DejaVuSans.ttf');
     final ttf = pw.Font.ttf(fontData);
     final pdfTheme = pw.TextStyle(fontSize: 8, font: ttf);

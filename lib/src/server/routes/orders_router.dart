@@ -223,27 +223,35 @@ class OrdersRouter {
     PrinterMultipleServices printerMultipleServices = PrinterMultipleServices();
     final List<OrderItem> productChanges = _onGetChanges(placeState.products, olState!);
 
-    log('changes: ${productChanges.length}');
+    // log('changes: ${productChanges.length}');
     printerMultipleServices.printForBack(placeState, productChanges);
     return AppResponse(statusCode: 200, message: ResponseMessages.orderUpdated);
   }
 
-  List<OrderItem> _onGetChanges(List<OrderItem> orderItems, Order order) {
+  List<OrderItem> _onGetChanges(List<OrderItem> newItemsList, Order oldOrderState) {
     final List<OrderItem> changes = [];
-    for (final item in orderItems) {
-      final newProduct = order.products.firstWhere((e) {
-        return e.product.id == item.product.id;
-      }, orElse: () => item.copyWith(amount: -1));
 
-      if (newProduct.amount != item.amount && newProduct.amount > 0) {
-        changes.add(newProduct.copyWith(amount: item.amount - newProduct.amount));
-      } else if (newProduct.amount == -1) {
-        changes.add(item);
+    final oldItemsMap = {for (var item in oldOrderState.products) item.product.id: item};
+    final newItemsMap = {for (var item in newItemsList) item.product.id: item};
+
+    for (final newItem in newItemsList) {
+      final oldItem = oldItemsMap[newItem.product.id];
+      if (oldItem == null) {
+        changes.add(newItem.copyWith());
+      } else if (newItem.amount != oldItem.amount) {
+        changes.add(newItem.copyWith(amount: newItem.amount - oldItem.amount));
+      }
+    }
+
+    for (final oldItem in oldOrderState.products) {
+      if (!newItemsMap.containsKey(oldItem.product.id)) {
+        changes.add(oldItem.copyWith(amount: -oldItem.amount));
       }
     }
 
     return changes;
   }
+
 
   static ApiRequest orders() => ApiRequest(
         name: 'Get Orders',

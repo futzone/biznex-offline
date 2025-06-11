@@ -221,7 +221,7 @@ class PlacesPage extends HookConsumerWidget {
                                   SimpleButton(
                                     onPressed: () {
                                       PlaceController placeController = PlaceController(context: context, state: state);
-                                      placeController.delete(category.id);
+                                      placeController.delete(category.id, ref: ref);
                                     },
                                     child: Container(
                                       height: 36,

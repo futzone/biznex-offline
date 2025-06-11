@@ -6,6 +6,8 @@ import 'package:biznex/src/providers/places_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_confirm_dialog.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 
+import '../core/config/router.dart';
+
 class PlaceController extends AppController {
   PlaceController({required super.context, required super.state});
 
@@ -23,23 +25,24 @@ class PlaceController extends AppController {
   }
 
   @override
-  Future<void> delete(key) async {
+  Future<void> delete(key, {Place? father,  ref}) async {
     showConfirmDialog(
       context: context,
       title: AppLocales.deletePlaceQuestionText.tr(),
       onConfirm: () async {
         showAppLoadingDialog(context);
         PlaceDatabase sizeDatabase = PlaceDatabase();
-        await sizeDatabase.delete(key: key).then((_) {
-          state.ref!.invalidate(placesProvider);
+        await sizeDatabase.delete(key: key, father: father).then((_) {
+          ref!.invalidate(placesProvider);
           closeLoading();
+          AppRouter.close(context);
         });
       },
     );
   }
 
   @override
-  Future<void> update(data, key) async {
+  Future<void>  update(data, key) async {
     data as Place;
     if (data.name.isEmpty) return error(AppLocales.placeNameInputError.tr());
     showAppLoadingDialog(context);
