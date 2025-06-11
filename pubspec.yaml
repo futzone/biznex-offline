@@ -76,7 +76,9 @@ dependencies:
   carousel_slider: ^5.0.0
   iconsax_flutter: ^1.0.0
   mobkit_dashed_border: ^0.0.8
-  auto_updater: ^1.0.0
+
+  process_run: ^1.2.4
+  pub_semver: ^2.2.0
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:biznex/src/core/release/auto_update.dart';
 import 'package:biznex/src/providers/license_status_provider.dart';
 import 'package:biznex/src/server/start.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
@@ -13,7 +14,7 @@ import 'package:window_manager/window_manager.dart';
 import 'package:path/path.dart' as path;
 
 bool debugMode = true;
-const appVersion = '1.1.21';
+const appVersion = '1.2.3';
 
 void main() async {
   // runZonedGuarded(() async {
@@ -83,6 +84,7 @@ void main() async {
   // });
 
   WidgetsFlutterBinding.ensureInitialized();
+  await checkAndUpdate();
 
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = WindowOptions(
