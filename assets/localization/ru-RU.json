@@ -486,6 +486,11 @@
   "bandTables": "Зарезервированные столы",
   "percentIsNullLabel": "Беспроцентная услуга",
   "byOrder": "По заказу",
-  "otherEmployeeOrder": "Здесь есть заказ другого сотрудника!"
-
+  "otherEmployeeOrder": "Здесь есть заказ другого сотрудника!",
+  "todayReports": "Сегодняшние отчеты",
+  "dateRange": "Диапазон дат",
+  "profitFromProducts": "Чистая прибыль от продуктов",
+  "profitFromPercents": "Чистая прибыль от процентов (%)",
+  "reportsForDay": "отчеты за дату",
+  "reportsForRange": "отчеты за диапазон"
 }

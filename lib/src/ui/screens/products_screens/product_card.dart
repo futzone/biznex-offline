@@ -178,7 +178,7 @@ class ProductCardNew extends StatelessWidget {
                   child: Text(
                     product.name,
                     style: TextStyle(
-                      fontSize: context.s(16),
+                      fontSize: context.s(20),
                       fontFamily: mediumFamily,
                     ),
                     maxLines: 1,

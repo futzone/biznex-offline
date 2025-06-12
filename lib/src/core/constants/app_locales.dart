@@ -492,4 +492,10 @@ abstract class AppLocales {
   static var percentIsNullLabel = "percentIsNullLabel";
   static var byOrder = "byOrder";
   static var otherEmployeeOrder = "otherEmployeeOrder";
+  static var todayReports = "todayReports";
+  static var dateRange = "dateRange";
+  static var profitFromProducts = "profitFromProducts";
+  static var profitFromPercents = "profitFromPercents";
+  static var reportsForDay = "reportsForDay";
+  static var reportsForRange = "reportsForRange";
 }

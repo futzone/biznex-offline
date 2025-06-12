@@ -392,5 +392,11 @@
   "bandTables": "Reserved tables",
   "percentIsNullLabel": "Percentage-free service",
   "byOrder": "By order",
-  "otherEmployeeOrder": "There is another employee's order here!"
+  "otherEmployeeOrder": "There is another employee's order here!",
+  "todayReports": "Today's reports",
+  "dateRange": "Date range",
+  "profitFromProducts": "Net profit from products",
+  "profitFromPercents": "Net profit from percentages (%)",
+  "reportsForDay": "reports for date",
+  "reportsForRange": "reports for range"
 }

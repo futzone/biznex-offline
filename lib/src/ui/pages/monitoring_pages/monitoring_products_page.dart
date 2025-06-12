@@ -35,11 +35,7 @@ class MonitoringProductsPage extends HookConsumerWidget {
               16.w,
               Text(
                 AppLocales.products.tr(),
-                style: TextStyle(
-                    fontSize: context.s(24),
-                    fontFamily: mediumFamily,
-                    fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: context.s(24), fontFamily: mediumFamily, fontWeight: FontWeight.bold),
               ),
               Spacer(),
               CustomPopupMenu(
@@ -197,43 +193,54 @@ class MonitoringProductsPage extends HookConsumerWidget {
 
                         final double ordersSumm = orders.fold(0.0, (value, element) {
                           if (selectedDate.value != null && filterType.value == 'monthly') {
-                            if (element.employee.id == employeeId && AppDateUtils.isMonthOrder(selectedDate.value!, element.createdDate)) {
-                              return value += element.price;
+                            if (element.products.where((el) => el.product.id == employeeId).isNotEmpty &&
+                                AppDateUtils.isMonthOrder(selectedDate.value!, element.createdDate)) {
+                              final kProduct = (element.products.firstWhere((item) => item.product.id == employeeId));
+                              return value += (kProduct.amount * kProduct.product.price);
                             }
 
                             return value;
                           }
 
                           if (selectedDate.value != null && filterType.value == 'daily') {
-                            if (element.employee.id == employeeId && AppDateUtils.isTodayOrder(selectedDate.value!, element.createdDate)) {
-                              return value += element.price;
+                            if (element.products.where((el) => el.product.id == employeeId).isNotEmpty &&
+                                AppDateUtils.isTodayOrder(selectedDate.value!, element.createdDate)) {
+                              final kProduct = (element.products.firstWhere((item) => item.product.id == employeeId));
+                              return value += (kProduct.amount * kProduct.product.price);
                             }
 
                             return value;
                           }
 
-                          if (element.employee.id == employeeId) return value += element.price;
+                          if (element.products.where((el) => el.product.id == employeeId).isNotEmpty) {
+                            final kProduct = (element.products.firstWhere((item) => item.product.id == employeeId));
+                            return value += (kProduct.amount * kProduct.product.price);
+                          }
                           return value;
                         });
 
-                        final int ordersCount = orders.fold(0, (value, element) {
+                        final double ordersCount = orders.fold(0.0, (value, element) {
                           if (selectedDate.value != null && filterType.value == 'monthly') {
-                            if (element.employee.id == employeeId && AppDateUtils.isMonthOrder(selectedDate.value!, element.createdDate)) {
-                              return value += 1;
+                            if (element.products.where((el) => el.product.id == employeeId).isNotEmpty &&
+                                AppDateUtils.isMonthOrder(selectedDate.value!, element.createdDate)) {
+                              return value += (element.products.firstWhere((item) => item.product.id == employeeId).amount);
                             }
 
                             return value;
                           }
 
                           if (selectedDate.value != null && filterType.value == 'daily') {
-                            if (element.employee.id == employeeId && AppDateUtils.isTodayOrder(selectedDate.value!, element.createdDate)) {
-                              return value += 1;
+                            if (element.products.where((el) => el.product.id == employeeId).isNotEmpty &&
+                                AppDateUtils.isTodayOrder(selectedDate.value!, element.createdDate)) {
+                              return value += (element.products.firstWhere((item) => item.product.id == employeeId).amount);
                             }
 
                             return value;
                           }
 
-                          if (element.employee.id == employeeId) return value += 1;
+                          if (element.products.where((el) => el.product.id == employeeId).isNotEmpty) {
+                            return value += (element.products.firstWhere((item) => item.product.id == employeeId).amount);
+                          }
                           return value;
                         });
 

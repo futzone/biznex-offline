@@ -84,7 +84,6 @@ void main() async {
   // });
 
   WidgetsFlutterBinding.ensureInitialized();
-  await checkAndUpdate();
 
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = WindowOptions(
@@ -109,6 +108,7 @@ void main() async {
   // Hive.initFlutter();
 
   startServer();
+  await checkAndUpdate();
   await EasyLocalization.ensureInitialized();
 
   // ErrorWidget.builder = (FlutterErrorDetails details) {

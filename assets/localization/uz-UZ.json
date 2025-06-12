@@ -490,5 +490,11 @@
   "bandTables": "Band qilingan o'rinlar",
   "percentIsNullLabel": "Foizsiz xizmat ko'rsatish",
   "byOrder": "Buyurtmadan",
-  "otherEmployeeOrder": "Bu yerda boshqa xodimning buyurtmasi bor!"
+  "otherEmployeeOrder": "Bu yerda boshqa xodimning buyurtmasi bor!",
+  "todayReports": "Bugungi hisobotlar",
+  "dateRange": "Sanalar oralig'i",
+  "profitFromProducts": "Mahsulotlardan sof daromad",
+  "profitFromPercents": "Foiz (%)lardan sof daromad",
+  "reportsForDay": "sana uchun hisobotlar",
+  "reportsForRange": " oraliq davr uchun hisobotlar"
 }
