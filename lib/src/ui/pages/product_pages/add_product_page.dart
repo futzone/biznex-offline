@@ -126,6 +126,17 @@ class _AddProductPageState extends State<AddProductPage> {
     }
   }
 
+  void _onDeleteProduct() {
+    if (widget.product == null) return;
+    ProductController productController = ProductController(
+      context: context,
+      state: state,
+      onClose: widget.onBackPressed,
+    );
+    productController.delete(widget.product?.id, c: widget.onBackPressed);
+    // widget.onBackPressed();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -400,6 +411,16 @@ class _AddProductPageState extends State<AddProductPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                if (widget.product != null)
+                  AppPrimaryButton(
+                    theme: theme,
+                    onPressed: _onDeleteProduct,
+                    title: AppLocales.delete.tr(),
+                    padding: Dis.only(lr: 60, tb: 16),
+                    color: Colors.red,
+                    border: Border.all(color: Colors.red),
+                  ),
+                24.w,
                 AppPrimaryButton(
                   theme: theme,
                   onPressed: _onConfirmPressed,

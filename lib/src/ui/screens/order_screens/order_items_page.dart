@@ -129,6 +129,7 @@ class OrderItemsPage extends HookConsumerWidget {
                         spacing: 8,
                         children: [
                           SwitchListTile(
+                            activeColor: theme.mainColor,
                             contentPadding: Dis.only(),
                             value: useCheck.value,
                             onChanged: (v) => useCheck.value = v,

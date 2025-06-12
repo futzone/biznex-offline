@@ -43,7 +43,7 @@ class ProductController extends AppController {
   }
 
   @override
-  Future<void> delete(key) async {
+  Future<void> delete(key, {void Function()? c}) async {
     showConfirmDialog(
       context: context,
       title: AppLocales.deleteProductQuestion.tr(),
@@ -53,6 +53,7 @@ class ProductController extends AppController {
         await sizeDatabase.delete(key: key).then((_) {
           state.ref!.invalidate(productsProvider);
           closeLoading();
+          if (c != null) c();
         });
       },
     );
