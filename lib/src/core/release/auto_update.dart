@@ -43,9 +43,13 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate) async {
 
   if (response.statusCode == 200 || response.statusCode == 201) {
     final data = jsonDecode(response.body);
+    log(data.toString());
     final latest = Version.parse(data['version']);
     final currentVersion = await _getVersion();
     final current = Version.parse(currentVersion);
+
+    log("current: ${current.toString()}");
+    log("latest: ${latest.toString()}");
 
     if (latest > current) {
       appUpdate.value = AppUpdate(
@@ -68,9 +72,9 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate) async {
         haveUpdate: true,
         step: AppUpdate.installingStep,
       );
+      await _updateVersion(data['version']);
       final shell = Shell();
       await shell.run('start "" "$filePath"');
-      await _updateVersion(data['version']);
 
       exit(0);
     } else {
@@ -87,7 +91,8 @@ const _releaseBox = "release_version";
 
 Future<void> _updateVersion(String newVersion) async {
   final box = await Hive.openBox(_releaseBox);
-  box.put(_releaseBox, newVersion);
+  await box.put(_releaseBox, newVersion);
+  log("saved version: $newVersion");
 }
 
 Future<String> _getVersion() async {
