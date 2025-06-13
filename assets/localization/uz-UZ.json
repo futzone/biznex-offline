@@ -496,5 +496,8 @@
   "profitFromProducts": "Mahsulotlardan sof daromad",
   "profitFromPercents": "Foiz (%)lardan sof daromad",
   "reportsForDay": "sana uchun hisobotlar",
-  "reportsForRange": " oraliq davr uchun hisobotlar"
+  "reportsForRange": " oraliq davr uchun hisobotlar",
+  "downloadingUpdates": "Ilovaning yangi versiyasi yuklanmoqda. Iltimos kuting...",
+  "installingNewVersion": "Ilovaning yangi versiyasi o'rnatilmoqda...",
+  "chekingForUpdates": "Yangilanishlar takshirilmoqda..."
 }

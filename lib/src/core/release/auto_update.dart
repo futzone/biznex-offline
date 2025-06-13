@@ -28,13 +28,16 @@ class AppUpdate {
   });
 }
 
-Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate) async {
+Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate, WidgetRef ref) async {
+  if (ref.watch(_checkerProvider)) return;
   if (!(await isConnected())) {
     appUpdate.value = AppUpdate(
       text: AppLocales.chekingForUpdates.tr(),
       haveUpdate: false,
       step: AppUpdate.checkingStep,
     );
+
+    ref.read(_checkerProvider.notifier).state = true;
     return;
   }
 
@@ -72,6 +75,7 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate) async {
         haveUpdate: true,
         step: AppUpdate.installingStep,
       );
+      ref.read(_checkerProvider.notifier).state = true;
       await _updateVersion(data['version']);
       final shell = Shell();
       await shell.run('start "" "$filePath"');
@@ -85,6 +89,7 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate) async {
       );
     }
   }
+  ref.read(_checkerProvider.notifier).state = true;
 }
 
 const _releaseBox = "release_version";
@@ -101,8 +106,6 @@ Future<String> _getVersion() async {
   return version ?? appVersion;
 }
 
-final appVersionProvider = FutureProvider((ref) async => await _getVersion());
-
 Future<bool> isConnected() async {
   try {
     final result = await InternetAddress.lookup('google.com');
@@ -111,3 +114,6 @@ Future<bool> isConnected() async {
     return false;
   }
 }
+
+final appVersionProvider = FutureProvider((ref) async => await _getVersion());
+final _checkerProvider = StateProvider((ref) => false);

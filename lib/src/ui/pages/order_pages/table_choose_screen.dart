@@ -6,6 +6,7 @@ import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/providers/orders_provider.dart';
 import 'package:biznex/src/providers/places_provider.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
+import 'package:biznex/src/ui/pages/main_pages/main_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/menu_page.dart';
 import 'package:biznex/src/ui/screens/settings_screen/employee_settings_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
@@ -126,7 +127,13 @@ class TableChooseScreen extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         AppBackButton(
-                          onPressed: () => AppRouter.open(context, OnboardPage()),
+                          onPressed: () {
+                            if (ref.watch(currentEmployeeProvider).roleName.toLowerCase() == 'admin') {
+                              AppRouter.open(context, MainPage());
+                              return;
+                            }
+                            AppRouter.open(context, OnboardPage());
+                          },
                         ),
                         0.w,
                         SvgPicture.asset(

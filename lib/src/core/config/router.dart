@@ -1,3 +1,4 @@
+import 'package:biznex/biznex.dart';
 import 'package:biznex/src/ui/screens/sleep_screen/activity_wrapper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,11 @@ class AppRouter {
 
   static void open(BuildContext context, Widget page) {
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => ActivityWrapper(child: page)),
+      MaterialPageRoute(
+        builder: (context) => Consumer(
+          builder: (context, ref, child) => ActivityWrapper(ref: ref, child: page),
+        ),
+      ),
       (Route<dynamic> route) => false,
     );
   }

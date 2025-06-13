@@ -492,5 +492,8 @@
   "profitFromProducts": "Чистая прибыль от продуктов",
   "profitFromPercents": "Чистая прибыль от процентов (%)",
   "reportsForDay": "отчеты за дату",
-  "reportsForRange": "отчеты за диапазон"
+  "reportsForRange": "отчеты за диапазон",
+  "downloadingUpdates": "Загрузка новой версии приложения. Пожалуйста, подождите...",
+  "installingNewVersion": "Установка новой версии приложения...",
+  "chekingForUpdates": "Проверка обновлений..."
 }

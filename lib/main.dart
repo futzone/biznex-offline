@@ -156,7 +156,7 @@ class MyApp extends ConsumerWidget {
             title: 'Biznex',
             debugShowCheckedModeBanner: false,
             theme: theme.themeData,
-            home: ActivityWrapper(child: LicenseStatusWrapper()),
+            home: ActivityWrapper(ref: ref, child: LicenseStatusWrapper()),
           ),
         );
       },

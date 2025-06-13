@@ -9,8 +9,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class ActivityWrapper extends StatefulWidget {
   final Widget child;
+  final WidgetRef ref;
 
-  const ActivityWrapper({super.key, required this.child});
+  const ActivityWrapper({super.key, required this.child, required this.ref});
 
   @override
   State<ActivityWrapper> createState() => _ActivityWrapperState();
@@ -81,7 +82,7 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
     _resetInactivityTimer();
   }
 
-  void _autoUpdateCall() async => await checkAndUpdate(updateNotifier);
+  void _autoUpdateCall() async => await checkAndUpdate(updateNotifier, widget.ref);
 
   @override
   void initState() {

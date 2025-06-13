@@ -398,5 +398,8 @@
   "profitFromProducts": "Net profit from products",
   "profitFromPercents": "Net profit from percentages (%)",
   "reportsForDay": "reports for date",
-  "reportsForRange": "reports for range"
+  "reportsForRange": "reports for range",
+  "downloadingUpdates": "Downloading a new version of the application. Please wait...",
+  "installingNewVersion": "Installing a new version of the application...",
+  "chekingForUpdates": "Checking for updates..."
 }
