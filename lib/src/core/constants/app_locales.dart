@@ -498,4 +498,7 @@ abstract class AppLocales {
   static var profitFromPercents = "profitFromPercents";
   static var reportsForDay = "reportsForDay";
   static var reportsForRange = "reportsForRange";
+  static var downloadingUpdates = "downloadingUpdates";
+  static var installingNewVersion = "installingNewVersion";
+  static var chekingForUpdates = "chekingForUpdates";
 }

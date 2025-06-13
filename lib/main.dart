@@ -108,7 +108,6 @@ void main() async {
   // Hive.initFlutter();
 
   startServer();
-  await checkAndUpdate();
   await EasyLocalization.ensureInitialized();
 
   // ErrorWidget.builder = (FlutterErrorDetails details) {

@@ -12,7 +12,32 @@ import '../../../main.dart';
 
 const updateDataUrl = "https://raw.githubusercontent.com/futzone/biznex-offline/refs/heads/main/assets/releases/release.json";
 
-Future<void> checkAndUpdate() async {
+class AppUpdate {
+  String text;
+  String step;
+  bool haveUpdate;
+
+  static const String checkingStep = "checkingStep";
+  static const String updatingStep = "updatingStep";
+  static const String installingStep = "installingStep";
+
+  AppUpdate({
+    required this.text,
+    this.haveUpdate = false,
+    this.step = AppUpdate.checkingStep,
+  });
+}
+
+Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate) async {
+  if (!(await isConnected())) {
+    appUpdate.value = AppUpdate(
+      text: AppLocales.chekingForUpdates.tr(),
+      haveUpdate: false,
+      step: AppUpdate.checkingStep,
+    );
+    return;
+  }
+
   log("checking for updates");
   final response = await http.get(Uri.parse(updateDataUrl));
 
@@ -23,6 +48,11 @@ Future<void> checkAndUpdate() async {
     final current = Version.parse(currentVersion);
 
     if (latest > current) {
+      appUpdate.value = AppUpdate(
+        text: AppLocales.downloadingUpdates.tr(),
+        haveUpdate: true,
+        step: AppUpdate.updatingStep,
+      );
       log("have new updates. downloading...");
       final url = data['url'];
       final tempDir = await getTemporaryDirectory();
@@ -33,10 +63,22 @@ Future<void> checkAndUpdate() async {
       await file.writeAsBytes(updateData.bodyBytes);
 
       log("downloaded. running...");
+      appUpdate.value = AppUpdate(
+        text: AppLocales.installingNewVersion.tr(),
+        haveUpdate: true,
+        step: AppUpdate.installingStep,
+      );
       final shell = Shell();
       await shell.run('start "" "$filePath"');
       await _updateVersion(data['version']);
+
       exit(0);
+    } else {
+      appUpdate.value = AppUpdate(
+        text: AppLocales.downloadingUpdates.tr(),
+        haveUpdate: false,
+        step: AppUpdate.updatingStep,
+      );
     }
   }
 }
@@ -55,3 +97,12 @@ Future<String> _getVersion() async {
 }
 
 final appVersionProvider = FutureProvider((ref) async => await _getVersion());
+
+Future<bool> isConnected() async {
+  try {
+    final result = await InternetAddress.lookup('google.com');
+    return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+  } on SocketException catch (_) {
+    return false;
+  }
+}

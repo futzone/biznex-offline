@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:biznex/biznex.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/release/auto_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart'; // onPointerHover va PointerEnterEvent uchun kerak
 import 'package:flutter/services.dart';
@@ -17,11 +20,12 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
   Timer? _inactivityTimer;
   late final FocusNode _focusNode;
   final Duration _inactivityTimeout = const Duration(seconds: 3000);
+  final ValueNotifier<AppUpdate> updateNotifier = ValueNotifier(AppUpdate(text: AppLocales.chekingForUpdates.tr()));
 
   OverlayEntry? _logoOverlayEntry;
 
   void _resetInactivityTimer() {
-    _hideInactivityOverlay(); // Har qanday holatda overlayni yashirish
+    _hideInactivityOverlay();
 
     if (_inactivityTimer?.isActive ?? false) {
       _inactivityTimer!.cancel();
@@ -44,7 +48,7 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
           onPanDown: (_) => _resetInactivityTimer(),
           onTapDown: (_) => _resetInactivityTimer(),
           child: SvgPicture.asset(
-            'assets/icons/biznex-logo.svg', // Yo'lni tekshiring
+            'assets/icons/biznex-logo.svg',
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             fit: BoxFit.cover,
@@ -53,9 +57,8 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
       ),
     );
 
-    // Context hali ham mavjudligini tekshirish
-    if (mounted && Overlay.of(context) != null) {
-      Overlay.of(context)!.insert(_logoOverlayEntry!);
+    if (mounted) {
+      Overlay.of(context).insert(_logoOverlayEntry!);
     }
   }
 
@@ -64,29 +67,26 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
     _logoOverlayEntry = null;
   }
 
-  // Foydalanuvchining har qanday pointer harakati (touch, sichqoncha siljishi va h.k.)
   void _onUserInteraction(PointerEvent event) {
     _resetInactivityTimer();
   }
 
-  // Klaviatura bosilganda
   void _onKeyEvent(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
       _resetInactivityTimer();
     }
   }
 
-  // Sichqoncha widget hududiga kirganda
   void _onMouseEnter(PointerEnterEvent event) {
-    // Agar logo ko'rsatilayotgan bo'lsa va sichqoncha hududga kirsa,
-    // darhol logoni yashirib, taymerni qayta ishga tushiramiz.
-    // _resetInactivityTimer() funksiyasi o'zi _hideInactivityOverlay() ni chaqiradi.
     _resetInactivityTimer();
   }
+
+  void _autoUpdateCall() async => await checkAndUpdate(updateNotifier);
 
   @override
   void initState() {
     super.initState();
+    _autoUpdateCall();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -104,25 +104,71 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
     super.dispose();
   }
 
+  final theme = AppColors(isDark: false);
+
   @override
   Widget build(BuildContext context) {
-    return RawKeyboardListener(
-      focusNode: _focusNode,
-      onKey: _onKeyEvent,
-      autofocus: true,
-      child: MouseRegion( // Sichqoncha hodisalarini tinglash uchun
-        onEnter: _onMouseEnter, // Sichqoncha kirganda chaqiriladi
-        // onExit: (event) {
-        //   // Agar sichqoncha chiqqanda biror amal bajarish kerak bo'lsa
-        //   // Masalan, agar sichqoncha hududdan chiqsa taymerni darhol ishga tushirish (lekin bu g'alati bo'lishi mumkin)
-        // },
-        child: Listener(
-          onPointerDown: _onUserInteraction,
-          onPointerMove: _onUserInteraction,
-          onPointerHover: _onUserInteraction, // Sichqoncha siljishini ham hisobga oladi
-          child: widget.child,
-        ),
-      ),
+    return ValueListenableBuilder(
+      valueListenable: updateNotifier,
+      builder: (context, AppUpdate value, child) {
+        if (value.haveUpdate) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                spacing: 16,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    value.text.tr(),
+                    style: TextStyle(
+                      fontSize: context.s(40),
+                      fontFamily: boldFamily,
+                    ),
+                  ),
+
+                  if (value.step != AppUpdate.updatingStep)
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: LinearProgressIndicator(
+                        color: theme.mainColor,
+                        backgroundColor: theme.white,
+                        minHeight: 8,
+                      ),
+                    ),
+                  // if(value.step == AppUpdate.updatingStep)
+
+                  if (value.step == AppUpdate.updatingStep)
+                    SizedBox(
+                      width: context.s(100),
+                      height: context.s(100),
+                      child: CircularProgressIndicator(
+                        color: theme.mainColor,
+                        backgroundColor: theme.white,
+                        strokeWidth: 8,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return RawKeyboardListener(
+          focusNode: _focusNode,
+          onKey: _onKeyEvent,
+          autofocus: true,
+          child: MouseRegion(
+            onEnter: _onMouseEnter,
+            child: Listener(
+              onPointerDown: _onUserInteraction,
+              onPointerMove: _onUserInteraction,
+              onPointerHover: _onUserInteraction,
+              child: widget.child,
+            ),
+          ),
+        );
+      },
     );
   }
 }
