@@ -8,12 +8,11 @@ import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/utils/date_utils.dart';
 import 'package:biznex/src/providers/employee_orders_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
+import 'package:biznex/src/providers/price_percent_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
-import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-
 import '../../widgets/helpers/app_back_button.dart';
 
 class MonitoringEmployeesPage extends HookConsumerWidget {
@@ -25,6 +24,9 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDate = useState<DateTime?>(null);
     final filterType = useState<String>('all');
+    final percents = (ref.watch(orderPercentProvider).value ?? []).fold(0.0, (kf, element) {
+      return kf += element.percent;
+    });
 
     return AppStateWrapper(builder: (theme, state) {
       return Column(
@@ -35,11 +37,7 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
               16.w,
               Text(
                 AppLocales.employees.tr(),
-                style: TextStyle(
-                  fontSize: context.s(24),
-                  fontFamily: mediumFamily,
-                  fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: context.s(24), fontFamily: mediumFamily, fontWeight: FontWeight.bold),
               ),
               Spacer(),
               CustomPopupMenu(
@@ -216,6 +214,35 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                           return value;
                         });
 
+                        final double salarySumm = orders.fold(0.0, (value, element) {
+                          if (selectedDate.value != null && filterType.value == 'monthly') {
+                            if (element.employee.id == employeeId && AppDateUtils.isMonthOrder(selectedDate.value!, element.createdDate)) {
+                              final t = element.price * (1 - (100 / (100 + percents)));
+                              if (element.place.percentNull) return value;
+                              return value += t;
+                            }
+
+                            return value;
+                          }
+
+                          if (selectedDate.value != null && filterType.value == 'daily') {
+                            if (element.employee.id == employeeId && AppDateUtils.isTodayOrder(selectedDate.value!, element.createdDate)) {
+                              final t = element.price * (1 - (100 / (100 + percents)));
+                              if (element.place.percentNull) return value;
+                              return value += t;
+                            }
+
+                            return value;
+                          }
+
+                          if (element.employee.id == employeeId) {
+                            final t = element.price * (1 - (100 / (100 + percents)));
+                            if (element.place.percentNull) return value;
+                            return value += t;
+                          }
+                          return value;
+                        });
+
                         final int ordersCount = orders.fold(0, (value, element) {
                           if (selectedDate.value != null && filterType.value == 'monthly') {
                             if (element.employee.id == employeeId && AppDateUtils.isMonthOrder(selectedDate.value!, element.createdDate)) {
@@ -274,6 +301,17 @@ class MonitoringEmployeesPage extends HookConsumerWidget {
                                   children: [
                                     Icon(Iconsax.bag, color: theme.mainColor),
                                     Text("${AppLocales.orders.tr()}: $ordersCount", style: TextStyle(fontSize: 16, fontFamily: boldFamily)),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  spacing: 8,
+                                  children: [
+                                    Icon(Iconsax.percentage_circle, color: theme.mainColor),
+                                    Text(salarySumm.priceUZS, style: TextStyle(fontSize: 16, fontFamily: boldFamily))
                                   ],
                                 ),
                               ),

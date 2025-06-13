@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/theme.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/ui/screens/settings_screen/settings_screen.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_custom_padding.dart';
@@ -22,8 +23,8 @@ class SettingsButtonScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: Dis.all(16),
-      padding: Dis.all(8),
+      margin: Dis.all(context.s(16)),
+      padding: Dis.all(context.s(8)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         // border: Border.all(color: theme.accentColor),
@@ -34,14 +35,18 @@ class SettingsButtonScreen extends StatelessWidget {
           : Row(
               children: [
                 Container(
-                  margin: 12.right,
-                  height: 34,
-                  width: 34,
+                  margin: context.s(12).right,
+                  height: context.s(34),
+                  width: context.s(34),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: theme.accentColor,
                   ),
-                  child: Icon(Icons.person, color: theme.textColor),
+                  child: Icon(
+                    Icons.person,
+                    color: theme.textColor,
+                    size: context.s(24),
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -50,13 +55,17 @@ class SettingsButtonScreen extends StatelessWidget {
                     children: [
                       Text(
                         model.shopName == null || model.shopName!.isEmpty ? 'Biznex' : model.shopName!,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: context.s(14)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         model.currentEmployee?.fullname ?? 'Admin',
-                        style: const TextStyle(color: Colors.white54, fontWeight: FontWeight.w300),
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontWeight: FontWeight.w300,
+                          fontSize: context.s(14),
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

@@ -1,4 +1,5 @@
 import 'package:biznex/src/core/config/theme.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
@@ -70,10 +71,7 @@ class AppTextField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       controller: controller,
-      style: TextStyle(
-        fontWeight: FontWeight.w400,
-        color: theme.textColor,
-      ),
+      style: TextStyle(fontWeight: FontWeight.w400, color: theme.textColor, fontSize: context.s(14)),
       cursorColor: theme.mainColor,
       decoration: InputDecoration(
         // constraints: BoxConstraints(maxWidth: 100),
@@ -104,9 +102,9 @@ class AppTextField extends StatelessWidget {
             color: !useBorder ? Colors.transparent : theme.mainColor,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 12.0,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: context.w(16),
+          vertical: context.h(12),
         ),
         suffixIcon: !onlyRead
             ? suffixIcon
@@ -114,11 +112,12 @@ class AppTextField extends StatelessWidget {
                 ? Icon(
                     Iconsax.arrow_down_1_copy,
                     color: theme.textColor,
+                    size: context.s(24),
                   )
                 : Icon(
                     Icons.done,
                     color: theme.mainColor,
-                    size: 20,
+                    size: context.s(20),
                   ),
         suffix: suffix,
         prefixIcon: prefixIcon,

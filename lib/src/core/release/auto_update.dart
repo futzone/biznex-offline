@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:biznex/biznex.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -52,3 +53,5 @@ Future<String> _getVersion() async {
   final version = await box.get(_releaseBox);
   return version ?? appVersion;
 }
+
+final appVersionProvider = FutureProvider((ref) async => await _getVersion());

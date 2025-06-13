@@ -111,8 +111,8 @@ class OrderItemCardNew extends HookConsumerWidget {
     return AppStateWrapper(builder: (theme, _) {
       return AnimatedContainer(
         duration: theme.animationDuration,
-        margin: Dis.only(bottom: 8),
-        padding: Dis.only(lr: 16, tb: 8),
+        margin: Dis.only(bottom: context.h(8)),
+        padding: Dis.only(lr: context.w(16), tb: context.h(8)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(infoView ? 8 : 0),
           color: infoView
@@ -144,7 +144,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
-                          style: TextStyle(fontSize: 14, fontFamily: regularFamily),
+                          style: TextStyle(fontSize: context.s(14), fontFamily: regularFamily),
                         ),
                         if (!infoView)
                           SizedBox(
@@ -154,13 +154,13 @@ class OrderItemCardNew extends HookConsumerWidget {
                               textAlign: TextAlign.start,
                               keyboardType: TextInputType.numberWithOptions(decimal: true),
                               style: TextStyle(color: theme.textColor),
-                              cursorHeight: 16,
+                              cursorHeight: context.h(16),
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.grey.shade100,
                                 isDense: true,
                                 hintText: "Umumiy narx",
-                                contentPadding: Dis.only(tb: 8, lr: 12),
+                                contentPadding: Dis.only(tb: context.h(8), lr: context.w(12)),
                                 suffixIcon: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -168,7 +168,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                                     Text(
                                       'UZS',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: context.s(16),
                                         fontFamily: regularFamily,
                                       ),
                                     ),
@@ -228,17 +228,17 @@ class OrderItemCardNew extends HookConsumerWidget {
                               if (!infoView && product.size != null && product.size!.isNotEmpty) SizedBox(width: 16),
                               if (!infoView)
                                 SizedBox(
-                                  width: 120,
+                                  width: context.w(120),
                                   child: TextField(
                                     controller: totalPriceController,
                                     textAlign: TextAlign.center,
                                     keyboardType: TextInputType.numberWithOptions(decimal: true),
                                     style: TextStyle(color: theme.textColor),
-                                    cursorHeight: 16,
+                                    cursorHeight: context.h(16),
                                     decoration: InputDecoration(
                                       isDense: true,
                                       hintText: "Umumiy narx",
-                                      contentPadding: Dis.only(tb: 8, lr: 4),
+                                      contentPadding: Dis.only(tb: context.h(8), lr: context.w(4)),
                                       constraints: const BoxConstraints(maxWidth: 120),
                                       border: OutlineInputBorder(
                                         borderRadius: const BorderRadius.all(Radius.circular(24)),
@@ -263,7 +263,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                                     onTapOutside: (_) {
                                       final value = _tryParseNum(totalPriceController.text);
                                       final currentDisplayedPrice = item.amount * product.price;
-                                      // Qiymat valid va o'zgargan bo'lsa yangilaymiz
+
                                       if (value != null && _formatDecimal(value) != _formatDecimal(currentDisplayedPrice)) {
                                         updateTotalPrice(value);
                                       } else if (value == null && totalPriceController.text.isNotEmpty) {
@@ -278,7 +278,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                               if (infoView)
                                 Text(
                                   "${_formatDecimal(item.amount)} × ${product.price.priceUZS}",
-                                  style: TextStyle(fontFamily: boldFamily, fontSize: 16),
+                                  style: TextStyle(fontFamily: boldFamily, fontSize: context.s(16)),
                                 ),
                             ],
                           ),
@@ -296,17 +296,17 @@ class OrderItemCardNew extends HookConsumerWidget {
                 children: [
                   Text(
                     "${AppLocales.total.tr()}:",
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: context.s(18)),
                   ),
                   Text(
                     (item.amount * item.product.price).priceUZS,
-                    style: TextStyle(fontSize: 18, fontFamily: boldFamily),
+                    style: TextStyle(fontSize: context.s(18), fontFamily: boldFamily),
                   ),
                 ],
               ),
             if (!infoView)
               Row(
-                spacing: 12,
+                spacing: context.w(12),
                 children: [
                   SimpleButton(
                     onPressed: () {
@@ -355,13 +355,13 @@ class OrderItemCardNew extends HookConsumerWidget {
                       textAlign: TextAlign.start,
                       keyboardType: TextInputType.numberWithOptions(decimal: true),
                       style: TextStyle(color: theme.textColor),
-                      cursorHeight: 16,
+                      cursorHeight: context.h(16),
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.grey.shade100,
                         isDense: true,
                         hintText: "Miqdor",
-                        contentPadding: Dis.only(tb: 8, lr: 12),
+                        contentPadding: Dis.only(tb: context.h(8), lr: context.w(12)),
                         suffixIcon: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -369,7 +369,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                             Text(
                               product.measure ?? '',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: context.s(16),
                                 fontFamily: regularFamily,
                               ),
                             ),
@@ -442,7 +442,7 @@ class OrderItemCardNew extends HookConsumerWidget {
                 ],
               ),
             Container(
-              margin: Dis.only(top: 16),
+              margin: Dis.only(top: context.h(16)),
               height: 1,
               width: double.infinity,
               color: theme.accentColor,

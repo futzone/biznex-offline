@@ -32,15 +32,15 @@ class OnboardCard extends StatelessWidget {
                 color: Colors.white.withValues(alpha: 0.2),
                 border: Border.all(
                   color: Colors.white.withValues(alpha: 0.12),
-                  width: 2,
+                  width: context.s(2),
                 ),
               ),
               // duration: theme.animationDuration,
-              padding: 12.all,
+              padding: context.s(12).all,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                spacing: 16,
+                spacing: context.h(16),
                 children: [
                   Container(
                     // padding: 10.all,
@@ -54,6 +54,7 @@ class OnboardCard extends StatelessWidget {
                       child: Icon(
                         Iconsax.security_user_copy,
                         color: Colors.white,
+                        size: context.s(24),
                       ),
                     ),
                   ),
@@ -65,7 +66,6 @@ class OnboardCard extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-
                   Expanded(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -76,7 +76,7 @@ class OnboardCard extends StatelessWidget {
                           roleName,
                           style: TextStyle(
                             fontFamily: mediumFamily,
-                            fontSize: 16,
+                            fontSize: context.s(16),
                             color: Colors.white,
                           ),
                         ),
@@ -85,13 +85,14 @@ class OnboardCard extends StatelessWidget {
                           AppLocales.login.tr(),
                           style: TextStyle(
                             fontFamily: mediumFamily,
-                            fontSize: 16,
+                            fontSize: context.s(16),
                             color: theme.mainColor,
                           ),
                         ),
                         Icon(
                           Iconsax.arrow_right_1_copy,
                           color: theme.mainColor,
+                          size: context.s(24),
                         )
                       ],
                     ),

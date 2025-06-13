@@ -35,7 +35,7 @@ class MenuPage extends HookConsumerWidget {
               color: Colors.white,
               padding: Dis.only(lr: context.w(32), tb: context.h(24)),
               child: Row(
-                spacing: 16,
+                spacing: context.w(16),
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -45,7 +45,7 @@ class MenuPage extends HookConsumerWidget {
                   0.w,
                   SvgPicture.asset(
                     'assets/images/Vector.svg',
-                    height: 36,
+                    height: context.s(36),
                   ),
                   Spacer(),
                   Text(
@@ -67,14 +67,14 @@ class MenuPage extends HookConsumerWidget {
                     },
                     builder: (focused) {
                       return Container(
-                        height: 48,
-                        width: 48,
+                        height: context.s(48),
+                        width: context.s(48),
                         decoration: BoxDecoration(
                           color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: theme.secondaryTextColor),
                         ),
-                        child: Icon(Ionicons.list_outline),
+                        child: Icon(Ionicons.list_outline, size: context.s(24)),
                       );
                     },
                   ),
@@ -84,8 +84,8 @@ class MenuPage extends HookConsumerWidget {
                     },
                     builder: (focused) {
                       return Container(
-                        height: 48,
-                        width: 48,
+                        height: context.s(48),
+                        width: context.s(48),
                         decoration: BoxDecoration(
                           color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
                           borderRadius: BorderRadius.circular(24),
@@ -95,7 +95,7 @@ class MenuPage extends HookConsumerWidget {
                           child: Text(
                             employee.fullname.initials,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: context.s(20),
                               fontFamily: boldFamily,
                             ),
                           ),

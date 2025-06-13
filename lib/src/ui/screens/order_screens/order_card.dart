@@ -43,7 +43,7 @@ class OrderCard extends StatelessWidget {
                   child: Text(
                     order.employee.fullname.initials,
                     style: TextStyle(
-                      fontSize: 23,
+                      fontSize: context.s(23),
                       color: Colors.white,
                       fontFamily: mediumFamily,
                     ),
@@ -74,6 +74,7 @@ class OrderCard extends StatelessWidget {
                         fontFamily: regularFamily,
                         color: theme.secondaryTextColor,
                       ),
+                      maxLines: 1,
                     )
                   ],
                 ),
@@ -107,7 +108,7 @@ class OrderCard extends StatelessWidget {
               Text(
                 DateFormat('dd.MM.yyyy').format(DateTime.parse(order.createdDate)),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: context.s(12),
                   fontFamily: mediumFamily,
                   color: Colors.blueGrey.shade500,
                 ),
@@ -115,7 +116,7 @@ class OrderCard extends StatelessWidget {
               Text(
                 DateFormat('HH:mm').format(DateTime.parse(order.createdDate)),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: context.s(12),
                   fontFamily: mediumFamily,
                   color: Colors.blueGrey.shade500,
                 ),
@@ -130,7 +131,7 @@ class OrderCard extends StatelessWidget {
               Text(
                 AppLocales.productName.tr(),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: context.s(12),
                   fontFamily: mediumFamily,
                   color: Colors.blueGrey.shade400,
                 ),
@@ -138,7 +139,7 @@ class OrderCard extends StatelessWidget {
               Text(
                 AppLocales.price.tr(),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: context.s(12),
                   fontFamily: mediumFamily,
                   color: Colors.blueGrey.shade400,
                 ),
@@ -147,7 +148,7 @@ class OrderCard extends StatelessWidget {
           ),
           for (int i = 0; i < (order.products.length > 3 ? 3 : order.products.length); i++)
             Row(
-              spacing: 12,
+              spacing: context.w(12),
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -155,7 +156,7 @@ class OrderCard extends StatelessWidget {
                   child: Text(
                     order.products[i].product.name,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: context.s(14),
                       fontFamily: mediumFamily,
                       color: Colors.blueGrey.shade400,
                     ),
@@ -164,7 +165,7 @@ class OrderCard extends StatelessWidget {
                 Text(
                   "${order.products[i].amount.toMeasure} x ${order.products[i].product.price.priceUZS}",
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: context.s(14),
                     fontFamily: mediumFamily,
                     color: Colors.blueGrey.shade400,
                   ),
@@ -179,7 +180,7 @@ class OrderCard extends StatelessWidget {
               Text(
                 "${AppLocales.total.tr()}: ",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: context.s(16),
                   fontFamily: mediumFamily,
                   // color: Colors.blueGrey.shade400,
                 ),
@@ -187,7 +188,7 @@ class OrderCard extends StatelessWidget {
               Text(
                 order.price.priceUZS,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: context.s(16),
                   fontFamily: boldFamily,
                   // color: Colors.blueGrey.shade400,
                 ),
@@ -213,7 +214,7 @@ class OrderCard extends StatelessWidget {
                       child: Text(
                         AppLocales.about.tr(),
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: context.s(16),
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
                           fontFamily: mediumFamily,
@@ -237,14 +238,14 @@ class OrderCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
-                      spacing: 8,
+                      spacing: context.w(8),
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           AppLocales.done.tr(),
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: context.s(16),
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                             fontFamily: mediumFamily,
@@ -252,7 +253,11 @@ class OrderCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        Icon(Iconsax.tick_square, color: Colors.white)
+                        Icon(
+                          Iconsax.tick_square,
+                          color: Colors.white,
+                          size: context.s(24),
+                        )
                       ],
                     ),
                   ),

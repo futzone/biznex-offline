@@ -4,6 +4,7 @@ import 'package:biznex/src/controllers/orcer_percent_controller.dart';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/order_models/percent_model.dart';
+import 'package:biznex/src/core/release/auto_update.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/providers/price_percent_provider.dart';
 import 'package:biznex/src/providers/printer_devices_provider.dart';
@@ -60,6 +61,26 @@ class SettingsPageScreen extends HookConsumerWidget {
                             color: Colors.black,
                           ),
                         ),
+                      ),
+                      state.whenProviderData(
+                        provider: appVersionProvider,
+                        builder: (version) {
+                          return Container(
+                            padding: Dis.only(lr: 12, tb: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              "${AppLocales.appVersions.tr()}: v$version",
+                              style: TextStyle(
+                                fontSize: context.s(14),
+                                fontFamily: mediumFamily,
+                                color: Colors.black,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -604,7 +625,6 @@ class _AppLanguageBarState extends State<AppLanguageBar> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ],

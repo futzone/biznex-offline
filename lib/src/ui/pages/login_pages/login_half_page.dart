@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -30,6 +31,7 @@ class LoginHalfPage extends HookConsumerWidget {
               options: CarouselOptions(
                 viewportFraction: 1.0,
                 autoPlay: true,
+                height: double.infinity,
                 onPageChanged: (int page, _) => currentIndex.value = page,
               ),
               items: _images.map((i) {
@@ -64,11 +66,11 @@ class LoginHalfPage extends HookConsumerWidget {
                 end: Alignment.bottomCenter,
               ),
             ),
-            padding: Dis.only(left: 35, right: 35, bottom: 35, top: 35),
+            padding: Dis.only(lr: context.w(35), tb: context.h(35)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
-              spacing: 24,
+              spacing: context.h(24),
               children: [
                 if (app.pincode.isNotEmpty)
                   SimpleButton(
@@ -76,8 +78,8 @@ class LoginHalfPage extends HookConsumerWidget {
                       AppRouter.open(context, OnboardPage());
                     },
                     child: Container(
-                      height: 56,
-                      width: 56,
+                      height: context.s(56),
+                      width: context.s(56),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(56),
                         color: Theme.of(context).cardColor,
@@ -86,6 +88,7 @@ class LoginHalfPage extends HookConsumerWidget {
                         child: Icon(
                           Icons.arrow_back,
                           color: Theme.of(context).iconTheme.color,
+                          size: context.s(24),
                         ),
                       ),
                     ),
@@ -94,18 +97,18 @@ class LoginHalfPage extends HookConsumerWidget {
                 Text(
                   introStatic[currentIndex.value][language].toString(),
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: context.s(32),
                     fontFamily: mediumFamily,
                     color: Colors.white,
                   ),
                 ),
                 Row(
-                  spacing: 8,
+                  spacing: context.w(8),
                   children: List.generate(3, (index) {
                     return AnimatedContainer(
                       duration: Duration(milliseconds: 500),
-                      height: 8,
-                      width: index == currentIndex.value ? 60 : 8,
+                      height: context.h(8),
+                      width: context.w(index == currentIndex.value ? 60 : 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         color: index == currentIndex.value ? Colors.white : Colors.grey,

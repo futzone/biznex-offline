@@ -87,8 +87,8 @@ void main() async {
 
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = WindowOptions(
-    size: Size(1280, 720),
-    minimumSize: Size(1280, 720),
+    size: Size(800, 800),
+    minimumSize: Size(800, 800),
     center: true,
     backgroundColor: Colors.transparent,
     titleBarStyle: TitleBarStyle.normal,

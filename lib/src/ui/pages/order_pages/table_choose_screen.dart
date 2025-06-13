@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_string.dart';
@@ -25,10 +23,10 @@ import 'employee_orders_page.dart';
 class TableChooseScreen extends HookConsumerWidget {
   const TableChooseScreen({super.key});
 
-  Widget _buildHorCursi() {
+  Widget _buildHorCursi(BuildContext context) {
     return Container(
-      height: 12,
-      width: 30,
+      height: context.h(12),
+      width: context.w(30),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors(isDark: false).secondaryTextColor.withValues(alpha: 0.4), width: 2),
@@ -36,10 +34,10 @@ class TableChooseScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildVerCursi() {
+  Widget _buildVerCursi(BuildContext context) {
     return Container(
-      width: 12,
-      height: 30,
+      height: context.h(30),
+      width: context.w(12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors(isDark: false).secondaryTextColor.withValues(alpha: 0.4), width: 2),
@@ -52,21 +50,21 @@ class TableChooseScreen extends HookConsumerWidget {
     final textColor = status == 'free' ? theme.mainColor : theme.textColor;
 
     return Column(
-      spacing: 12,
+      spacing: context.h(12),
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildHorCursi(),
+        _buildHorCursi(context),
         Expanded(
           child: Row(
-            spacing: 12,
+            spacing: context.w(12),
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildVerCursi(),
+              _buildVerCursi(context),
               Expanded(
                 child: Container(
-                  padding: 20.all,
+                  padding: context.s(20).all,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: cColor,
@@ -92,11 +90,11 @@ class TableChooseScreen extends HookConsumerWidget {
                   ),
                 ),
               ),
-              _buildVerCursi(),
+              _buildVerCursi(context),
             ],
           ),
         ),
-        _buildHorCursi(),
+        _buildHorCursi(context),
       ],
     );
   }
@@ -123,7 +121,7 @@ class TableChooseScreen extends HookConsumerWidget {
                     color: Colors.white,
                     padding: Dis.only(lr: context.w(32), tb: context.h(24)),
                     child: Row(
-                      spacing: 16,
+                      spacing: context.w(16),
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -133,7 +131,7 @@ class TableChooseScreen extends HookConsumerWidget {
                         0.w,
                         SvgPicture.asset(
                           'assets/images/Vector.svg',
-                          height: 36,
+                          height: context.h(36),
                         ),
                         Spacer(),
                         WebButton(
@@ -146,14 +144,14 @@ class TableChooseScreen extends HookConsumerWidget {
                           },
                           builder: (focused) {
                             return Container(
-                              height: 48,
-                              width: 48,
+                              height: context.s(48),
+                              width: context.s(48),
                               decoration: BoxDecoration(
                                 color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
                                 borderRadius: BorderRadius.circular(24),
                                 border: Border.all(color: theme.secondaryTextColor),
                               ),
-                              child: Icon(Ionicons.list_outline),
+                              child: Icon(Ionicons.list_outline, size: context.s(24)),
                             );
                           },
                         ),
@@ -163,8 +161,8 @@ class TableChooseScreen extends HookConsumerWidget {
                           },
                           builder: (focused) {
                             return Container(
-                              height: 48,
-                              width: 48,
+                              height: context.s(48),
+                              width: context.s(48),
                               decoration: BoxDecoration(
                                 color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
                                 borderRadius: BorderRadius.circular(24),
@@ -174,7 +172,7 @@ class TableChooseScreen extends HookConsumerWidget {
                                 child: Text(
                                   employee.fullname.initials,
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: context.s(20),
                                     fontFamily: boldFamily,
                                   ),
                                 ),
@@ -189,7 +187,7 @@ class TableChooseScreen extends HookConsumerWidget {
                     color: theme.scaffoldBgColor,
                     padding: Dis.only(lr: context.w(32), tb: context.h(24)),
                     child: Row(
-                      spacing: 16,
+                      spacing: context.w(16),
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -198,26 +196,26 @@ class TableChooseScreen extends HookConsumerWidget {
                           style: TextStyle(
                             fontFamily: mediumFamily,
                             fontWeight: FontWeight.w600,
-                            fontSize: 24,
+                            fontSize: context.s(24),
                           ),
                         ),
                         Row(
-                          spacing: 16,
+                          spacing: context.w(16),
                           children: [
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(99),
                                 color: Colors.white,
                               ),
-                              padding: 12.all,
+                              padding: context.s(12).all,
                               child: Row(
-                                spacing: 8,
+                                spacing: context.w(12),
                                 children: [
-                                  Icon(Icons.circle, color: theme.mainColor, size: 16),
+                                  Icon(Icons.circle, color: theme.mainColor, size: context.s(16)),
                                   Text(
                                     AppLocales.freeTables.tr(),
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: context.s(16),
                                       fontFamily: mediumFamily,
                                     ),
                                   ),
@@ -229,15 +227,15 @@ class TableChooseScreen extends HookConsumerWidget {
                                 borderRadius: BorderRadius.circular(99),
                                 color: Colors.white,
                               ),
-                              padding: 12.all,
+                              padding: context.s(12).all,
                               child: Row(
-                                spacing: 8,
+                                spacing: context.w(8),
                                 children: [
-                                  Icon(Icons.circle, color: theme.secondaryTextColor, size: 16),
+                                  Icon(Icons.circle, color: theme.secondaryTextColor, size: context.s(16)),
                                   Text(
                                     AppLocales.bronTables.tr(),
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: context.s(16),
                                       fontFamily: mediumFamily,
                                     ),
                                   ),
@@ -267,7 +265,7 @@ class TableChooseScreen extends HookConsumerWidget {
                           ],
                         ),
                         Row(
-                          spacing: 16,
+                          spacing: context.w(16),
                           children: [
                             CustomPopupMenu(
                               theme: theme,
@@ -287,13 +285,13 @@ class TableChooseScreen extends HookConsumerWidget {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  spacing: 8,
+                                  spacing: context.w(8),
                                   children: [
                                     Text(
                                       selectedPlace.value == null ? AppLocales.choosePlace.tr() : selectedPlace.value!.name,
-                                      style: TextStyle(fontSize: 16, fontFamily: mediumFamily),
+                                      style: TextStyle(fontSize: context.s(16), fontFamily: mediumFamily),
                                     ),
-                                    Icon(Iconsax.arrow_down_1_copy, size: 20),
+                                    Icon(Iconsax.arrow_down_1_copy, size: context.s(20)),
                                   ],
                                 ),
                               ),
@@ -355,7 +353,7 @@ class TableChooseScreen extends HookConsumerWidget {
                         color: Colors.white,
                       ),
                       child: GridView.builder(
-                        padding: Dis.only(tb: 40),
+                        padding: Dis.only(tb: context.h(40)),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 5,
                           mainAxisSpacing: context.s(80),

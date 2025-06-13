@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:biznex/biznex.dart';
-import 'package:biznex/src/controllers/product_controller.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
-import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/ui/screens/products_screens/product_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_file_image.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class ProductCard extends HookConsumerWidget {
@@ -226,10 +223,7 @@ class ProductCardNew extends StatelessWidget {
                         Expanded(
                           child: Text(
                             product.barcode.toString(),
-                            style: TextStyle(
-                              fontFamily: mediumFamily,
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(fontFamily: mediumFamily, color: Colors.black, fontSize: context.s(14)),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -247,12 +241,13 @@ class ProductCardNew extends StatelessWidget {
                   child: Row(
                     spacing: context.w(4),
                     children: [
-                      Icon(Ionicons.receipt_outline, size: 18, color: Colors.black),
+                      Icon(Ionicons.receipt_outline, size: context.s(18), color: Colors.black),
                       Text(
                         product.tagnumber.toString(),
                         style: TextStyle(
                           fontFamily: mediumFamily,
                           color: Colors.black,
+                          fontSize: context.s(14),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

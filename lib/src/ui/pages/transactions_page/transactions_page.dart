@@ -75,6 +75,12 @@ class TransactionsPage extends HookConsumerWidget {
       ];
     }
 
+    final headerStyle = TextStyle(
+      fontSize: context.s(14),
+      color: Colors.black,
+      fontFamily: mediumFamily,
+    );
+
     return AppStateWrapper(builder: (theme, state) {
       return Scaffold(
         floatingActionButton: WebButton(
@@ -138,7 +144,7 @@ class TransactionsPage extends HookConsumerWidget {
                     Text(
                       AppLocales.date.tr(),
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: context.s(16),
                         fontFamily: mediumFamily,
                         color: Colors.black,
                       ),
@@ -169,15 +175,13 @@ class TransactionsPage extends HookConsumerWidget {
                             if (selectedDate.value == null)
                               Text(
                                 AppLocales.all.tr(),
-                                style: TextStyle(
-                                  color: theme.secondaryTextColor,
-                                ),
+                                style: TextStyle(color: theme.secondaryTextColor, fontSize: context.s(14)),
                               ),
                             if (selectedDate.value == null) 16.w,
                             if (selectedDate.value == null)
                               Icon(
                                 Icons.arrow_forward_ios_outlined,
-                                size: 16,
+                                size: context.s(16),
                                 color: theme.secondaryTextColor,
                               ),
                             if (selectedDate.value != null)
@@ -185,6 +189,7 @@ class TransactionsPage extends HookConsumerWidget {
                                 DateFormat('yyyy, d-MMMM', context.locale.languageCode).format(selectedDate.value!).toLowerCase(),
                                 style: TextStyle(
                                   color: theme.secondaryTextColor,
+                                  fontSize: context.s(14),
                                 ),
                               ),
                           ],
@@ -205,11 +210,11 @@ class TransactionsPage extends HookConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    Expanded(flex: 3, child: Center(child: Text(AppLocales.createdDate.tr()))),
-                    Expanded(flex: 3, child: Center(child: Text(AppLocales.total.tr()))),
-                    Expanded(flex: 3, child: Center(child: Text(AppLocales.note.tr()))),
-                    Expanded(flex: 3, child: Center(child: Text(AppLocales.paymentType.tr()))),
-                    Expanded(flex: 3, child: Center(child: Text(AppLocales.employeeNameLabel.tr()))),
+                    Expanded(flex: 3, child: Center(child: Text(AppLocales.createdDate.tr(), style: headerStyle))),
+                    Expanded(flex: 3, child: Center(child: Text(AppLocales.total.tr(), style: headerStyle))),
+                    Expanded(flex: 3, child: Center(child: Text(AppLocales.note.tr(), style: headerStyle))),
+                    Expanded(flex: 3, child: Center(child: Text(AppLocales.paymentType.tr(), style: headerStyle))),
+                    Expanded(flex: 3, child: Center(child: Text(AppLocales.employeeNameLabel.tr(), style: headerStyle))),
                     Expanded(flex: 2, child: Center(child: Text(''))),
                   ],
                 ),
@@ -221,7 +226,7 @@ class TransactionsPage extends HookConsumerWidget {
                 transactions as List<Transaction>;
                 if (transactions.isEmpty) {
                   return SliverToBoxAdapter(
-                    child: Padding(padding: Dis.all(100), child: AppEmptyWidget()),
+                    child: Padding(padding: Dis.all(context.s(100)), child: AppEmptyWidget()),
                   );
                 }
 
@@ -229,7 +234,7 @@ class TransactionsPage extends HookConsumerWidget {
 
                 if (list.isEmpty) {
                   return SliverToBoxAdapter(
-                    child: Padding(padding: Dis.all(100), child: AppEmptyWidget()),
+                    child: Padding(padding: Dis.all(context.s(100)), child: AppEmptyWidget()),
                   );
                 }
 

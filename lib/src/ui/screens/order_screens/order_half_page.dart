@@ -106,7 +106,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
         return Expanded(
           flex: 9,
           child: Column(
-            spacing: 16,
+            spacing: context.h(16),
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -120,7 +120,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
-                      spacing: 16,
+                      spacing: context.w(16),
                       children: [
                         WebButton(
                           onPressed: () {
@@ -143,7 +143,7 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                     height: context.s(48),
                                     width: context.s(320),
                                     child: Row(
-                                      spacing: 16,
+                                      spacing: context.w(16),
                                       children: [
                                         Expanded(
                                           child: AppTextField(
@@ -164,7 +164,12 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                             borderRadius: BorderRadius.circular(4),
                                             color: theme.scaffoldBgColor,
                                           ),
-                                          child: Center(child: Icon(Ionicons.close_outline)),
+                                          child: Center(
+                                            child: Icon(
+                                              Ionicons.close_outline,
+                                              size: context.s(24),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -177,7 +182,12 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                                       borderRadius: BorderRadius.circular(4),
                                       color: theme.scaffoldBgColor,
                                     ),
-                                    child: Center(child: Icon(Iconsax.search_normal_copy)),
+                                    child: Center(
+                                      child: Icon(
+                                        Iconsax.search_normal_copy,
+                                        size: context.s(24),
+                                      ),
+                                    ),
                                   ),
                           ),
                         ),
@@ -275,13 +285,13 @@ class _OrderHalfPageState extends ConsumerState<OrderHalfPage> {
                   children: [
                     Text(
                       AppLocales.all_products.tr(),
-                      style: TextStyle(fontFamily: mediumFamily, fontSize: 20),
+                      style: TextStyle(fontFamily: mediumFamily, fontSize: context.s(20)),
                     ),
                     Text(
                       "${'productCount'.tr()}: ${providerListener.length} ${AppLocales.ta.tr()}",
                       style: TextStyle(
                         fontFamily: regularFamily,
-                        fontSize: 16,
+                        fontSize: context.s(16),
                         color: theme.secondaryTextColor,
                       ),
                     )

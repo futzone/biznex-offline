@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/screens/settings_screen/settings_button_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -12,14 +13,14 @@ class AppSidebar extends HookConsumerWidget {
 
   const AppSidebar(this.pageNotifier, {super.key});
 
-  Widget _buildSidebarItem(String name, dynamic icon, bool selected, onPressed, bool opened) {
+  Widget _buildSidebarItem(BuildContext context, String name, dynamic icon, bool selected, onPressed, bool opened) {
     return WebButton(
       onPressed: onPressed,
       builder: (focused) {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          padding: 20.all,
-          height: 60,
+          padding: context.s(20).all,
+          height: context.s(60),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: selected
@@ -30,33 +31,40 @@ class AppSidebar extends HookConsumerWidget {
           ),
           child: opened
               ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.c,
                   children: [
                     if (icon is String)
                       SvgPicture.asset(
                         icon,
-                        height: 24,
-                        width: 24,
+                        height: context.s(24),
+                        width: context.s(24),
                         color: selected ? Colors.white : Colors.white70,
                       )
                     else
                       Icon(
                         icon,
                         color: selected ? Colors.white : Colors.white70,
+                        size: context.s(24),
                       ),
-                    12.w,
-                    Text(name, style: const TextStyle(color: Colors.white)),
+                    context.w(12).w,
+                    Text(
+                      name,
+                      style: TextStyle(color: Colors.white, fontSize: context.s(14)),
+                    ),
                   ],
                 )
               : (icon is String)
                   ? SvgPicture.asset(
                       icon,
-                      height: 24,
-                      width: 24,
+                      height: context.s(24),
+                      width: context.s(24),
                       color: selected ? Colors.white : Colors.white70,
                     )
                   : Icon(
                       icon,
                       color: selected ? Colors.white : Colors.white70,
+                      size: context.s(24),
                     ),
         );
       },
@@ -71,6 +79,7 @@ class AppSidebar extends HookConsumerWidget {
       final selected = (page == pageNotifier.value);
 
       return _buildSidebarItem(
+        context,
         name,
         icon,
         selected,
@@ -85,7 +94,7 @@ class AppSidebar extends HookConsumerWidget {
     return AppStateWrapper(builder: (theme, state) {
       return Container(
         color: theme.sidebarBG,
-        width: openedValue.value ? 320 : 96,
+        width: context.w(openedValue.value ? 320 : 96),
         child: Column(
           crossAxisAlignment: openedValue.value ? CrossAxisAlignment.start : CrossAxisAlignment.center,
           mainAxisAlignment: openedValue.value ? MainAxisAlignment.start : MainAxisAlignment.center,
@@ -96,31 +105,36 @@ class AppSidebar extends HookConsumerWidget {
               },
               child: !openedValue.value
                   ? Padding(
-                      padding: const EdgeInsets.only(top: 36),
+                      padding: EdgeInsets.only(top: context.h(36)),
                       child: Icon(
                         Iconsax.menu_1,
                         color: Colors.white,
-                        size: 32,
+                        size: context.s(32),
                       ),
                     )
                   : Padding(
-                      padding: Dis.only(top: 36, left: 24, right: 16),
+                      padding: Dis.only(top: context.h(36), left: context.w(24), right: context.w(16)),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (openedValue.value) SvgPicture.asset("assets/icons/logo-text.svg", color: theme.mainColor),
+                          if (openedValue.value)
+                            SvgPicture.asset(
+                              "assets/icons/logo-text.svg",
+                              color: theme.mainColor,
+                              height: context.s(32),
+                            ),
                           if (openedValue.value)
                             Container(
-                              height: 32,
-                              width: 32,
+                              height: context.s(32),
+                              width: context.s(32),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
                                 color: Colors.white,
                               ),
                               child: Icon(
                                 Icons.arrow_back,
-                                size: 20,
+                                size: context.s(20),
                                 color: Colors.black,
                               ),
                             ),
@@ -131,7 +145,7 @@ class AppSidebar extends HookConsumerWidget {
             56.h,
             Expanded(
               child: SingleChildScrollView(
-                padding: Dis.only(lr: 16),
+                padding: Dis.only(lr: context.w(16)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,

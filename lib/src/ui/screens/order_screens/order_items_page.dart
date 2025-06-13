@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/order_controller.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/extensions/device_type.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:biznex/src/core/model/other_models/customer_model.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
@@ -74,7 +75,7 @@ class OrderItemsPage extends HookConsumerWidget {
     }
 
     return Expanded(
-      flex: 4,
+      flex: getDeviceType(context) == DeviceType.tablet?6:4,
       child: placeOrderItems.isEmpty
           ? AppEmptyWidget()
           : Container(
@@ -110,8 +111,8 @@ class OrderItemsPage extends HookConsumerWidget {
                     //   onClearAll: order != null ? null : () => orderNotifier.clear(),
                     // ),
                     Container(
-                      margin: Dis.only(top: 16),
-                      padding: Dis.only(tb: 24, lr: 16),
+                      margin: Dis.only(top: context.h(16)),
+                      padding: Dis.only(tb: context.h(24), lr: context.w(16)),
                       decoration: BoxDecoration(
                           border: Border(
                             top: BorderSide(
@@ -129,6 +130,7 @@ class OrderItemsPage extends HookConsumerWidget {
                         spacing: 8,
                         children: [
                           SwitchListTile(
+
                             activeColor: theme.mainColor,
                             contentPadding: Dis.only(),
                             value: useCheck.value,
@@ -136,7 +138,7 @@ class OrderItemsPage extends HookConsumerWidget {
                             title: Text(
                               "${AppLocales.printing.tr()}:",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: context.s(16),
                                 fontFamily: mediumFamily,
                               ),
                             ),
@@ -149,7 +151,7 @@ class OrderItemsPage extends HookConsumerWidget {
                           Text(
                             "${AppLocales.paymentType.tr()}:",
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: context.s(16),
                               fontFamily: mediumFamily,
                             ),
                           ),
@@ -175,6 +177,7 @@ class OrderItemsPage extends HookConsumerWidget {
                                     type.tr(),
                                     style: TextStyle(
                                       color: paymentType.value == type ? Colors.white : Colors.black,
+                                      fontSize: context.s(14)
                                     ),
                                   ),
                                   selected: paymentType.value == type,
@@ -199,14 +202,14 @@ class OrderItemsPage extends HookConsumerWidget {
                               Text(
                                 "${AppLocales.total.tr()}:",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: context.s(16),
                                   fontFamily: mediumFamily,
                                 ),
                               ),
                               Text(
                                 totalPrice.priceUZS,
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: context.s(20),
                                   fontFamily: boldFamily,
                                 ),
                               ),

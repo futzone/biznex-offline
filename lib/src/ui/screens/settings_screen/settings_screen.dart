@@ -2,6 +2,7 @@ import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/config/theme.dart';
 import 'package:biznex/src/core/constants/app_locales.dart';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_double.dart';
 import 'package:biznex/src/core/model/app_model.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
@@ -28,7 +29,12 @@ class SettingsScreenButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset("assets/icons/settings.svg", color: Colors.white);
+    return SvgPicture.asset(
+      "assets/icons/settings.svg",
+      color: Colors.white,
+      height: context.s(24),
+      width: context.s(24),
+    );
   }
 }
 
@@ -50,7 +56,7 @@ class SettingsScreen extends ConsumerWidget {
               maxHeight: MediaQuery.of(context).size.height * 0.8,
               maxWidth: MediaQuery.of(context).size.height * 0.5,
             ),
-            padding: 16.all,
+            padding: context.s(16).all,
             decoration: BoxDecoration(
               color: theme.scaffoldBgColor,
               borderRadius: BorderRadius.circular(24),
@@ -65,11 +71,11 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     Text(
                       AppLocales.settings.tr(),
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: context.s(18), fontWeight: FontWeight.bold),
                     ),
                     SimpleButton(
                       onPressed: onClose,
-                      child: const Icon(Ionicons.close_circle_outline, size: 30),
+                      child: Icon(Ionicons.close_circle_outline, size: context.s(30)),
                     ),
                   ],
                 ),
