@@ -111,8 +111,7 @@ class OrderController {
       return;
     }
 
-    // Create a mutable copy of the current state to update
-    Order updatedOrder = currentState.copyWith(products: List<OrderItem>.from(newItemsList)); // Assume Order has copyWith
+    Order updatedOrder = currentState.copyWith(products: List<OrderItem>.from(newItemsList));
 
     double totalPrice = newItemsList.fold(0.0, (oldValue, element) {
       return oldValue + (element.amount * element.product.price);
@@ -177,16 +176,17 @@ class OrderController {
         createdDate: DateTime.now().toIso8601String(),
         updatedDate: DateTime.now().toIso8601String(),
         orderNumber: DateTime.now().millisecondsSinceEpoch.toString(),
-        // customer, note, scheduledDate applied below
       );
     } else {
       orderToProcess = currentOrderData;
     }
 
-    Order finalOrder = orderToProcess.copyWith(); // Make a copy to modify
+    Order finalOrder = orderToProcess.copyWith();
 
     final percents = await OrderPercentDatabase().get();
     if (!place.percentNull) {
+      log(place.toJson().toString());
+      // log("${!place.percentNull}");
       final totalPercent = percents.map((e) => e.percent).fold(0.0, (a, b) => a + b);
       finalOrder = finalOrder.copyWith(price: finalOrder.price + (finalOrder.price * (totalPercent / 100)));
     }

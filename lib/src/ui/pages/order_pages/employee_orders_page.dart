@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
@@ -7,12 +9,9 @@ import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_error_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_text_widgets.dart';
-import 'package:biznex/src/ui/widgets/dialogs/app_custom_dialog.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_loading_screen.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../screens/order_screens/order_card.dart';
-import '../../screens/order_screens/order_info_screen.dart';
 
 class EmployeeOrdersPage extends HookConsumerWidget {
   const EmployeeOrdersPage({super.key});
@@ -103,7 +102,7 @@ class EmployeeOrdersPage extends HookConsumerWidget {
                         });
                       },
                       child: Container(
-                        padding: Dis.only(lr: 16, tb: 8),
+                        padding: Dis.only(lr: 16, tb: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(14),
                           color: theme.accentColor,
@@ -120,6 +119,22 @@ class EmployeeOrdersPage extends HookConsumerWidget {
                             ),
                           ],
                         ),
+                      ),
+                    ),
+                    8.w,
+                    SimpleButton(
+                      onPressed: () {
+                        ref.refresh(employeeOrdersProvider);
+                        ref.invalidate(employeeOrdersProvider);
+                        log("invalidated");
+                      },
+                      child: Container(
+                        padding: Dis.only(lr: 16, tb: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: theme.accentColor,
+                        ),
+                        child: Icon(Iconsax.refresh_copy, color: Colors.black),
                       ),
                     ),
                   ],

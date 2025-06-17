@@ -143,6 +143,25 @@ class TableChooseScreen extends HookConsumerWidget {
                         Spacer(),
                         WebButton(
                           onPressed: () {
+                            ref.invalidate(ordersProvider);
+                            ref.invalidate(ordersProvider(selectedPlace.value?.id ?? ""));
+                            ref.invalidate(ordersProvider(fatherPlace.value?.id ?? ""));
+                          },
+                          builder: (focused) {
+                            return Container(
+                              height: context.s(48),
+                              width: context.s(48),
+                              decoration: BoxDecoration(
+                                color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
+                                borderRadius: BorderRadius.circular(48),
+                                border: Border.all(color: theme.secondaryTextColor),
+                              ),
+                              child: Icon(Ionicons.refresh, size: context.s(24)),
+                            );
+                          },
+                        ),
+                        WebButton(
+                          onPressed: () {
                             showDesktopModal(
                               context: context,
                               body: EmployeeOrdersPage(),
@@ -155,7 +174,7 @@ class TableChooseScreen extends HookConsumerWidget {
                               width: context.s(48),
                               decoration: BoxDecoration(
                                 color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(48),
                                 border: Border.all(color: theme.secondaryTextColor),
                               ),
                               child: Icon(Ionicons.list_outline, size: context.s(24)),
@@ -172,7 +191,7 @@ class TableChooseScreen extends HookConsumerWidget {
                               width: context.s(48),
                               decoration: BoxDecoration(
                                 color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
-                                borderRadius: BorderRadius.circular(24),
+                                borderRadius: BorderRadius.circular(48),
                                 border: Border.all(color: theme.mainColor),
                               ),
                               child: Center(
