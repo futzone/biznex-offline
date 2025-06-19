@@ -150,10 +150,10 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
                         color: theme.mainColor,
                         backgroundColor: theme.white,
                         strokeWidth: 8,
-                        value: value.progress * 0.01,
+                        // value: value.progress * 0.01,
                       ),
                     ),
-                  0.h,
+                  24.h,
                   SizedBox(
                     width: 400,
                     child: AppPrimaryButton(

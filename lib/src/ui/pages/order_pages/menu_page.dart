@@ -3,6 +3,7 @@ import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_string.dart';
 import 'package:biznex/src/core/model/place_models/place_model.dart';
+import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/employee_orders_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/table_choose_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -59,6 +60,27 @@ class MenuPage extends HookConsumerWidget {
                   Spacer(),
                   WebButton(
                     onPressed: () {
+                      AppBackButton(
+                        onPressed: () {
+                          AppRouter.open(context, OnboardPage());
+                        },
+                      );
+                    },
+                    builder: (focused) {
+                      return Container(
+                        height: context.s(48),
+                        width: context.s(48),
+                        decoration: BoxDecoration(
+                          color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
+                          borderRadius: BorderRadius.circular(48),
+                          border: Border.all(color: theme.secondaryTextColor),
+                        ),
+                        child: Icon(Iconsax.home_copy, size: context.s(24)),
+                      );
+                    },
+                  ),
+                  WebButton(
+                    onPressed: () {
                       showDesktopModal(
                         context: context,
                         body: EmployeeOrdersPage(),
@@ -71,7 +93,7 @@ class MenuPage extends HookConsumerWidget {
                         width: context.s(48),
                         decoration: BoxDecoration(
                           color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(48),
                           border: Border.all(color: theme.secondaryTextColor),
                         ),
                         child: Icon(Ionicons.list_outline, size: context.s(24)),
@@ -88,7 +110,7 @@ class MenuPage extends HookConsumerWidget {
                         width: context.s(48),
                         decoration: BoxDecoration(
                           color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(48),
                           border: Border.all(color: theme.mainColor),
                         ),
                         child: Center(

@@ -85,7 +85,7 @@ class ProductMeasureReponsive extends HookConsumerWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              AppLocales.places.tr(),
+                              AppLocales.productParams.tr(),
                               style: TextStyle(
                                 fontSize: context.s(24),
                                 fontFamily: mediumFamily,

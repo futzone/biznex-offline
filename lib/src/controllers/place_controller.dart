@@ -25,7 +25,7 @@ class PlaceController extends AppController {
   }
 
   @override
-  Future<void> delete(key, {Place? father,  ref}) async {
+  Future<void> delete(key, {Place? father, ref}) async {
     showConfirmDialog(
       context: context,
       title: AppLocales.deletePlaceQuestionText.tr(),
@@ -35,6 +35,7 @@ class PlaceController extends AppController {
         await sizeDatabase.delete(key: key, father: father).then((_) {
           ref!.invalidate(placesProvider);
           closeLoading();
+          if (father == null) return;
           AppRouter.close(context);
         });
       },
@@ -42,7 +43,7 @@ class PlaceController extends AppController {
   }
 
   @override
-  Future<void>  update(data, key) async {
+  Future<void> update(data, key) async {
     data as Place;
     if (data.name.isEmpty) return error(AppLocales.placeNameInputError.tr());
     showAppLoadingDialog(context);
