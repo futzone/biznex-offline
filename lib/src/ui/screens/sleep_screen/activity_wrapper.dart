@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:biznex/biznex.dart';
+import 'package:biznex/main.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/release/auto_update.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart'; // onPointerHover va PointerEnterEvent uchun kerak
 import 'package:flutter/services.dart';
@@ -22,6 +24,7 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
   late final FocusNode _focusNode;
   final Duration _inactivityTimeout = const Duration(seconds: 3000);
   final ValueNotifier<AppUpdate> updateNotifier = ValueNotifier(AppUpdate(text: AppLocales.chekingForUpdates.tr()));
+  final ValueNotifier<String> lastVersion = ValueNotifier(appVersion);
 
   OverlayEntry? _logoOverlayEntry;
 
@@ -82,7 +85,7 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
     _resetInactivityTimer();
   }
 
-  void _autoUpdateCall() async => await checkAndUpdate(updateNotifier, widget.ref);
+  void _autoUpdateCall() async => await checkAndUpdate(updateNotifier, lastVersion, widget.ref);
 
   @override
   void initState() {
@@ -147,8 +150,29 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
                         color: theme.mainColor,
                         backgroundColor: theme.white,
                         strokeWidth: 8,
+                        value: value.progress * 0.01,
                       ),
                     ),
+                  0.h,
+                  SizedBox(
+                    width: 400,
+                    child: AppPrimaryButton(
+                      onPressed: () async {
+                        skipUpdates(lastVersion).then((_) {
+                          updateNotifier.value = AppUpdate(
+                            text: AppLocales.skip.tr(),
+                            haveUpdate: false,
+                            step: AppUpdate.checkingStep,
+                          );
+                        });
+                      },
+                      theme: theme,
+                      title: AppLocales.skip.tr(),
+                      textColor: Colors.black,
+                      color: theme.white,
+                      border: Border.all(color: Colors.white),
+                    ),
+                  )
                 ],
               ),
             ),

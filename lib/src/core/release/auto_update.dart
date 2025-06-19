@@ -16,6 +16,7 @@ class AppUpdate {
   String text;
   String step;
   bool haveUpdate;
+  double progress;
 
   static const String checkingStep = "checkingStep";
   static const String updatingStep = "updatingStep";
@@ -25,10 +26,11 @@ class AppUpdate {
     required this.text,
     this.haveUpdate = false,
     this.step = AppUpdate.checkingStep,
+    this.progress = 0.0,
   });
 }
 
-Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate, WidgetRef ref) async {
+Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate, ValueNotifier<String> lastVersion, WidgetRef ref) async {
   if (ref.watch(_checkerProvider)) return;
   if (!(await isConnected())) {
     appUpdate.value = AppUpdate(
@@ -47,7 +49,9 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate, WidgetRef ref) a
   if (response.statusCode == 200 || response.statusCode == 201) {
     final data = jsonDecode(response.body);
     log(data.toString());
+
     final latest = Version.parse(data['version']);
+    lastVersion.value = data['version'];
     final currentVersion = await _getVersion();
     final current = Version.parse(currentVersion);
 
@@ -62,12 +66,30 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate, WidgetRef ref) a
       );
       log("have new updates. downloading...");
       final url = data['url'];
+      final client = http.Client();
+      final request = http.Request('GET', Uri.parse(url));
+      final response = await client.send(request);
+
+      final contentLength = response.contentLength ?? 0;
       final tempDir = await getTemporaryDirectory();
       final filePath = '${tempDir.path}/update_installer.exe';
-
       final file = File(filePath);
-      final updateData = await http.get(Uri.parse(url));
-      await file.writeAsBytes(updateData.bodyBytes);
+      final sink = file.openWrite();
+
+      int received = 0;
+
+      await for (var chunk in response.stream) {
+        received += chunk.length;
+        sink.add(chunk);
+        double progress = (received / contentLength) * 100;
+        AppUpdate updatedApp = appUpdate.value;
+        updatedApp.progress = progress;
+        appUpdate.value = updatedApp;
+      }
+
+      await sink.flush();
+      await sink.close();
+      client.close();
 
       log("downloaded. running...");
       appUpdate.value = AppUpdate(
@@ -93,6 +115,10 @@ Future<void> checkAndUpdate(ValueNotifier<AppUpdate> appUpdate, WidgetRef ref) a
 }
 
 const _releaseBox = "release_version";
+
+Future<void> skipUpdates(ValueNotifier<String> latest) async {
+  await _updateVersion(latest.value);
+}
 
 Future<void> _updateVersion(String newVersion) async {
   final box = await Hive.openBox(_releaseBox);

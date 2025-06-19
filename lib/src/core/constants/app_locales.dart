@@ -501,4 +501,5 @@ abstract class AppLocales {
   static var downloadingUpdates = "downloadingUpdates";
   static var installingNewVersion = "installingNewVersion";
   static var chekingForUpdates = "chekingForUpdates";
+  static var skip = "skip";
 }
