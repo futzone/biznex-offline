@@ -1,3 +1,4 @@
+import 'package:biznex/src/core/database/changes_database/changes_database.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,4 +24,6 @@ abstract class AppDatabase {
     var uuid = Uuid();
     return uuid.v1();
   }
+
+  ChangesDatabase get changesDatabase => ChangesDatabase();
 }

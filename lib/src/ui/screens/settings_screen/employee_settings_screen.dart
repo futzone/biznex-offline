@@ -4,6 +4,8 @@ import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/employee_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
+import 'package:biznex/src/core/database/changes_database/changes_database.dart';
+import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
@@ -54,7 +56,6 @@ class EmployeeSettingsScreen extends HookConsumerWidget {
                 log(pincode.text.trim());
                 log(pincodeNew.text.trim());
 
-
                 if (employee.roleName.toString().toLowerCase() == "admin") {
                   if (state.pincode != pincode.text.trim() && pincodeNew.text.trim().length == 4) {
                     ShowToast.error(context, AppLocales.incorrectPincode.tr());
@@ -63,8 +64,16 @@ class EmployeeSettingsScreen extends HookConsumerWidget {
 
                   AppModel app = state;
                   app.pincode = pincodeNew.text.trim();
-                  await AppStateDatabase().updateApp(app).then((_) {
+                  await AppStateDatabase().updateApp(app).then((_) async {
                     ref.invalidate(appStateProvider);
+                    ChangesDatabase changesDatabase = ChangesDatabase();
+                    await changesDatabase.set(
+                      data: Change(
+                        database: "app",
+                        method: "update",
+                        itemId: "pincode",
+                      ),
+                    );
                     AppRouter.close(context);
                     ShowToast.success(context, AppLocales.update.tr());
                   });

@@ -1,4 +1,5 @@
 import 'package:biznex/src/core/database/app_database/app_database.dart';
+import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/core/utils/product_utils.dart';
 
@@ -8,6 +9,18 @@ class ProductDatabase extends AppDatabase {
   @override
   Future delete({required String key}) async {
     final box = await openBox(boxName);
+
+    final product = await getProductById(key);
+    if (product == null) return;
+
+    await changesDatabase.set(
+      data: Change(
+        database: boxName,
+        method: 'delete',
+        itemId: key,
+        data: product.name,
+      ),
+    );
     await box.delete(key);
   }
 
@@ -56,6 +69,14 @@ class ProductDatabase extends AppDatabase {
 
     final box = await openBox(boxName);
     await box.put(productInfo.id, productInfo.toJson());
+
+    await changesDatabase.set(
+      data: Change(
+        database: boxName,
+        method: 'create',
+        itemId: productInfo.id,
+      ),
+    );
   }
 
   @override
@@ -64,6 +85,14 @@ class ProductDatabase extends AppDatabase {
 
     final box = await openBox(boxName);
     box.put(key, data.toJson());
+
+     await changesDatabase.set(
+      data: Change(
+        database: boxName,
+        method: 'update',
+        itemId: key,
+      ),
+    );
   }
 
   Future<List<Product>> getAll() async {
@@ -76,5 +105,12 @@ class ProductDatabase extends AppDatabase {
     }
 
     return productInfoList;
+  }
+
+  Future<Product?> getProductById(String id) async {
+    final box = await openBox(boxName);
+    final productData = await box.get(id);
+
+    return productData == null ? null : Product.fromJson(productData);
   }
 }

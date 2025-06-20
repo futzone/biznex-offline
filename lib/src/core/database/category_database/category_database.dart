@@ -4,6 +4,7 @@ import 'package:biznex/src/core/model/category_model/category_model.dart';
 class CategoryDatabase extends AppDatabase {
   final String boxName = 'categories';
 
+
   @override
   Future delete({required String key}) async {
     final box = await openBox(boxName);

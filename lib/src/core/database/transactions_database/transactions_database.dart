@@ -1,12 +1,26 @@
 import 'package:biznex/src/core/database/app_database/app_database.dart';
+import 'package:biznex/src/core/extensions/for_double.dart';
+import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/transaction_model/transaction_model.dart';
- 
+
 class TransactionsDatabase extends AppDatabase {
   final String boxName = 'transactions';
 
   @override
   Future delete({required String key}) async {
     final box = await openBox(boxName);
+
+    final transaction = await getTransactionById(key);
+    if (transaction == null) return;
+    await changesDatabase.set(
+      data: Change(
+        database: boxName,
+        method: 'delete',
+        itemId: transaction.id,
+        data: transaction.value.priceUZS,
+      ),
+    );
+
     await box.delete(key);
   }
 
@@ -32,6 +46,14 @@ class TransactionsDatabase extends AppDatabase {
 
     final box = await openBox(boxName);
     await box.put(productInfo.id, productInfo.toJson());
+
+    await changesDatabase.set(
+      data: Change(
+        database: boxName,
+        method: 'create',
+        itemId: productInfo.id,
+      ),
+    );
   }
 
   @override
@@ -40,5 +62,20 @@ class TransactionsDatabase extends AppDatabase {
 
     final box = await openBox(boxName);
     box.put(key, data.toJson());
+
+    await changesDatabase.set(
+      data: Change(
+        database: boxName,
+        method: 'update',
+        itemId: key,
+      ),
+    );
+  }
+
+  Future<Transaction?> getTransactionById(String id) async {
+    final box = await openBox(boxName);
+    final data = box.get(id);
+    if (data == null) return null;
+    return Transaction.fromJson(data);
   }
 }

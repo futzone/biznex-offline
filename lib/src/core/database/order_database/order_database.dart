@@ -1,10 +1,13 @@
 import 'dart:developer';
 
 import 'package:biznex/src/core/database/app_database/app_database.dart';
+import 'package:biznex/src/core/database/changes_database/changes_database.dart';
+import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/order_models/order_model.dart';
 import 'package:uuid/uuid.dart';
 
 class OrderDatabase {
+  ChangesDatabase changesDatabase = ChangesDatabase();
   String getBoxName(id) => "orders_$id";
 
   Future<Box> openBox(String boxName) async {
@@ -37,6 +40,13 @@ class OrderDatabase {
     order.id = generateID;
     final box = await openBox(getBoxName("all"));
     box.put(order.id, order.toJson());
+     await changesDatabase.set(
+      data: Change(
+        database: getBoxName("all"),
+        method: 'create',
+        itemId: order.id,
+      ),
+    );
   }
 
   Future<Order?> getPlaceOrder(String placeId) async {
@@ -49,8 +59,6 @@ class OrderDatabase {
   Future<void> deletePlaceOrder(String placeId) async {
     final box = await openBox(getBoxName("${placeId}_open"));
     await box.clear();
-    log("Deleted");
-    // return boxData == null ? null : Order.fromJson(boxData);
   }
 
   Future<void> setPlaceOrder({required data, required String placeId}) async {

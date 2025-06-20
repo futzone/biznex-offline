@@ -3,12 +3,14 @@ class Change {
   String database;
   String method;
   String itemId;
+  String data;
 
   Change({
-    required this.id,
+    this.id = '',
     required this.database,
     required this.method,
     required this.itemId,
+    this.data = '',
   });
 
   Map<String, dynamic> toJson() {
@@ -17,6 +19,7 @@ class Change {
       'database': database,
       'method': method,
       'itemId': itemId,
+      'data': data,
     };
   }
 
@@ -26,6 +29,7 @@ class Change {
       database: json['database'],
       method: json['method'],
       itemId: json['itemId'],
+      data: json['data'],
     );
   }
 }

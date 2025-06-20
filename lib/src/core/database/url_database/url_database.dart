@@ -14,7 +14,7 @@ class UrlDatabase extends AppDatabase {
   @override
   Future get() async {
     final box = await _box();
-    return box.get('url');
+    return box.get('url'); 
   }
 
   @override
