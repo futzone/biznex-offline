@@ -34,11 +34,11 @@ class Network {
     return password;
   }
 
-  Future<bool> get(String url, {Map<String, dynamic>? body, String? password}) async {
+  Future<dynamic> get(String url, {Map<String, dynamic>? body, String? password}) async {
     try {
       if (!(await isConnected())) return false;
 
-      await dio.get(
+      final data = await dio.get(
         url,
         data: body,
         options: Options(
@@ -49,9 +49,9 @@ class Network {
           },
         ),
       );
-      return true;
+      return data.data;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
