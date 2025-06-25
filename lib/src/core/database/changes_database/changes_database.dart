@@ -1,3 +1,4 @@
+import 'package:biznex/src/controllers/changes_controller.dart';
 import 'package:biznex/src/core/database/app_database/app_database.dart';
 import 'package:biznex/src/core/model/app_changes_model.dart';
 
@@ -26,6 +27,10 @@ class ChangesDatabase extends AppDatabase {
   @override
   Future<void> set({required data}) async {
     if (data is! Change) return;
+
+    ChangesController changesController = ChangesController(data);
+    final status = await changesController.saveStatus();
+    if (status) return;
 
     Change productInfo = data;
     productInfo.id = generateID;

@@ -85,7 +85,7 @@ class Network {
     }
   }
 
-  Future<bool> delete(String url, {String? password}) async {
+  Future<bool> delete(String url, {String? password, dynamic body}) async {
     try {
       if (!(await isConnected())) return false;
       await dio.delete(
@@ -97,9 +97,10 @@ class Network {
             'password': password ?? await _password(),
           },
         ),
+        data: body,
       );
       return true;
-   } on DioException catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       log("Method: POST | Path: $url");
       log("Response:  ${error.response?.data}");
       log("Error:", error: error, stackTrace: stackTrace);
@@ -122,7 +123,7 @@ class Network {
         ),
       );
       return true;
-   } on DioException catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       log("Method: POST | Path: $url");
       log("Response:  ${error.response?.data}");
       log("Error:", error: error, stackTrace: stackTrace);

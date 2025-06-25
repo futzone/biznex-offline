@@ -507,4 +507,6 @@ abstract class AppLocales {
   static var cloudAddressForThisAccount = "cloudAddressForThisAccount";
   static var cloudAddressQrCodeDescription = "cloudAddressQrCodeDescription";
   static var updateCloudData = "updateCloudData";
+  static var expireDate = "expireDate";
+  static var errorOnCreatingCloudAccount = "errorOnCreatingCloudAccount";
 }

@@ -80,13 +80,9 @@ class Product {
       tagnumber: json['tagnumber'],
       cratedDate: json['cratedDate'],
       updatedDate: json['updatedDate'],
-      informations: (json['informations'] as List<dynamic>?)
-          ?.map((e) => ProductInfo.fromJson(e))
-          .toList(),
+      informations: (json['informations'] as List<dynamic>?)?.map((e) => ProductInfo.fromJson(e)).toList(),
       description: json['description'],
-      images: json['images'] != null
-          ? List<String>.from(json['images'].map((e) => e.toString()))
-          : null,
+      images: json['images'] != null ? List<String>.from(json['images'].map((e) => e.toString())) : null,
       measure: json['measure'],
       color: json['color'],
       colorCode: json['colorCode'],
@@ -96,11 +92,8 @@ class Product {
       percent: (json['percent'] as num? ?? 0.0).toDouble(),
       id: json['id'] ?? '',
       productId: json['productId'],
-      category:
-      json['category'] == null ? null : Category.fromJson(json['category']),
-      variants: (json['variants'] as List<dynamic>?)
-          ?.map((e) => Product.fromJson(e))
-          .toList(),
+      category: json['category'] == null ? null : Category.fromJson(json['category']),
+      variants: (json['variants'] as List<dynamic>?)?.map((e) => Product.fromJson(e)).toList(),
     );
   }
 
@@ -160,5 +153,57 @@ class Product {
       variants: setVariantsToNull == true ? null : variants ?? this.variants,
       category: setCategoryToNull == true ? null : category ?? this.category,
     );
+  }
+}
+
+class CloudProduct {
+  String id;
+  String clientId;
+  String name;
+  String categoryName;
+  String createdAt;
+  String updatedAt;
+  num price;
+  num oldPrice;
+  num amount;
+
+  CloudProduct({
+    this.id = '',
+    this.clientId = '',
+    this.name = '',
+    this.categoryName = '',
+    this.createdAt = '',
+    this.updatedAt = '',
+    this.price = 0,
+    this.oldPrice = 0,
+    this.amount = 0,
+  });
+
+  factory CloudProduct.fromJson(Map<String, dynamic> json) {
+    return CloudProduct(
+      id: json['id'] ?? '',
+      clientId: json['client_id'] ?? '',
+      name: json['name'] ?? '',
+      categoryName: json['category_name'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+      price: json['price'] ?? 0,
+      oldPrice: json['old_price'] ?? 0,
+      amount: json['amount'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'client_id': clientId,
+      'name': name,
+      'category_name': categoryName,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'price': price,
+      'old_price': oldPrice,
+      'amount': amount,
+    };
   }
 }

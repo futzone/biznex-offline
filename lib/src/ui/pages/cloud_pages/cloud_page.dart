@@ -1,11 +1,17 @@
 import 'dart:developer';
 
 import 'package:biznex/biznex.dart';
+import 'package:biznex/src/controllers/cloud_data_controller.dart';
+import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/cloud_models/client.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
+import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
+import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class CloudPage extends HookConsumerWidget {
@@ -13,13 +19,95 @@ class CloudPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final passwordController = useTextEditingController();
+    final expireDateController = useTextEditingController();
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
           body: state.whenProviderData(
             provider: clientStateProvider,
             builder: (client) {
-              if (client == null) return 0.w;
+              if (client == null) {
+                return Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.white,
+                    ),
+                    constraints: BoxConstraints(maxWidth: 600),
+                    padding: Dis.all(context.s(20)),
+                    margin: Dis.all(context.s(24)),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        spacing: context.h(16),
+                        children: [
+                          Center(
+                            child: Text(
+                              "Biznex Owner",
+                              style: TextStyle(
+                                fontSize: context.s(24),
+                                fontFamily: boldFamily,
+                                color: theme.mainColor,
+                              ),
+                            ),
+                          ),
+                          AppTextField(
+                            title: AppLocales.passwordHint.tr(),
+                            controller: passwordController,
+                            theme: theme,
+                            prefixIcon: const Icon(Iconsax.lock_1_copy),
+                          ),
+                          AppTextField(
+                            onlyRead: true,
+                            title: AppLocales.expireDate.tr(),
+                            controller: expireDateController,
+                            theme: theme,
+                            prefixIcon: const Icon(Iconsax.calendar_1_copy),
+                            onTap: () {
+                              showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(2100),
+                              ).then((date) {
+                                if (date != null) {
+                                  expireDateController.text = DateFormat('yyyy-MM-dd').format(date);
+                                }
+                              });
+                            },
+                          ),
+                          AppPrimaryButton(
+                            theme: theme,
+                            title: AppLocales.login.tr(),
+                            onPressed: () {
+                              showAppLoadingDialog(context);
+                              CloudDataController cloudDataController = CloudDataController();
+                              cloudDataController
+                                  .createCloudAccount(
+                                passwordController.text,
+                                expireDateController.text,
+                              )
+                                  .then((v) {
+                                AppRouter.close(context);
+                                if (v == true) {
+                                  ref.invalidate(clientStateProvider);
+                                } else {
+                                  ShowToast.error(
+                                    context,
+                                    AppLocales.errorOnCreatingCloudAccount.tr(),
+                                  );
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }
 
               client as Client;
               log(client.hiddenPassword);

@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
-import 'package:biznex/src/core/database/changes_database/changes_database.dart';
 import 'package:biznex/src/core/extensions/for_dynamic.dart';
-import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/cloud_models/client.dart';
 import 'package:biznex/src/core/network/network_services.dart';
 import 'package:biznex/src/core/network/password.dart';
@@ -17,7 +14,7 @@ class CloudDataController {
 
   Future createCloudAccount(String kPassword, String expireDate) async {
     if (kPassword.isEmpty || expireDate.isEmpty) return;
-    
+
     final deviceID = await licenseServices.getDeviceId();
     final password = await passwordDatabase.getPassword();
     final appState = await appStateDatabase.getApp();
@@ -36,17 +33,17 @@ class CloudDataController {
       kPassword,
     );
 
-    if (!isCreated) {
-      ChangesDatabase changesDatabase = ChangesDatabase();
-      await changesDatabase.set(
-        data: Change(
-          database: 'client',
-          method: 'create',
-          itemId: client.id,
-          data: jsonEncode(client.toJson()),
-        ),
-      );
-    }
+    // if (!isCreated) {
+    //   ChangesDatabase changesDatabase = ChangesDatabase();
+    //   await changesDatabase.set(
+    //     data: Change(
+    //       database: 'client',
+    //       method: 'create',
+    //       itemId: client.id,
+    //       data: jsonEncode(client.toJson()),
+    //     ),
+    //   );
+    // }
 
     log('Cloud account status:$isCreated : ${client.toJson()}');
     return isCreated;
