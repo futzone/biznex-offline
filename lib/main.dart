@@ -104,6 +104,7 @@ void main() async {
   final appDir = await getApplicationSupportDirectory();
   final dir = Directory(path.join(appDir.path, 'database'));
   Hive.init(dir.path);
+
   // Hive.initFlutter();
 
   startServer();

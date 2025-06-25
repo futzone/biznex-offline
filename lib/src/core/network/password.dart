@@ -1,7 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:hive/hive.dart';
 String _generatePassword({
   int length = 8,
   bool hasUpper = true,
@@ -25,15 +24,17 @@ String _generatePassword({
 }
 
 class PasswordDatabase {
-  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  Future<Box> storage() async => await Hive.openBox('password_box');
   final String key = "password_key";
 
   Future<void> savePassword(String password) async {
-    await storage.write(key: key, value: password);
+    final box = await storage();
+    await box.put(key, password);
   }
 
   Future<String?> getPassword() async {
-    final password = await storage.read(key: key);
+    final box = await storage();
+    final password = await box.get(key);
 
     if (password == null || password.isEmpty) {
       final newPassword = _generatePassword(length: 12);
@@ -45,6 +46,7 @@ class PasswordDatabase {
   }
 
   Future<void> deletePassword() async {
-    await storage.delete(key: key);
+    final box = await storage();
+    await box.delete(key);
   }
 }

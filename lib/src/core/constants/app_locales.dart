@@ -502,4 +502,9 @@ abstract class AppLocales {
   static var installingNewVersion = "installingNewVersion";
   static var chekingForUpdates = "chekingForUpdates";
   static var skip = "skip";
+  static var cloudData = "cloudData";
+  static var lastUpdatedTime = "lastUpdatedTime";
+  static var cloudAddressForThisAccount = "cloudAddressForThisAccount";
+  static var cloudAddressQrCodeDescription = "cloudAddressQrCodeDescription";
+  static var updateCloudData = "updateCloudData";
 }

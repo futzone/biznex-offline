@@ -71,7 +71,7 @@ class AppTextField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       controller: controller,
-      style: TextStyle(fontWeight: FontWeight.w400, color: theme.textColor, fontSize: context.s(14)),
+      style: TextStyle(fontWeight: FontWeight.w400, color: theme.textColor, fontSize: (14)),
       cursorColor: theme.mainColor,
       decoration: InputDecoration(
         // constraints: BoxConstraints(maxWidth: 100),

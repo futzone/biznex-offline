@@ -1,11 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:biznex/src/core/network/endpoints.dart';
 import 'package:biznex/src/core/network/password.dart';
 import 'package:dio/dio.dart';
 
 class Network {
   final Dio dio = Dio(
     BaseOptions(
+      baseUrl: ApiEndpoints.baseUrl,
       connectTimeout: const Duration(seconds: 7),
       receiveTimeout: const Duration(seconds: 10),
       sendTimeout: const Duration(seconds: 7),
@@ -50,7 +53,10 @@ class Network {
         ),
       );
       return data.data;
-    } catch (e) {
+    } on DioException catch (error, stackTrace) {
+      log("Method: POST | Path: $url");
+      log("Response:  ${error.response?.data}");
+      log("Error:", error: error, stackTrace: stackTrace);
       return null;
     }
   }
@@ -65,12 +71,16 @@ class Network {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'password': password ?? await _password(),
+            'password': password ?? (await _password()),
           },
         ),
       );
       return true;
-    } catch (e) {
+    } on DioException catch (error, stackTrace) {
+      log(error.requestOptions.headers.toString());
+      log("Method: POST | Path: $url, Status: ${error.response?.statusCode}, Headers: ${error.response?.headers}");
+      log("Response:  ${error.response?.data}");
+      log("Error:", error: error, stackTrace: stackTrace);
       return false;
     }
   }
@@ -89,7 +99,10 @@ class Network {
         ),
       );
       return true;
-    } catch (e) {
+   } on DioException catch (error, stackTrace) {
+      log("Method: POST | Path: $url");
+      log("Response:  ${error.response?.data}");
+      log("Error:", error: error, stackTrace: stackTrace);
       return false;
     }
   }
@@ -109,7 +122,10 @@ class Network {
         ),
       );
       return true;
-    } catch (e) {
+   } on DioException catch (error, stackTrace) {
+      log("Method: POST | Path: $url");
+      log("Response:  ${error.response?.data}");
+      log("Error:", error: error, stackTrace: stackTrace);
       return false;
     }
   }
@@ -129,7 +145,10 @@ class Network {
         ),
       );
       return true;
-    } catch (e) {
+    } on DioException catch (error, stackTrace) {
+      log("Method: POST | Path: $url");
+      log("Response:  ${error.response?.data}");
+      log("Error:", error: error, stackTrace: stackTrace);
       return false;
     }
   }

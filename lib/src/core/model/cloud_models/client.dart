@@ -1,3 +1,5 @@
+import 'package:biznex/src/core/utils/password_utils.dart';
+
 class Client {
   String id;
   String name;
@@ -35,5 +37,11 @@ class Client {
       'updated_at': updatedAt,
       'expired_date': expiredDate,
     };
+  }
+
+  String get hiddenPassword {
+    PasswordEncryptor encryptor = PasswordEncryptor();
+    String encrypted = encryptor.encryptPassword(password);
+    return encrypted;
   }
 }

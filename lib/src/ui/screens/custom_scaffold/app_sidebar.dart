@@ -1,6 +1,7 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/ui/pages/login_pages/onboard_page.dart';
 import 'package:biznex/src/ui/screens/settings_screen/settings_button_screen.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
@@ -163,6 +164,13 @@ class AppSidebar extends HookConsumerWidget {
                     // sidebarItemBuilder("assets/icons/hanger.svg", AppLocales.productSizes.tr(), 6),
                     sidebarItemBuilder(Iconsax.chart_square, AppLocales.reports.tr(), 7),
                     sidebarItemBuilder(Iconsax.profile_2user, AppLocales.employees.tr(), 8),
+                    state.whenProviderData(
+                      provider: clientStateProvider,
+                      builder: (data) {
+                        if (data == null) return const SizedBox.shrink();
+                        return sidebarItemBuilder(Iconsax.cloud_copy, AppLocales.cloudData.tr(), 11);
+                      },
+                    ),
                     SimpleButton(
                       onPressed: () async {
                         final isFullscreen = await windowManager.isFullScreen();

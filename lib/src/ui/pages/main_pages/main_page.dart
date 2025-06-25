@@ -1,5 +1,6 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/ui/pages/category_pages/category_page.dart';
+import 'package:biznex/src/ui/pages/cloud_pages/cloud_page.dart';
 import 'package:biznex/src/ui/pages/order_pages/order_set_page.dart';
 import 'package:biznex/src/ui/pages/places_pages/places_page.dart';
 import 'package:biznex/src/ui/pages/transactions_page/transactions_page.dart';
@@ -51,6 +52,7 @@ class MainPage extends HookConsumerWidget {
                 if (pageValue.value == 8) return EmployeePage(appbar: appbar, fab);
                 if (pageValue.value == 7) return MonitoringPage();
                 if (pageValue.value == 9) return TransactionsPage(fab, appbar: appbar);
+                if (pageValue.value == 11) return CloudPage();
                 return ProductsPage(fab, appbar: appbar);
               },
             ),

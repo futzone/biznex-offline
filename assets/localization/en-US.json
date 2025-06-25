@@ -401,5 +401,11 @@
   "reportsForRange": "reports for range",
   "downloadingUpdates": "Downloading a new version of the application. Please wait...",
   "installingNewVersion": "Installing a new version of the application...",
-  "chekingForUpdates": "Checking for updates..."
+  "chekingForUpdates": "Checking for updates...",
+  "skip": "Skip",
+  "cloudData": "Online data",
+  "updateCloudData": "Update online data",
+  "lastUpdatedTime": "Last updated time",
+  "cloudAddressForThisAccount": "Online data viewing address for this account",
+  "cloudAddressQrCodeDescription": "Download the 'Biznex Owner' app and scan the QR code to open this address on your device."
 }

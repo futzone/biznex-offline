@@ -499,5 +499,11 @@
   "reportsForRange": " oraliq davr uchun hisobotlar",
   "downloadingUpdates": "Ilovaning yangi versiyasi yuklanmoqda. Iltimos kuting...",
   "installingNewVersion": "Ilovaning yangi versiyasi o'rnatilmoqda...",
-  "chekingForUpdates": "Yangilanishlar takshirilmoqda..."
+  "chekingForUpdates": "Yangilanishlar takshirilmoqda...",
+  "skip": "O'tkazib yuborish",
+  "cloudData": "Onlayn ma'lumotlar",
+  "updateCloudData": "Onlayn ma'lumotlarni yangilash",
+  "lastUpdatedTime": "So'nggi yangilanish vaqti",
+  "cloudAddressForThisAccount": "Ushbu akkaunt uchun ma'lumotlarni onlayn ko'rish manzili",
+  "cloudAddressQrCodeDescription": "Ushbu manzilni o'zingizning qurilmangizda ochish uchun 'Biznex Owner' ilovasini yuklab oling va QR kodni skanerlang."
 }
