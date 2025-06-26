@@ -13,8 +13,9 @@ class PasswordEncryptor {
 
   String decryptPassword(String encryptedPassword) {
     final encrypter = Encrypter(AES(_key, mode: AESMode.cbc));
-    final decrypted = encrypter.decrypt(Encrypted.fromBase64(encryptedPassword), iv: _iv);
-    return safeBase64Decode(decrypted);
+    final decoded = safeBase64Decode(encryptedPassword);
+    final decrypted = encrypter.decrypt(Encrypted.fromBase64(decoded), iv: _iv);
+    return decrypted;
   }
 
   String safeBase64Encode(String input) {

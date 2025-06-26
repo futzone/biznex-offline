@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:biznex/src/core/database/app_database/app_database.dart';
 import 'package:biznex/src/core/database/changes_database/changes_database.dart';
 import 'package:biznex/src/core/model/app_changes_model.dart';
@@ -83,5 +81,13 @@ class OrderDatabase {
   Future<void> closeOrder({required String placeId}) async {
     final box = await openBox(getBoxName("${placeId}_open"));
     await box.clear();
+  }
+
+  Future<Order?> getOrderById(String id) async {
+    final box = await openBox(getBoxName("all"));
+    final orderJson = box.get(id);
+    
+    if (orderJson == null) return null;
+    return Order.fromJson(orderJson);
   }
 }

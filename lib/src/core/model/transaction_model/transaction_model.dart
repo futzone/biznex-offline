@@ -53,3 +53,52 @@ class Transaction {
     };
   }
 }
+
+
+class CloudTransaction {
+  String id;
+  String clientId;
+  String orderId;
+  String employeeId;
+  String note;
+  String createdAt;
+  String updatedAt;
+  num amount;
+
+  CloudTransaction({
+    this.id = '',
+    this.clientId = '',
+    this.orderId = '',
+    this.employeeId = '',
+    this.note = '',
+    this.createdAt = '',
+    this.updatedAt = '',
+    this.amount = 0,
+  });
+
+  factory CloudTransaction.fromJson(Map<String, dynamic> json) {
+    return CloudTransaction(
+      id: json['id'] ?? '',
+      clientId: json['client_id'] ?? '',
+      orderId: json['order_id'] ?? '',
+      employeeId: json['employee_id'] ?? '',
+      note: json['note'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+      amount: json['amount'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'client_id': clientId,
+      'order_id': orderId,
+      'employee_id': employeeId,
+      'note': note,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'amount': amount,
+    };
+  }
+}

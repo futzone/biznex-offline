@@ -33,19 +33,6 @@ class CloudDataController {
       kPassword,
     );
 
-    // if (!isCreated) {
-    //   ChangesDatabase changesDatabase = ChangesDatabase();
-    //   await changesDatabase.set(
-    //     data: Change(
-    //       database: 'client',
-    //       method: 'create',
-    //       itemId: client.id,
-    //       data: jsonEncode(client.toJson()),
-    //     ),
-    //   );
-    // }
-
-    log('Cloud account status:$isCreated : ${client.toJson()}');
     return isCreated;
   }
 }

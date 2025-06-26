@@ -43,3 +43,47 @@ class Employee {
         "pincode": pincode,
       };
 }
+
+class CloudEmployee {
+  String id;
+  String clientId;
+  String name;
+  String password;
+  String createdAt;
+  String updatedAt;
+  String roleName;
+
+  CloudEmployee({
+    this.id = '',
+    this.clientId = '',
+    this.name = '',
+    this.password = '',
+    this.createdAt = '',
+    this.updatedAt = '',
+    this.roleName = '',
+  });
+
+  factory CloudEmployee.fromJson(Map<String, dynamic> json) {
+    return CloudEmployee(
+      id: json['id'] ?? '',
+      clientId: json['client_id'] ?? '',
+      name: json['name'] ?? '',
+      password: json['password'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+      roleName: json['role_name'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'client_id': clientId,
+      'name': name,
+      'password': password,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'role_name': roleName,
+    };
+  }
+}

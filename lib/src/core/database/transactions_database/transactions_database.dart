@@ -78,4 +78,13 @@ class TransactionsDatabase extends AppDatabase {
     if (data == null) return null;
     return Transaction.fromJson(data);
   }
+
+  Future<Transaction?> getOrderTransaction(String orderId) async {
+    final box = await openBox(boxName);
+    final data = box.values.where((el) {
+      return (el['order'] != null) && (el['order']['id'] == orderId);
+    }).firstOrNull;
+    if (data == null) return null;
+    return Transaction.fromJson(data);
+  }
 }
