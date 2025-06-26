@@ -39,7 +39,7 @@ class Network {
 
   Future<dynamic> get(String url, {Map<String, dynamic>? body, String? password}) async {
     try {
-      if (!(await isConnected())) return false;
+      if (!(await isConnected())) return null;
 
       final data = await dio.get(
         url,
@@ -54,7 +54,7 @@ class Network {
       );
       return data.data;
     } on DioException catch (error, stackTrace) {
-      log("Method: POST | Path: $url");
+      log("Method: GET | Path: $url");
       log("Response:  ${error.response?.data}");
       log("Error:", error: error, stackTrace: stackTrace);
       return null;
@@ -147,7 +147,7 @@ class Network {
       );
       return true;
     } on DioException catch (error, stackTrace) {
-      log("Method: POST | Path: $url");
+      log("Method: PUT | Path: $url");
       log("Response:  ${error.response?.data}");
       log("Error:", error: error, stackTrace: stackTrace);
       return false;

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/cloud_data_controller.dart';
+import 'package:biznex/src/controllers/cloud_reports_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/model/cloud_models/client.dart';
@@ -21,6 +22,7 @@ class CloudPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final passwordController = useTextEditingController();
     final expireDateController = useTextEditingController();
+    final progressValue = useState(0.0);
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
@@ -180,7 +182,15 @@ class CloudPage extends HookConsumerWidget {
                           24.h,
                           AppPrimaryButton(
                             theme: theme,
-                            onPressed: () {},
+                            onPressed: () async {
+                              CloudReportsController reportsController = CloudReportsController(
+                                ref: ref,
+                                context: context,
+                                progress: progressValue,
+                              );
+
+                              await reportsController.startSendReports();
+                            },
                             title: AppLocales.updateCloudData.tr(),
                           ),
                         ],

@@ -509,4 +509,7 @@ abstract class AppLocales {
   static var updateCloudData = "updateCloudData";
   static var expireDate = "expireDate";
   static var errorOnCreatingCloudAccount = "errorOnCreatingCloudAccount";
+  static var reportsSendSuccessfully = "reportsSendSuccessfully";
+  static var sendReportsError = "sendReportsError";
+  static var sendingReports = "sendingReports";
 }
