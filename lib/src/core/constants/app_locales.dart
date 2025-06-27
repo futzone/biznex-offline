@@ -512,4 +512,5 @@ abstract class AppLocales {
   static var reportsSendSuccessfully = "reportsSendSuccessfully";
   static var sendReportsError = "sendReportsError";
   static var sendingReports = "sendingReports";
+  static var internetConnectionError = "internetConnectionError";
 }

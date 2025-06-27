@@ -6,6 +6,7 @@ import 'package:biznex/src/core/database/order_database/order_percent_database.d
 import 'package:biznex/src/core/database/product_database/product_database.dart';
 import 'package:biznex/src/core/database/transactions_database/transactions_database.dart';
 import 'package:biznex/src/core/model/cloud_models/client.dart';
+import 'package:biznex/src/core/model/cloud_models/monitoring.dart';
 import 'package:biznex/src/core/network/endpoints.dart';
 import 'package:biznex/src/core/network/network_base.dart';
 import 'package:biznex/src/core/network/network_services.dart';
@@ -16,17 +17,23 @@ import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 
 import '../core/model/cloud_models/reports.dart';
 
+/// State bilan bog'lanish uchun ref
+///  Contextni boshqarish uchun context
+///  Ekranda progres, masalan 98% deb chiqishi uchun progress notifier
 class CloudReportsController {
   final WidgetRef ref;
   final BuildContext context;
   final ValueNotifier<double> progress;
 
+  ///Hammasi required field
   CloudReportsController({
     required this.ref,
     required this.context,
     required this.progress,
   });
 
+  /// Boshqa database va service lar uchun chaqiruv
+  ///
   final OrderDatabase _orderDatabase = OrderDatabase();
   final OrderPercentDatabase _orderPercentDatabase = OrderPercentDatabase();
   final EmployeeDatabase _employeeDatabase = EmployeeDatabase();
@@ -35,13 +42,43 @@ class CloudReportsController {
   final LicenseServices _licenseServices = LicenseServices();
   final Network _network = Network();
 
+  /// Bu yerda hammasini jamlaymiz
+  /// Masalan: Report yuborish, monitoringni yuborish, saqlab qo'yilgan actionlarni yuborish
   Future<void> startSendReports() async {
+    /// Necha foizligini ko'rsatadi
     showAppProgressDialog(context, progress);
+
+    /// Avval internetga ulanishni tekshiramiz
+    /// Agar ulangan bo'lsa ishlaveramiz
+    /// Ulanmagan bo'lsa toast chiqarib, ishni to'xtatamiz
+    if (!(await _network.isConnected())) {
+      AppRouter.close(context);
+      ShowToast.error(context, AppLocales.internetConnectionError.tr());
+      return;
+    }
+
+    /// Device id API bilan ishlashda doim required
     final deviceId = await _licenseServices.getDeviceId() ?? '';
+
+    ///Barcha hisobotlar api
+    /// Orders
+    /// Profit
+    /// Employees
+    /// Total value va boshqalar
+    await _sendReports(deviceId);
+
+    ///Loadingni yopish
+    AppRouter.close(context);
+
+    ///Oxirida message chiqaramiz
+    ShowToast.success(context, AppLocales.reportsSendSuccessfully.tr());
+  }
+
+  Future<void> _sendReports(String deviceId) async {
     final oldHave = await _network.get(ApiEndpoints.reportOneGet(deviceId));
     final reports = await _calculateReports();
 
-    progress.value = 95.0;
+    progress.value = 45.0;
 
     if (oldHave != null && oldHave is Map) {
       CloudReportModel cloudReportModel = CloudReportModel(
@@ -53,12 +90,10 @@ class CloudReportsController {
 
       await _network.put(ApiEndpoints.reportOne(deviceId), body: cloudReportModel.toJson()).then((value) async {
         if (!value) {
-          AppRouter.close(context);
-          ShowToast.error(context, AppLocales.sendReportsError.tr());
           return;
         }
 
-        progress.value = 98.0;
+        progress.value = 48.0;
         final clientState = ref.watch(clientStateProvider).value;
         if (clientState == null) return;
         final NetworkServices networkServices = NetworkServices();
@@ -67,9 +102,6 @@ class CloudReportsController {
         await networkServices.updateClient(client).then((_) {
           ref.invalidate(clientStateProvider);
         });
-
-        AppRouter.close(context);
-        ShowToast.success(context, AppLocales.reportsSendSuccessfully.tr());
       });
 
       return;
@@ -84,11 +116,9 @@ class CloudReportsController {
 
     await _network.post(ApiEndpoints.report, body: cloudReportModel.toJson()).then((value) async {
       if (!value) {
-        AppRouter.close(context);
-        ShowToast.error(context, AppLocales.sendReportsError.tr());
         return;
       }
-      progress.value = 98.0;
+      progress.value = 48.0;
       final clientState = ref.watch(clientStateProvider).value;
       if (clientState == null) return;
       final NetworkServices networkServices = NetworkServices();
@@ -97,9 +127,6 @@ class CloudReportsController {
       await networkServices.updateClient(client).then((_) {
         ref.invalidate(clientStateProvider);
       });
-
-      AppRouter.close(context);
-      ShowToast.success(context, AppLocales.reportsSendSuccessfully.tr());
     });
   }
 
@@ -166,7 +193,7 @@ class CloudReportsController {
       int transactionCount = 0;
 
       for (DateTime date = oneMonthAgo; !date.isAfter(now); date = date.add(Duration(days: 1))) {
-        progress.value += 2;
+        progress.value += 1;
         final dayOrders = orders.where((order) {
           final orderDate = DateTime.parse(order.createdDate);
           return orderDate.year == date.year && date.month == orderDate.month && date.day == orderDate.day;
@@ -213,5 +240,13 @@ class CloudReportsController {
     } catch (error) {
       return {};
     }
+  }
+
+  Future<Map<String, CloudMonitoringItem>> _calculateMonitoring() async {
+    final orders = await _orderDatabase.getOrders();
+    final employees = await _employeeDatabase.get();
+    final products = await _productDatabase.getAll();
+    Map<String, CloudMonitoringItem> monitoringData = {};
+    return monitoringData;
   }
 }

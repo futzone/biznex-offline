@@ -180,19 +180,19 @@ class CloudPage extends HookConsumerWidget {
                             ),
                           ),
                           24.h,
-                          AppPrimaryButton(
-                            theme: theme,
-                            onPressed: () async {
-                              CloudReportsController reportsController = CloudReportsController(
-                                ref: ref,
-                                context: context,
-                                progress: progressValue,
-                              );
-
-                              await reportsController.startSendReports();
-                            },
-                            title: AppLocales.updateCloudData.tr(),
-                          ),
+                          // AppPrimaryButton(
+                          //   theme: theme,
+                          //   onPressed: () async {
+                          //     CloudReportsController reportsController = CloudReportsController(
+                          //       ref: ref,
+                          //       context: context,
+                          //       progress: progressValue,
+                          //     );
+                          //
+                          //     await reportsController.startSendReports();
+                          //   },
+                          //   title: AppLocales.updateCloudData.tr(),
+                          // ),
                         ],
                       ),
                     ),
