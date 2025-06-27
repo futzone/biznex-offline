@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:biznex/biznex.dart';
@@ -5,13 +6,16 @@ import 'package:biznex/src/controllers/cloud_data_controller.dart';
 import 'package:biznex/src/controllers/cloud_reports_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/extensions/for_dynamic.dart';
 import 'package:biznex/src/core/model/cloud_models/client.dart';
+import 'package:biznex/src/core/network/network_services.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_text_field.dart';
+import 'package:flutter/services.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -22,6 +26,8 @@ class CloudPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final passwordController = useTextEditingController();
     final expireDateController = useTextEditingController();
+    final channelAddressController = useTextEditingController();
+    final tokenController = useTextEditingController();
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
@@ -155,35 +161,146 @@ class CloudPage extends HookConsumerWidget {
                     ),
                   ),
                   Expanded(
-                    child: SingleChildScrollView(
-                      padding: Dis.only(lr: context.w(24), top: context.h(24)),
-                      child: Column(
+                    child: Padding(
+                      padding: Dis.all(32),
+                      child: Row(
+                        spacing: 24,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            AppLocales.cloudAddressForThisAccount.tr(),
-                            style: TextStyle(
-                              fontSize: context.s(20),
-                              color: Colors.black,
-                              fontFamily: boldFamily,
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white,
+                              ),
+                              padding: Dis.all(24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppLocales.cloudAddressForThisAccount.tr(),
+                                    style: TextStyle(
+                                      fontSize: context.s(18),
+                                      color: Colors.black,
+                                      fontFamily: boldFamily,
+                                    ),
+                                  ),
+                                  16.h,
+                                  QrImageView(
+                                    data: "${client.id}#${client.hiddenPassword}",
+                                    version: QrVersions.auto,
+                                    // size: context.s(400.0),
+                                  ),
+                                  16.h,
+                                  Text(
+                                    AppLocales.cloudAddressQrCodeDescription.tr(),
+                                    style: TextStyle(
+                                      fontSize: context.s(14),
+                                      fontFamily: regularFamily,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          16.h,
-                          QrImageView(
-                            data: "${client.id}#${client.hiddenPassword}",
-                            version: QrVersions.auto,
-                            size: context.s(400.0),
-                          ),
-                          16.h,
-                          Text(
-                            AppLocales.cloudAddressQrCodeDescription.tr(),
-                            style: TextStyle(
-                              fontSize: context.s(14),
-                              fontFamily: regularFamily,
+
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white,
+                              ),
+                              padding: Dis.all(24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      if (jsonDecode(client.name) is Map && jsonDecode(client.name)['token'].toString().isNotEmpty)
+                                        Icon(
+                                          Ionicons.checkmark_done_circle_outline,
+                                          color: theme.mainColor,
+                                        ),
+                                      if (jsonDecode(client.name) is Map && jsonDecode(client.name)['token'].toString().isNotEmpty)
+                                        12.w,
+                                        Text(
+                                        AppLocales.telegramNotificationFields.tr(),
+                                        style: TextStyle(
+                                          fontSize: context.s(18),
+                                          color: Colors.black,
+                                          fontFamily: boldFamily,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  16.h,
+                                  AppTextField(
+                                    title: AppLocales.botToken.tr(),
+                                    controller: tokenController,
+                                    theme: theme,
+                                    suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        await Clipboard.getData('text/plain').then((data) {
+                                          tokenController.text = data?.text ?? "";
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Iconsax.clipboard_text_copy,
+                                        color: theme.secondaryTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                  16.h,
+                                  AppTextField(
+                                    title: AppLocales.channelAddress.tr(),
+                                    controller: channelAddressController,
+                                    theme: theme,
+                                    suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        await Clipboard.getData('text/plain').then((data) {
+                                          channelAddressController.text = data?.text ?? "";
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Iconsax.clipboard_text_copy,
+                                        color: theme.secondaryTextColor,
+                                      ),
+                                    ),
+                                  ),
+                                  16.h,
+                                  AppPrimaryButton(
+                                    theme: theme,
+                                    title: AppLocales.save.tr(),
+                                    onPressed: () async {
+                                      showAppLoadingDialog(context);
+                                      Client newClient = client;
+                                      newClient.updatedAt = DateTime.now().toIso8601String();
+                                      newClient.name = jsonEncode({
+                                        "name": state.shopName.notNullOrEmpty("Biznex Client"),
+                                        "channel": channelAddressController.text.trim(),
+                                        "token": tokenController.text.trim(),
+                                      });
+
+                                      NetworkServices ns = NetworkServices();
+                                      await ns.updateClient(newClient).then((_) {
+                                        AppRouter.close(context);
+                                        ref.invalidate(clientStateProvider);
+                                        ShowToast.success(context, AppLocales.savedSuccessfully.tr());
+                                        channelAddressController.clear();
+                                        tokenController.clear();
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          24.h,
+
                           // AppPrimaryButton(
                           //   theme: theme,
                           //   onPressed: () async {

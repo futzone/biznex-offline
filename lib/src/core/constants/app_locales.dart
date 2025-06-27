@@ -513,4 +513,7 @@ abstract class AppLocales {
   static var sendReportsError = "sendReportsError";
   static var sendingReports = "sendingReports";
   static var internetConnectionError = "internetConnectionError";
+  static var telegramNotificationFields = "telegramNotificationFields";
+  static var botToken = "botToken";
+  static var channelAddress = "channelAddress";
 }

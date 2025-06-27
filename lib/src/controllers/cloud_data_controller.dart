@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
 import 'package:biznex/src/core/extensions/for_dynamic.dart';
@@ -22,7 +23,11 @@ class CloudDataController {
     Client client = Client(
       createdAt: DateTime.now().toIso8601String(),
       id: deviceID ?? '',
-      name: appState.shopAddress.notNullOrEmpty('Biznex Client'),
+      name: jsonEncode({
+        "name": appState.shopName.notNullOrEmpty("Biznex Client"),
+        "channel": '',
+        "token": '',
+      }),
       password: password ?? '0000',
       updatedAt: DateTime.now().toIso8601String(),
       expiredDate: expireDate,
