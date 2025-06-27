@@ -22,7 +22,6 @@ class CloudPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final passwordController = useTextEditingController();
     final expireDateController = useTextEditingController();
-    final progressValue = useState(0.0);
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
@@ -140,7 +139,12 @@ class CloudPage extends HookConsumerWidget {
                             color: theme.white,
                           ),
                           child: Text(
-                            "${AppLocales.lastUpdatedTime.tr()}:  ${DateFormat('yyyy, dd-MMMM, HH:mm', context.locale.languageCode).format(DateTime.parse(client.updatedAt).toLocal())}",
+                            "${AppLocales.lastUpdatedTime.tr()}:  ${DateFormat(
+                              'yyyy, dd-MMMM, HH:mm',
+                              context.locale.languageCode,
+                            ).format(
+                              DateTime.parse(client.updatedAt).add(Duration(hours: 2)),
+                            )}",
                             style: TextStyle(
                               fontSize: context.s(14),
                               color: Colors.black54,

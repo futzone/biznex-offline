@@ -5,6 +5,7 @@ import 'package:biznex/src/core/database/order_database/order_database.dart';
 import 'package:biznex/src/core/database/order_database/order_percent_database.dart';
 import 'package:biznex/src/core/database/product_database/product_database.dart';
 import 'package:biznex/src/core/database/transactions_database/transactions_database.dart';
+import 'package:biznex/src/core/extensions/for_dynamic.dart';
 import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/cloud_models/order.dart';
 import 'package:biznex/src/core/model/cloud_models/percent.dart';
@@ -14,10 +15,14 @@ import 'package:biznex/src/core/model/product_models/product_model.dart';
 import 'package:biznex/src/core/model/transaction_model/transaction_model.dart';
 import 'package:biznex/src/core/network/endpoints.dart';
 import 'package:biznex/src/core/network/network_base.dart';
+import 'package:biznex/src/core/network/network_services.dart';
 import 'package:biznex/src/core/services/license_services.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ChangesController {
   Change change;
+
   ChangesController(this.change);
 
   final Network network = Network();
@@ -28,6 +33,8 @@ class ChangesController {
   }
 
   Future<bool> saveStatus() async {
+    if (!(await network.isConnected())) return false;
+
     log("save status working");
     if (change.database == ProductDatabase().boxName) {
       return await _ifProductChanges();
@@ -52,10 +59,52 @@ class ChangesController {
       return await _ifOrderChanges();
     }
 
-    return false;
+    return _ifClientChanges();
   }
 
-  Future<bool> ifClientChanges() async {
+  Future<bool> _ifClientChanges() async {
+    if (change.method == 'login') {
+      String employeeName = change.itemId.capitalize;
+      if (employeeName.toLowerCase() != 'admin') {
+        Employee? employee = await EmployeeDatabase().getOne(change.itemId);
+        if (employee != null) {
+          employeeName = "${employee.fullname} (${employee.roleName})";
+        }
+      }
+
+      final requestBody = {
+        "id": Uuid().v4(),
+        "client_id": await _getDeviceId(),
+        "order_id": change.database == OrderDatabase().getBoxName('all') ? change.itemId : null,
+        "employee_id": change.database == EmployeeDatabase().boxName ? change.itemId : null,
+        "product_id": change.database == ProductDatabase().boxName ? change.itemId : null,
+        "type": change.method == 'delete' ? 'danger' : 'warning',
+        "info": "$employeeName##login_to_app",
+        "created_at": change.createdDate.notNullOrEmpty(DateTime.now().toIso8601String()),
+      };
+
+      final response = await network.post(ApiEndpoints.action, body: requestBody);
+
+      return response;
+    }
+
+    if (change.database == "app" && change.method == "update" && change.itemId == "pincode") {
+      final requestBody = {
+        "id": Uuid().v4(),
+        "client_id": await _getDeviceId(),
+        "order_id": null,
+        "employee_id": null,
+        "product_id": null,
+        "type": 'danger',
+        "info": 'admin_changes_pincode##${change.data}',
+        "created_at": change.createdDate.notNullOrEmpty(DateTime.now().toIso8601String()),
+      };
+
+      final response = await network.post(ApiEndpoints.action, body: requestBody);
+
+      return response;
+    }
+
     return false;
   }
 

@@ -1,13 +1,20 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:biznex/biznex.dart';
 import 'package:biznex/main.dart';
+import 'package:biznex/src/controllers/changes_controller.dart';
+import 'package:biznex/src/core/database/changes_database/changes_database.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/network/network_services.dart';
 import 'package:biznex/src/core/release/auto_update.dart';
+import 'package:biznex/src/providers/app_state_provider.dart';
 import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart'; // onPointerHover va PointerEnterEvent uchun kerak
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../core/model/cloud_models/client.dart';
 
 class ActivityWrapper extends StatefulWidget {
   final Widget child;
@@ -20,6 +27,7 @@ class ActivityWrapper extends StatefulWidget {
 }
 
 class _ActivityWrapperState extends State<ActivityWrapper> {
+  final ChangesDatabase _changesDatabase = ChangesDatabase();
   Timer? _inactivityTimer;
   late final FocusNode _focusNode;
   final Duration _inactivityTimeout = const Duration(seconds: 3000);
@@ -87,10 +95,37 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
 
   void _autoUpdateCall() async => await checkAndUpdate(updateNotifier, lastVersion, widget.ref);
 
+  void _localChangesSync() async {
+    log('syncing saved changes');
+    final changesList = await _changesDatabase.get();
+    for (final item in changesList) {
+      log("${item.method} ${item.database}");
+      ChangesController changesController = ChangesController(item);
+      final saveStatus = await changesController.saveStatus();
+      if (saveStatus) {
+        log(saveStatus.toString());
+        await _changesDatabase.delete(key: item.id);
+        log("deleted: ${item.database} ${item.method}");
+      }
+    }
+
+    NetworkServices networkServices = NetworkServices();
+    final client = await widget.ref.watch(clientStateProvider.future);
+    if (client == null) return;
+    Client neClient = client;
+    neClient.updatedAt = DateTime.now().toIso8601String();
+    networkServices.updateClient(neClient).then((_) {
+      widget.ref.invalidate(clientStateProvider);
+    });
+
+    log('syncing changes is completed!');
+  }
+
   @override
   void initState() {
     super.initState();
     _autoUpdateCall();
+    _localChangesSync();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {

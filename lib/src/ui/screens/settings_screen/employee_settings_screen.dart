@@ -72,6 +72,7 @@ class EmployeeSettingsScreen extends HookConsumerWidget {
                         database: "app",
                         method: "update",
                         itemId: "pincode",
+                        data: app.pincode ,
                       ),
                     );
                     AppRouter.close(context);

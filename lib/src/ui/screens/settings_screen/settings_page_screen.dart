@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:biznex/src/controllers/orcer_percent_controller.dart';
 import 'package:biznex/src/core/database/app_database/app_state_database.dart';
+import 'package:biznex/src/core/database/changes_database/changes_database.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/model/app_changes_model.dart';
 import 'package:biznex/src/core/model/order_models/percent_model.dart';
 import 'package:biznex/src/core/release/auto_update.dart';
 import 'package:biznex/src/providers/app_state_provider.dart';
@@ -395,10 +397,13 @@ class SettingsPageScreen extends HookConsumerWidget {
                                   newState.pincode = newPincodeController.text.trim();
                                 }
 
-                                AppStateDatabase().updateApp(newState).then((_) {
+                                AppStateDatabase().updateApp(newState).then((_) async {
                                   ref.refresh(appStateProvider);
                                   ref.invalidate(appStateProvider);
                                   ShowToast.success(context, AppLocales.savedSuccessfully.tr());
+                                  await ChangesDatabase().set(
+                                    data: Change(database: 'app', method: "update", itemId: "pincode", data: newState.pincode),
+                                  );
                                   newPincodeController.clear();
                                   oldPincodeController.clear();
                                 });

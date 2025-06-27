@@ -8,6 +8,7 @@ class ApiEndpoints {
 
   static String productOne(id) => "/products/clients/$id";
   static String product = "/products/product";
+  static String action = "/actions/action";
   static const String employee = "/employees/employee";
 
   static String employeeOne(id) => "/employees/clients/$id";
