@@ -60,11 +60,7 @@ class MenuPage extends HookConsumerWidget {
                   Spacer(),
                   WebButton(
                     onPressed: () {
-                      AppBackButton(
-                        onPressed: () {
-                          AppRouter.open(context, OnboardPage());
-                        },
-                      );
+                      AppRouter.open(context, OnboardPage());
                     },
                     builder: (focused) {
                       return Container(
@@ -76,6 +72,25 @@ class MenuPage extends HookConsumerWidget {
                           border: Border.all(color: theme.secondaryTextColor),
                         ),
                         child: Icon(Iconsax.home_copy, size: context.s(24)),
+                      );
+                    },
+                  ),
+                  WebButton(
+                    onPressed: () {
+                      ref.invalidate(ordersProvider);
+                      ref.invalidate(ordersProvider(place.id ?? ""));
+                      ref.invalidate(ordersProvider(fatherPlace?.id ?? ""));
+                    },
+                    builder: (focused) {
+                      return Container(
+                        height: context.s(48),
+                        width: context.s(48),
+                        decoration: BoxDecoration(
+                          color: focused ? theme.mainColor.withValues(alpha: 0.1) : null,
+                          borderRadius: BorderRadius.circular(48),
+                          border: Border.all(color: theme.secondaryTextColor),
+                        ),
+                        child: Icon(Ionicons.refresh, size: context.s(24)),
                       );
                     },
                   ),

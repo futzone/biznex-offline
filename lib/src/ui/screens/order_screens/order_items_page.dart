@@ -48,11 +48,12 @@ class OrderItemsPage extends HookConsumerWidget {
 
     useEffect(() {
       if (order != null) {
-        Future.microtask(() {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           final existingIds = orderItems.map((e) => e.product.id).toSet();
           final newOnes = order!.products.where((e) {
             return !existingIds.contains(e.product.id);
           }).toList();
+
           if (newOnes.isNotEmpty) {
             orderNotifier.addMultiple(newOnes);
           }
@@ -60,22 +61,10 @@ class OrderItemsPage extends HookConsumerWidget {
       }
 
       return null;
-    }, [order]);
-
-    void onSchedule() {
-      showDatePicker(context: context, firstDate: DateTime.now(), lastDate: DateTime(2100)).then((date) {
-        if (date != null) {
-          showTimePicker(context: context, initialTime: TimeOfDay(hour: 13, minute: 0)).then((time) {
-            if (time != null) {
-              scheduledTime.value = date.copyWith(hour: time.hour, minute: time.minute);
-            }
-          });
-        }
-      });
-    }
+    }, [orderItems, order]);
 
     return Expanded(
-      flex: getDeviceType(context) == DeviceType.tablet?6:4,
+      flex: getDeviceType(context) == DeviceType.tablet ? 6 : 4,
       child: placeOrderItems.isEmpty
           ? AppEmptyWidget()
           : Container(
@@ -130,7 +119,6 @@ class OrderItemsPage extends HookConsumerWidget {
                         spacing: 8,
                         children: [
                           SwitchListTile(
-
                             activeColor: theme.mainColor,
                             contentPadding: Dis.only(),
                             value: useCheck.value,
@@ -175,10 +163,7 @@ class OrderItemsPage extends HookConsumerWidget {
                                   checkmarkColor: paymentType.value == type ? Colors.white : Colors.black,
                                   label: Text(
                                     type.tr(),
-                                    style: TextStyle(
-                                      color: paymentType.value == type ? Colors.white : Colors.black,
-                                      fontSize: context.s(14)
-                                    ),
+                                    style: TextStyle(color: paymentType.value == type ? Colors.white : Colors.black, fontSize: context.s(14)),
                                   ),
                                   selected: paymentType.value == type,
                                   onSelected: (_) {
