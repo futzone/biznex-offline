@@ -515,5 +515,7 @@
   "telegramNotificationFields": "Telegram bildirishnomalar uchun parametrlar",
   "botToken": "Bot tokenini kiriting",
   "channelAddress": "Kanal manzilini kiriting",
-  "productLimitNotification": "Mahsulot uchun limit"
+  "productLimitNotification": "Mahsulot uchun limit",
+  "exitSumm": "Kassadan olinmoqda",
+  "enterSumm": "Kassaga qo'yilmoqda"
 }
