@@ -21,6 +21,9 @@ class Network {
 
   Future<bool> isConnected() async {
     try {
+      final password = await _password();
+      if (password.isEmpty || password == '0000') return false;
+
       final result = await InternetAddress.lookup('google.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } on SocketException catch (_) {

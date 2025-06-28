@@ -167,7 +167,6 @@ class AppSidebar extends HookConsumerWidget {
                     state.whenProviderData(
                       provider: clientStateProvider,
                       builder: (data) {
-                        if (data == null) return const SizedBox.shrink();
                         return sidebarItemBuilder(Iconsax.cloud_copy, AppLocales.cloudData.tr(), 11);
                       },
                     ),

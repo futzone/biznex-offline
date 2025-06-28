@@ -517,4 +517,6 @@ abstract class AppLocales {
   static var botToken = "botToken";
   static var channelAddress = "channelAddress";
   static var productLimitNotification = "productLimitNotification";
+  static String exitSumm = "exitSumm";
+  static var enterSumm = "enterSumm";
 }

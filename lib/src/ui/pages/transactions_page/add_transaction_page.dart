@@ -1,6 +1,8 @@
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/transaction_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
+import 'package:biznex/src/core/extensions/app_responsive.dart';
+import 'package:biznex/src/core/model/employee_models/employee_model.dart';
 import 'package:biznex/src/core/model/transaction_model/transaction_model.dart';
 import 'package:biznex/src/providers/employee_provider.dart';
 import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
@@ -19,6 +21,9 @@ class AddTransactionPage extends HookConsumerWidget {
     final priceController = useTextEditingController(text: transaction?.value.toString());
     final noteController = useTextEditingController(text: transaction?.note);
     final selectedMethod = useState(transaction?.paymentType ?? Transaction.cash);
+    final negative = useState(true);
+    final selectedEmployee = useState<Employee?>(null);
+
     return AppStateWrapper(builder: (theme, state) {
       return Column(
         spacing: 16,
@@ -76,6 +81,84 @@ class AddTransactionPage extends HookConsumerWidget {
               ),
             ],
           ),
+          Row(
+            spacing: context.w(16),
+            children: [
+              Expanded(
+                child: SimpleButton(
+                  onPressed: () => negative.value = true,
+                  child: Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBgColor,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: Dis.only(lr: 12),
+                    child: Row(
+                      spacing: 12,
+                      children: [
+                        if (negative.value)
+                          Icon(Icons.check_circle_outline, color: theme.mainColor)
+                        else
+                          Icon(Icons.circle_outlined, color: Colors.black),
+                        Text(AppLocales.exitSumm.tr(), style: TextStyle(fontFamily: mediumFamily))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SimpleButton(
+                  onPressed: () => negative.value = false,
+                  child: Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: theme.scaffoldBgColor,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: Dis.only(lr: 12),
+                    child: Row(
+                      spacing: 12,
+                      children: [
+                        if (!negative.value)
+                          Icon(Icons.check_circle_outline, color: theme.mainColor)
+                        else
+                          Icon(Icons.circle_outlined, color: Colors.black),
+                        Text(AppLocales.enterSumm.tr(), style: TextStyle(fontFamily: mediumFamily))
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          state.whenProviderData(
+            provider: employeeProvider,
+            builder: (employees) {
+              return CustomPopupMenu(
+                children: [
+                  CustomPopupItem(
+                    title: AppLocales.clearAll.tr(),
+                    onPressed: () => selectedEmployee.value = null,
+                  ),
+                  for (Employee emp in employees)
+                    CustomPopupItem(
+                      title: emp.fullname,
+                      onPressed: () => selectedEmployee.value = emp,
+                    ),
+                ],
+                theme: theme,
+                child: IgnorePointer(
+                  child: AppTextField(
+                    title: AppLocales.employees.tr(),
+                    controller: TextEditingController(text: selectedEmployee.value?.fullname ?? ''),
+                    theme: theme,
+                    onlyRead: true,
+                  ),
+                ),
+              );
+            },
+          ),
           Spacer(),
           ConfirmCancelButton(
             cancelColor: Colors.white,
@@ -83,10 +166,10 @@ class AddTransactionPage extends HookConsumerWidget {
             onConfirm: () {
               TransactionController transactionController = TransactionController(context: context, state: state);
               Transaction kTransaction = Transaction(
-                value: double.tryParse(priceController.text.trim()) ?? 0.0,
+                value: (negative.value ? -1 : 1) * (double.tryParse(priceController.text.trim()) ?? 0.0),
+                employee: selectedEmployee.value ?? ref.watch(currentEmployeeProvider),
                 paymentType: selectedMethod.value,
                 note: noteController.text.trim(),
-                employee: ref.watch(currentEmployeeProvider),
               );
 
               if (transaction == null) {
@@ -99,8 +182,9 @@ class AddTransactionPage extends HookConsumerWidget {
 
               kTransaction.paymentType = selectedMethod.value;
               kTransaction.note = noteController.text.trim();
-              kTransaction.value = double.tryParse(priceController.text.trim()) ?? 0.0;
+              kTransaction.value = (negative.value ? -1 : 1) * (double.tryParse(priceController.text.trim()) ?? 0.0);
               kTransaction.createdDate = DateTime.now().toIso8601String();
+              kTransaction.employee = selectedEmployee.value ?? ref.watch(currentEmployeeProvider);
               transactionController.update(kTransaction, transaction?.id).then((_) {
                 AppRouter.close(context);
               });

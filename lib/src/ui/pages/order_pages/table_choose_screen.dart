@@ -13,6 +13,7 @@ import 'package:biznex/src/ui/widgets/custom/app_custom_popup_menu.dart';
 import 'package:biznex/src/ui/widgets/custom/app_empty_widget.dart';
 import 'package:biznex/src/ui/widgets/custom/app_state_wrapper.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
+import 'package:biznex/src/ui/widgets/helpers/app_decorated_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../../../biznex.dart';
@@ -46,7 +47,8 @@ class TableChooseScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _buildTable({required AppColors theme, required String name, required String status, required BuildContext context}) {
+  Widget _buildTable(
+      {required AppColors theme, required String name, required String status, required BuildContext context}) {
     final cColor = status == 'free' ? theme.mainColor.withValues(alpha: 0.8) : theme.secondaryTextColor;
     final textColor = status == 'free' ? theme.mainColor : theme.textColor;
 
@@ -112,7 +114,25 @@ class TableChooseScreen extends HookConsumerWidget {
             provider: placesProvider,
             builder: (places) {
               places as List<Place>;
-              if (places.isEmpty) return AppEmptyWidget();
+              if (places.isEmpty) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: 32.all,
+                      child: Row(
+                        children: [
+                          AppBackButton(
+                            onPressed: () {
+                              AppRouter.open(context, OnboardPage());
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(child: AppEmptyWidget()),
+                  ],
+                );
+              }
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,9 +316,15 @@ class TableChooseScreen extends HookConsumerWidget {
                             CustomPopupMenu(
                               theme: theme,
                               children: [
-                                CustomPopupItem(title: AppLocales.all.tr(), onPressed: () => selectedPlace.value = null, icon: Icons.list),
+                                CustomPopupItem(
+                                    title: AppLocales.all.tr(),
+                                    onPressed: () => selectedPlace.value = null,
+                                    icon: Icons.list),
                                 for (final item in places)
-                                  CustomPopupItem(title: item.name, onPressed: () => selectedPlace.value = item, icon: Icons.present_to_all),
+                                  CustomPopupItem(
+                                      title: item.name,
+                                      onPressed: () => selectedPlace.value = item,
+                                      icon: Icons.present_to_all),
                               ],
                               child: Container(
                                 height: context.h(52),
@@ -314,7 +340,9 @@ class TableChooseScreen extends HookConsumerWidget {
                                   spacing: context.w(8),
                                   children: [
                                     Text(
-                                      selectedPlace.value == null ? AppLocales.choosePlace.tr() : selectedPlace.value!.name,
+                                      selectedPlace.value == null
+                                          ? AppLocales.choosePlace.tr()
+                                          : selectedPlace.value!.name,
                                       style: TextStyle(fontSize: context.s(16), fontFamily: mediumFamily),
                                     ),
                                     Icon(Iconsax.arrow_down_1_copy, size: context.s(20)),
@@ -404,7 +432,9 @@ class TableChooseScreen extends HookConsumerWidget {
                               order as Order?;
                               return SimpleButton(
                                 onPressed: () {
-                                  if (order != null && order.employee.id != employee.id && employee.roleName.toLowerCase() != 'admin') {
+                                  if (order != null &&
+                                      order.employee.id != employee.id &&
+                                      employee.roleName.toLowerCase() != 'admin') {
                                     ShowToast.error(context, AppLocales.otherEmployeeOrder.tr());
                                     return;
                                   }
