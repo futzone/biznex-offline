@@ -501,5 +501,15 @@
   "updateCloudData": "Обновить онлайн данные",
   "lastUpdatedTime": "Время последнего обновления",
   "cloudAddressForThisAccount": "Адрес просмотра онлайн данных для этой учетной записи",
-  "cloudAddressQrCodeDescription": "Загрузите приложение 'Biznex Owner' и отсканируйте QR-код, чтобы открыть этот адрес на своем устройстве"
+  "cloudAddressQrCodeDescription": "Загрузите приложение 'Biznex Owner' и отсканируйте QR-код, чтобы открыть этот адрес на своем устройстве",
+  "expireDate": "Дата истечения срока действия",
+  "errorOnCreatingCloudAccount": "Не удалось создать учетную запись владельца Biznex. Проверьте подключение к Интернету или повторите попытку!",
+  "reportsSendSuccessfully": "Отчеты успешно отправлены!",
+  "sendReportsError": "Не удалось отправить отчеты. Проверьте подключение к Интернету или повторите попытку!",
+  "sendingReports": "Отправка отчетов...",
+  "internetConnectionError": "Не удалось подключиться к серверу. Проверьте подключение к Интернету или повторите попытку!",
+  "telegramNotificationFields": "Параметры уведомлений Telegram",
+  "botToken": "Введите токен бота",
+  "channelAddress": "Введите адрес канала",
+  "productLimitNotification": "Ограничение для продукта"
 }

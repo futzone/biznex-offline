@@ -407,5 +407,15 @@
   "updateCloudData": "Update online data",
   "lastUpdatedTime": "Last updated time",
   "cloudAddressForThisAccount": "Online data viewing address for this account",
-  "cloudAddressQrCodeDescription": "Download the 'Biznex Owner' app and scan the QR code to open this address on your device."
+  "cloudAddressQrCodeDescription": "Download the 'Biznex Owner' app and scan the QR code to open this address on your device.",
+  "expireDate": "Expiry date",
+  "errorOnCreatingCloudAccount": "Could not create Biznex Owner account. Check internet connection or try again!",
+  "reportsSendSuccessfully": "Reports sent successfully!",
+  "sendReportsError": "Could not send reports. Check internet connection or try again!",
+  "sendingReports": "Sending reports...",
+  "internetConnectionError": "Could not connect to server. Check internet connection or try again!",
+  "telegramNotificationFields": "Parameters for Telegram notifications",
+  "botToken": "Enter bot token",
+  "channelAddress": "Enter channel address",
+  "productLimitNotification": "Limit for product"
 }
