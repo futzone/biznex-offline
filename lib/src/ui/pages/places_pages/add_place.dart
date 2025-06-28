@@ -45,7 +45,11 @@ class AddPlace extends HookWidget {
                 cancelColor: Colors.white,
                 onConfirm: () async {
                   PlaceController controller = PlaceController(context: context, state: state);
-                  if (addSubcategoryTo != null) {
+                  if (nameController.text.trim().isEmpty) {
+                    return controller.error(AppLocales.placeNameInputError.tr());
+                  }
+
+                  if (addSubcategoryTo != null && editCategory == null) {
                     Place place = addSubcategoryTo!;
                     place.children ??= [];
                     place.percentNull = percentNull.value;
@@ -54,10 +58,26 @@ class AddPlace extends HookWidget {
                     return;
                   }
 
+                  if (addSubcategoryTo != null && editCategory != null) {
+                    Place father = addSubcategoryTo!;
+                    Place place = editCategory!;
+                    place.name = nameController.text.trim();
+                    place.percentNull = percentNull.value;
+                    father.children ??= [];
+                    father.children = [
+                      place,
+                      ...father.children!.where((el) => el.id != editCategory?.id),
+                    ];
+
+                    controller.update(father, father.id);
+                    return;
+                  }
+
                   if (editCategory == null) {
                     Place category = Place(
                       name: nameController.text,
                       percentNull: percentNull.value,
+                      father: addSubcategoryTo,
                     );
                     controller.create(category);
                     return;
@@ -66,7 +86,7 @@ class AddPlace extends HookWidget {
                   Place category = editCategory!;
                   category.name = nameController.text;
                   category.percentNull = percentNull.value;
-                  controller.update(category, category.id);
+                  await controller.update(category, category.id);
                 },
               ),
             ],

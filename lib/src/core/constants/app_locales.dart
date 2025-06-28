@@ -516,4 +516,5 @@ abstract class AppLocales {
   static var telegramNotificationFields = "telegramNotificationFields";
   static var botToken = "botToken";
   static var channelAddress = "channelAddress";
+  static var productLimitNotification = "productLimitNotification";
 }

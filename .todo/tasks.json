@@ -1,0 +1,23 @@
+[
+  {
+    "id": "TASK_1",
+    "priority": "HIGH",
+    "tags": [],
+    "description": "Multimonoblok test",
+    "status": "TODO",
+    "date": {
+      "date": {
+        "year": 2025,
+        "month": 6,
+        "day": 28
+      },
+      "time": {
+        "hour": 10,
+        "minute": 26,
+        "second": 50,
+        "nano": 492771500
+      }
+    },
+    "isImported": false
+  }
+]

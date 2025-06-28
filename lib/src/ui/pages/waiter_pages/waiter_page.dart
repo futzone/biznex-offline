@@ -301,7 +301,7 @@ class _WaiterPageState extends ConsumerState<WaiterPage> {
                       kPlace = _place;
                     }
 
-                    return OrderItemsPage(state: state, theme: theme, place: kPlace!, order: order);
+                    return OrderItemsPage(state: state, theme: theme, place: kPlace!);
                   },
                 ),
               if ((_place != null && _place?.children != null && _placeChild != null) ||

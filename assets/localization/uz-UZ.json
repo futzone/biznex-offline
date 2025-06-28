@@ -512,7 +512,7 @@
   "sendReportsError": "Hisobotlarni jo'natib bo'lmadi. Internetga ulanishni tekshiring yoki qaytadan urinib ko'ring!",
   "sendingReports": "Hisobotlar jo'natilmoqda...",
   "internetConnectionError": "Serverga ulanib bo'lmadi. Internetga ulanishni tekshiring yoki qaytadan urinib ko'ring!",
-  "telegramNotificationFields": "Telegram bildirishnomalar uchun parameterlar",
+  "telegramNotificationFields": "Telegram bildirishnomalar uchun parametrlar",
   "botToken": "Bot tokenini kiriting",
   "channelAddress": "Kanal manzilini kiriting"
 }

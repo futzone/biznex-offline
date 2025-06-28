@@ -34,7 +34,10 @@ class PlaceChildrenPage extends ConsumerWidget {
                 padding: Dis.only(tb: 6, lr: 16),
                 theme: theme,
                 onPressed: () {
-                  showDesktopModal(context: context, body: AddPlace(addSubcategoryTo: place));
+                  showDesktopModal(
+                    context: context,
+                    body: AddPlace(addSubcategoryTo: place),
+                  );
                 },
                 child: Row(
                   spacing: 8,
@@ -102,7 +105,13 @@ class PlaceChildrenPage extends ConsumerWidget {
                             ),
                             SimpleButton(
                               onPressed: () {
-                                showDesktopModal(context: context, body: AddPlace(editCategory: category));
+                                showDesktopModal(
+                                  context: context,
+                                  body: AddPlace(
+                                    editCategory: category,
+                                    addSubcategoryTo: place,
+                                  ),
+                                );
                               },
                               child: Container(
                                 height: 36,
@@ -121,9 +130,7 @@ class PlaceChildrenPage extends ConsumerWidget {
                             SimpleButton(
                               onPressed: () async {
                                 PlaceController placeController = PlaceController(context: context, state: state);
-                                await placeController.delete(category.id, father: place, ref: ref).then((_) {
-
-                                });
+                                await placeController.delete(category.id, father: place, ref: ref).then((_) {});
                               },
                               child: Container(
                                 height: 36,

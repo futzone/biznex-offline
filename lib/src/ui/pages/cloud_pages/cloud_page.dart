@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:biznex/biznex.dart';
 import 'package:biznex/src/controllers/cloud_data_controller.dart';
-import 'package:biznex/src/controllers/cloud_reports_controller.dart';
 import 'package:biznex/src/core/config/router.dart';
 import 'package:biznex/src/core/extensions/app_responsive.dart';
 import 'package:biznex/src/core/extensions/for_dynamic.dart';
@@ -28,6 +26,7 @@ class CloudPage extends HookConsumerWidget {
     final expireDateController = useTextEditingController();
     final channelAddressController = useTextEditingController();
     final tokenController = useTextEditingController();
+    final countController = useTextEditingController();
     return AppStateWrapper(
       builder: (theme, state) {
         return Scaffold(
@@ -226,9 +225,8 @@ class CloudPage extends HookConsumerWidget {
                                           Ionicons.checkmark_done_circle_outline,
                                           color: theme.mainColor,
                                         ),
-                                      if (jsonDecode(client.name) is Map && jsonDecode(client.name)['token'].toString().isNotEmpty)
-                                        12.w,
-                                        Text(
+                                      if (jsonDecode(client.name) is Map && jsonDecode(client.name)['token'].toString().isNotEmpty) 12.w,
+                                      Text(
                                         AppLocales.telegramNotificationFields.tr(),
                                         style: TextStyle(
                                           fontSize: context.s(18),
@@ -273,17 +271,29 @@ class CloudPage extends HookConsumerWidget {
                                     ),
                                   ),
                                   16.h,
+                                  AppTextField(
+                                    title: AppLocales.productLimitNotification.tr(),
+                                    controller: countController,
+                                    theme: theme,
+                                    textInputType: TextInputType.number,
+                                    maxLines: 1,
+                                  ),
+                                  16.h,
                                   AppPrimaryButton(
                                     theme: theme,
                                     title: AppLocales.save.tr(),
                                     onPressed: () async {
                                       showAppLoadingDialog(context);
                                       Client newClient = client;
+                                      final oldMap = jsonDecode(client.name) is Map ? jsonDecode(client.name) : {};
                                       newClient.updatedAt = DateTime.now().toIso8601String();
                                       newClient.name = jsonEncode({
                                         "name": state.shopName.notNullOrEmpty("Biznex Client"),
-                                        "channel": channelAddressController.text.trim(),
-                                        "token": tokenController.text.trim(),
+                                        "channel": channelAddressController.text.trim().isEmpty
+                                            ? (oldMap["channel"] ?? '')
+                                            : channelAddressController.text.trim(),
+                                        "token": tokenController.text.trim().isEmpty ? (oldMap["token"] ?? '') : tokenController.text.trim(),
+                                        "count": int.tryParse(countController.text.trim()) ?? 10,
                                       });
 
                                       NetworkServices ns = NetworkServices();

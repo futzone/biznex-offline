@@ -166,7 +166,7 @@ class MenuPage extends HookConsumerWidget {
                         kPlace.father = fatherPlace;
                       }
 
-                      return OrderItemsPage(state: state, theme: theme, place: kPlace, order: order);
+                      return OrderItemsPage(state: state, theme: theme, place: kPlace);
                     },
                   ),
                 ],

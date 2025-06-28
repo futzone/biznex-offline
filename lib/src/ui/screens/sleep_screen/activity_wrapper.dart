@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/model/cloud_models/client.dart';
+import '../../../core/network/network_base.dart';
 
 class ActivityWrapper extends StatefulWidget {
   final Widget child;
@@ -96,17 +97,14 @@ class _ActivityWrapperState extends State<ActivityWrapper> {
   void _autoUpdateCall() async => await checkAndUpdate(updateNotifier, lastVersion, widget.ref);
 
   void _localChangesSync() async {
+    if (!(await Network().isConnected())) return;
     log('syncing saved changes');
     final changesList = await _changesDatabase.get();
     for (final item in changesList) {
       log("${item.method} ${item.database}");
       ChangesController changesController = ChangesController(item);
-      final saveStatus = await changesController.saveStatus();
-      if (saveStatus) {
-        log(saveStatus.toString());
-        await _changesDatabase.delete(key: item.id);
-        log("deleted: ${item.database} ${item.method}");
-      }
+      await changesController.saveStatus();
+      await _changesDatabase.delete(key: item.id);
     }
 
     NetworkServices networkServices = NetworkServices();

@@ -15,8 +15,21 @@ final orderSetProvider = StateNotifierProvider<OrderSetNotifier, List<OrderItem>
 
 class OrderSetNotifier extends StateNotifier<List<OrderItem>> {
   final Ref ref;
+  final OrderDatabase _orderDatabase = OrderDatabase();
 
   OrderSetNotifier(this.ref) : super([]);
+
+  Future<void> loadOrderForPlace(String placeId) async {
+    if (state.any((item) => item.placeId == placeId)) {
+      return;
+    }
+
+    final order = await _orderDatabase.getPlaceOrder(placeId);
+
+    if (order != null && order.products.isNotEmpty) {
+      addMultiple(order.products);
+    }
+  }
 
   void addItem(OrderItem item, context) {
     final index = state.indexWhere((e) => e.product.id == item.product.id && e.placeId == item.placeId);

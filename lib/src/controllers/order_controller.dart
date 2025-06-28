@@ -21,6 +21,8 @@ import 'package:biznex/src/providers/orders_provider.dart'; // Assuming orderSet
 import 'package:biznex/src/ui/widgets/custom/app_loading.dart';
 import 'package:biznex/src/ui/widgets/custom/app_toast.dart';
 
+import '../core/model/app_changes_model.dart';
+
 // Placeholder for AppLocales if it's not in biznex/biznex.dart
 // class AppLocales {
 //   static String get orderCreatedSuccessfully => 'Order created successfully';
@@ -200,6 +202,13 @@ class OrderController {
     await _database.saveOrder(finalOrder);
     await _onUpdateAmounts(finalOrder, ref);
     await _database.closeOrder(placeId: place.id);
+    await _database.changesDatabase.set(
+      data: Change(
+        database: _database.getBoxName("all"),
+        method: 'create',
+        itemId: finalOrder.id,
+      ),
+    );
 
     if (!context.mounted) return;
     AppRouter.close(context);

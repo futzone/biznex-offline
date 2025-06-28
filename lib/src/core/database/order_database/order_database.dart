@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class OrderDatabase {
   ChangesDatabase changesDatabase = ChangesDatabase();
+
   String getBoxName(id) => "orders_$id";
 
   Future<Box> openBox(String boxName) async {
@@ -38,13 +39,6 @@ class OrderDatabase {
     order.id = generateID;
     final box = await openBox(getBoxName("all"));
     box.put(order.id, order.toJson());
-     await changesDatabase.set(
-      data: Change(
-        database: getBoxName("all"),
-        method: 'create',
-        itemId: order.id,
-      ),
-    );
   }
 
   Future<Order?> getPlaceOrder(String placeId) async {
@@ -86,7 +80,7 @@ class OrderDatabase {
   Future<Order?> getOrderById(String id) async {
     final box = await openBox(getBoxName("all"));
     final orderJson = box.get(id);
-    
+
     if (orderJson == null) return null;
     return Order.fromJson(orderJson);
   }
