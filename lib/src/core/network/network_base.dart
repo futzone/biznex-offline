@@ -9,9 +9,9 @@ class Network {
   final Dio dio = Dio(
     BaseOptions(
       baseUrl: ApiEndpoints.baseUrl,
-      connectTimeout: const Duration(seconds: 7),
-      receiveTimeout: const Duration(seconds: 10),
-      sendTimeout: const Duration(seconds: 7),
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 7),
+      sendTimeout: const Duration(seconds: 5),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
